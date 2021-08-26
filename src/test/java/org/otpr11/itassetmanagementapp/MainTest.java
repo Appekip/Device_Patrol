@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-class MainTest {
+public class MainTest {
 
   @Test
-  void getTest() {
-    assert(true);
+  public void getTest() {
+    assertTrue(true);
   }
 }

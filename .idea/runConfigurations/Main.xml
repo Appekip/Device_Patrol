@@ -4,7 +4,7 @@
     <module name="it-asset-management-app" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="org.otpr11.itassetmanagementapp.*" />
+        <option name="PATTERN" value=".*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
