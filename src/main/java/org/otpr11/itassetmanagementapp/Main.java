@@ -9,8 +9,7 @@ import java.io.IOException;
 import lombok.Getter;
 
 public class Main extends Application {
-  @Getter
-  private final String test = "test";
+  @Getter private final String test = "test";
 
   /**
    * This is a test Javadoc.
