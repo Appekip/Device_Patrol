@@ -17,7 +17,7 @@ build-and-test:
   script:
     - mvn $MAVEN_CLI_OPTS verify
 
-deploy:
+pages:
   stage: deploy
   script:
     - mvn $MAVEN_CLI_OPTS javadoc:aggregate
