@@ -10,6 +10,7 @@ module org.otpr11.itassetmanagementapp {
   requires org.kordamp.ikonli.javafx;
   requires org.kordamp.bootstrapfx.core;
   requires javafx.graphics;
+  requires dotenv.java;
 
   opens org.otpr11.itassetmanagementapp to javafx.fxml;
   exports org.otpr11.itassetmanagementapp;
