@@ -1,6 +1,7 @@
 <!-- @formatter:off -->
 
 # it-asset-management-app
+(OTP R11: Linus Willner, Lilli-Mari Häyhänen, Arttu Perämäki, Teemu Olkkonen)
 
 Course project for Ohjelmistotuotantoprojekti TX00CF81-3012 course at Metropolia UAS, themed around IT asset management (similarly to tools like Snipe IT).
 
