@@ -6,5 +6,6 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: devices
     ports:
       - "5432:5432"

@@ -2,7 +2,9 @@ package org.otpr11.itassetmanagementapp.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Arrays;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 
@@ -10,14 +12,11 @@ import org.otpr11.itassetmanagementapp.Main;
  * Configuration manager singleton class. Access to the config is provided via {@code
  * Config.getConfig()}.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Config {
   @Getter private static Dotenv config;
 
-  private Config() {
-    load();
-  }
-
-  private void load() {
+  public static void load() {
     // Because we're using JavaFX, we need to adhere to the `resources` folder; hence
     // some path parsing magic is needed to figure out where the .env file is
 
