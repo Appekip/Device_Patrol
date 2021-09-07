@@ -8,12 +8,15 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.config.Config;
+import org.otpr11.itassetmanagementapp.db.DAO;
 
 public class Main extends Application {
   @Getter private final String test = "test";
 
   public static void main(String[] args) {
-    val cfg = Config.getConfig();
+    Config.load();
+    // FIXME: Temp
+    val dao = DAO.getInstance();
     launch();
   }
 
