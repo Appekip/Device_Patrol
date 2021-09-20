@@ -3,6 +3,7 @@ module org.otpr11.itassetmanagementapp {
   requires java.naming;
   requires java.sql;
   requires lombok;
+  requires com.google.common;
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
@@ -13,9 +14,16 @@ module org.otpr11.itassetmanagementapp {
   requires org.kordamp.bootstrapfx.core;
   requires dotenv.java;
   requires org.hibernate.orm.core;
+  requires org.apache.logging.log4j;
+  requires org.apache.logging.log4j.core;
+  requires org.jetbrains.annotations;
 
   opens org.otpr11.itassetmanagementapp to
       javafx.fxml;
+  opens org.otpr11.itassetmanagementapp.db.model to
+      org.hibernate.orm.core;
+  opens org.otpr11.itassetmanagementapp.db.model.configuration to
+      org.hibernate.orm.core;
 
   exports org.otpr11.itassetmanagementapp;
 }

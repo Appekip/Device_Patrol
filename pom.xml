@@ -39,7 +39,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <configuration>
               <mainClass>
-                org.otpr11.itassetmanagementapp/org.otpr11.itassetmanagementapp.HelloApplication
+                org.otpr11.itassetmanagementapp/org.otpr11.itassetmanagementapp.Main
               </mainClass>
             </configuration>
             <id>default-cli</id>
@@ -57,14 +57,19 @@
       <version>${lombok.version}</version>
     </dependency>
     <dependency>
+      <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
+      <version>30.1.1-jre</version>
+    </dependency>
+    <dependency>
       <artifactId>javafx-controls</artifactId>
       <groupId>org.openjfx</groupId>
-      <version>16</version>
+      <version>${javafx.version}</version>
     </dependency>
     <dependency>
       <artifactId>javafx-fxml</artifactId>
       <groupId>org.openjfx</groupId>
-      <version>16</version>
+      <version>${javafx.version}</version>
     </dependency>
     <dependency>
       <artifactId>controlsfx</artifactId>
@@ -135,6 +140,22 @@
       <groupId>javax.persistence</groupId>
       <version>2.2</version>
     </dependency>
+    <dependency>
+      <artifactId>log4j-api</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>log4j-core</artifactId>
+      <groupId>org.apache.logging.log4j</groupId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>RELEASE</version>
+      <scope>compile</scope>
+    </dependency>
   </dependencies>
   <groupId>org.otp-r11</groupId>
   <modelVersion>4.0.0</modelVersion>
@@ -142,7 +163,9 @@
   <name>it-asset-management-app</name>
 
   <properties>
+    <javafx.version>16</javafx.version>
     <junit.version>5.7.2</junit.version>
+    <log4j.version>2.14.1</log4j.version>
     <lombok.version>1.18.20</lombok.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <surefire.version>3.0.0-M5</surefire.version>
