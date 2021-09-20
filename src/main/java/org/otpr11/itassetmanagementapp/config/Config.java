@@ -2,18 +2,12 @@ package org.otpr11.itassetmanagementapp.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Arrays;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 
-/**
- * Configuration manager singleton class. Access to the config is provided via {@code
- * Config.getConfig()}.
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class Config {
+/** Configuration manager. Access to the config is provided via {@code Config.getConfig()}. */
+public abstract class Config {
   @Getter private static Dotenv config;
 
   public static void load() {
