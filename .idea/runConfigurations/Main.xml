@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Main" type="Application" factoryName="Application">
+    <option name="ALTERNATIVE_JRE_PATH" value="openjdk-16" />
     <option name="MAIN_CLASS_NAME" value="org.otpr11.itassetmanagementapp.Main" />
     <module name="it-asset-management-app" />
     <extension name="coverage">
