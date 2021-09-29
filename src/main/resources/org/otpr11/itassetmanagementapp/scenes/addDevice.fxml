@@ -224,7 +224,7 @@
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
                <center>
-                  <ChoiceBox prefWidth="150.0" BorderPane.alignment="CENTER">
+                  <ChoiceBox fx:id="platform" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets left="10.0" right="10.0" />
                      </BorderPane.margin>
