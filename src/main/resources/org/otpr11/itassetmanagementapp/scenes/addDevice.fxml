@@ -132,7 +132,7 @@
                   </TextField>
                </center>
                <top>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modelyear" BorderPane.alignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model year" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
             <BorderPane layoutX="160.0" layoutY="170.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
@@ -204,7 +204,7 @@
                   </TextField>
                </center>
                <top>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Disksize" BorderPane.alignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Disk size" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
             <BorderPane layoutX="310.0" layoutY="278.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
@@ -216,7 +216,7 @@
                   </TextField>
                </center>
                <top>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Screensize" BorderPane.alignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Screen size" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" />
@@ -269,7 +269,7 @@
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <top>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Modelname" BorderPane.alignment="CENTER" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model name" BorderPane.alignment="CENTER" />
                </top>
                <center>
                   <TextField BorderPane.alignment="CENTER">
