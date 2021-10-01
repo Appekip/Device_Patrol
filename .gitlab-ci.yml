@@ -15,9 +15,9 @@ variables:
   METROPOLIA_GITLAB_TOKEN: $METROPOLIA_GITLAB_TOKEN
 
 stages:
-  - build-and-test
-  - mirror-to-metropolia-gitlab
-  - pages
+  - build
+  - mirror
+  - deploy
 
 image: maven:3.8.2-adoptopenjdk-16
 
@@ -26,10 +26,12 @@ cache:
     - .m2/repository
 
 build-and-test:
+  stage: build
   script:
     - mvn $MAVEN_CLI_OPTS verify
 
 mirror-to-metropolia-gitlab:
+  stage: mirror
   script:
     - cd $GIT_CLONE_PATH
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
