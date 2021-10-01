@@ -43,7 +43,7 @@ mirror-to-metropolia-gitlab:
     - git remote add $GIT_REMOTE_NAME https://gitlab-ci-token:$METROPOLIA_GITLAB_TOKEN@$MIRROR_REPO_URL
     - git ls-remote $GIT_REMOTE_NAME
     - git fetch -q $GIT_REMOTE_NAME
-    - git switch $CI_COMMIT_BRANCH --no-guess -t $GIT_REMOTE_NAME/$CI_COMMIT_BRANCH
+    - git checkout -B metropolia-local/$CI_COMMIT_BRANCH
     - git commit -a -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
     - git push $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
 
