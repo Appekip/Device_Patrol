@@ -37,10 +37,11 @@ mirror-to-metropolia-gitlab:
     - cd $GIT_CLONE_PATH
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
     - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
-    - git switch $CI_COMMIT_BRANCH
     - git config --global user.name "$GIT_COMMIT_NAME"
     - git config --global user.email "$GIT_COMMIT_EMAIL"
+    - git switch $CI_COMMIT_BRANCH
     - git remote add metropolia https://gitlab-ci-token:$METROPOLIA_GITLAB_TOKEN@$MIRROR_REPO_URL
+    - git branch -u metropolia/$CI_COMMIT_BRANCH
     - git add --all
     - git commit -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
     - git push metropolia $CI_COMMIT_BRANCH
