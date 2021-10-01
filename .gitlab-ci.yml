@@ -38,16 +38,15 @@ mirror-to-metropolia-gitlab:
     - cd $GIT_CLONE_PATH
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
     - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
-    - export GIT_LOCAL_BRANCH=$(echo $GIT_REMOTE_NAME-local/$CI_COMMIT_BRANCH)
-    - export GIT_REMOTE_BRANCH=$(echo $GIT_REMOTE_NAME/$CI_COMMIT_BRANCH)
     - git config --global user.name "$GIT_COMMIT_NAME"
     - git config --global user.email "$GIT_COMMIT_EMAIL"
     - git remote add $GIT_REMOTE_NAME https://gitlab-ci-token:$METROPOLIA_GITLAB_TOKEN@$MIRROR_REPO_URL
     - git ls-remote $GIT_REMOTE_NAME
     - git fetch -q $GIT_REMOTE_NAME
-    - git checkout -B $GIT_LOCAL_BRANCH
+    - git checkout -B $CI_COMMIT_BRANCH
+    - git push $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
     - git commit -a -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
-    - git push -u $GIT_REMOTE_NAME $GIT_LOCAL_BRANCH
+    - git push -u $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
 
 pages:
   stage: deploy
