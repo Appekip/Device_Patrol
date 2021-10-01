@@ -34,6 +34,7 @@ mirror-to-metropolia-gitlab:
   stage: mirror
   script:
     - cd $GIT_CLONE_PATH
+    - cd ..
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
     - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
     - export BRANCH=$(git rev-parse --abbrev-ref HEAD)
