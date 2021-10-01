@@ -45,9 +45,6 @@ mirror-to-metropolia-gitlab:
     - git ls-remote $GIT_REMOTE_NAME
     - git fetch -q $GIT_REMOTE_NAME
     - git branch -u $GIT_REMOTE_NAME/$CI_COMMIT_BRANCH
-    - git stash
-    - git pull
-    - git stash pop
     - git add --all
     - git commit -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
     - git push $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
