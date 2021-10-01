@@ -46,9 +46,8 @@ mirror-to-metropolia-gitlab:
     - git ls-remote $GIT_REMOTE_NAME
     - git fetch -q $GIT_REMOTE_NAME
     - git checkout -B $GIT_LOCAL_BRANCH
-    - git branch $GIT_LOCAL_BRANCH -u $GIT_REMOTE_BRANCH
     - git commit -a -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
-    - git push -u $GIT_REMOTE_NAME $GIT_REMOTE_BRANCH
+    - git push -u $GIT_REMOTE_NAME $GIT_LOCAL_BRANCH
 
 pages:
   stage: deploy
