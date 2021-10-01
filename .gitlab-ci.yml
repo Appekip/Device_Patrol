@@ -6,6 +6,13 @@ variables:
   # when running from the command line.
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+  # Repo URLs
+  SOURCE_REPO_URL: "https://gitlab.com/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app"
+  MIRROR_REPO_URL: "gitlab.metropolia.fi/linusw/it-asset-management-app.git"
+  # Secrets
+  GIT_COMMIT_NAME: "GitLab CI on behalf of Linus Willner"
+  GIT_COMMIT_EMAIL: $GIT_COMMIT_EMAIL
+  METROPOLIA_GITLAB_TOKEN: $METROPOLIA_GITLAB_TOKEN
 
 image: maven:3.8.2-adoptopenjdk-16
 
@@ -16,6 +23,18 @@ cache:
 build-and-test:
   script:
     - mvn $MAVEN_CLI_OPTS verify
+
+mirror-to-metropolia-gitlab:
+  script:
+    - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
+    - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
+    - export BRANCH=$(git rev-parse --abbrev-ref HEAD)
+    - git config --global user.name "$GIT_COMMIT_NAME"
+    - git config --global user.email "$GIT_COMMIT_EMAIL"
+    - git remote add-remote metropolia https://gitlab-ci-token:$METROPOLIA_GITLAB_TOKEN@$MIRROR_REPO_URL
+    - git checkout -b $BRANCH
+    - git commit -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
+    - git push metropolia $BRANCH
 
 pages:
   stage: deploy
