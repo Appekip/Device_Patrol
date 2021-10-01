@@ -34,6 +34,9 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
+# CI Maven cache
+.m2/
+
 **/.DS_Store
 
 # Config
