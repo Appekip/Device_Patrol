@@ -45,8 +45,6 @@ mirror-to-metropolia-gitlab:
     - git fetch -q $GIT_REMOTE_NAME
     - git checkout -B $CI_COMMIT_BRANCH
     - git push $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
-    - git commit -a -m "Mirrored commit $COMMIT_SHA_SHORT" -m "Mirrored commit $SOURCE_REPO_URL/-/commit/$COMMIT_SHA_LONG"
-    - git push -u $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
 
 pages:
   stage: deploy
