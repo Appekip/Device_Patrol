@@ -7,6 +7,7 @@ variables:
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
   # Repo configs
+  GIT_CLONE_PATH: "/builds/it-asset-management-app"
   SOURCE_REPO_URL: "https://gitlab.com/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app"
   MIRROR_REPO_URL: "gitlab.metropolia.fi/linusw/it-asset-management-app.git"
   # Secrets
@@ -33,9 +34,7 @@ build-and-test:
 mirror-to-metropolia-gitlab:
   stage: mirror
   script:
-    - echo $GIT_CLONE_PATH
     - cd $GIT_CLONE_PATH
-    - cd ..
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
     - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
     - export BRANCH=$(git rev-parse --abbrev-ref HEAD)
