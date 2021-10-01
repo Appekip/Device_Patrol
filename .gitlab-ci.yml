@@ -33,6 +33,7 @@ build-and-test:
 mirror-to-metropolia-gitlab:
   stage: mirror
   script:
+    - echo $GIT_CLONE_PATH
     - cd $GIT_CLONE_PATH
     - cd ..
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
