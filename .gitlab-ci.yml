@@ -9,7 +9,7 @@ variables:
   # Repo configs
   GIT_CLONE_PATH: "/builds/it-asset-management-app"
   SOURCE_REPO_URL: "https://gitlab.com/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app"
-  MIRROR_REPO_URL: "gitlab.metropolia.fi/linusw/it-asset-management-app.git"
+  MIRROR_REPO_URL: "gitlab.metropolia.fi/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app.git"
   GIT_REMOTE_NAME: "metropolia"
   # Secrets
   GIT_COMMIT_NAME: "GitLab CI on behalf of Linus Willner"
