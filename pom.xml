@@ -63,12 +63,6 @@
             </goals>
             <id>default-report</id>
           </execution>
-          <execution>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <id>default-check</id>
-          </execution>
         </executions>
         <groupId>org.jacoco</groupId>
         <version>${jacoco.version}</version>
