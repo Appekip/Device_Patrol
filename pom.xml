@@ -48,6 +48,25 @@
         <groupId>org.openjfx</groupId>
         <version>0.0.6</version>
       </plugin>
+      <plugin>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <id>default-prepare-agent</id>
+          </execution>
+          <execution>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <id>default-report</id>
+          </execution>
+        </executions>
+        <groupId>org.jacoco</groupId>
+        <version>${jacoco.version}</version>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
@@ -151,10 +170,16 @@
       <version>${log4j.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>RELEASE</version>
+      <groupId>org.jetbrains</groupId>
       <scope>compile</scope>
+      <version>22.0.0</version>
+    </dependency>
+    <dependency>
+      <artifactId>jacoco-maven-plugin</artifactId>
+      <groupId>org.jacoco</groupId>
+      <type>maven-plugin</type>
+      <version>${jacoco.version}</version>
     </dependency>
   </dependencies>
   <groupId>org.otp-r11</groupId>
@@ -163,6 +188,7 @@
   <name>it-asset-management-app</name>
 
   <properties>
+    <jacoco.version>0.8.7</jacoco.version>
     <javafx.version>16</javafx.version>
     <junit.version>5.7.2</junit.version>
     <log4j.version>2.14.1</log4j.version>
