@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
-import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -58,16 +57,26 @@ public class AddDeviceController implements Initializable {
     statusChoicebox.getItems().addAll(list2);
   }
 
+  private void clearFields(){
+    platformChoicebox.setValue(null);
+    deviceidField.clear();
+    manufacturerField.clear();
+    modelidField.clear();
+    modelnameField.clear();
+    statusChoicebox.setValue(null);
+    modelyearField.clear();
+    nicknameField.clear();
+    operatingsystemField.clear();
+    macaddressField.clear();
+    cpuField.clear();
+    gpuField.clear();
+    memoryField.clear();
+    disksizeField.clear();
+    screensizeField.clear();
+  }
+
   private void addDevice(){
     okButton.setOnAction(e-> {
-      //System.out.println(
-      //  platform.getValue() + deviceidField.getText() + manufacturerField.getText() +
-      //      modelidField.getText() + modelnameField.getText() + status.getValue()
-      //      + modelyearField.getText() + nicknameField.getText() + operatingsystemField.getText()
-      //      +
-      //      macaddressField.getText() + cpuField.getText() + gpuField.getText()
-      //      + memoryField.getText() + disksizeField.getText() + screensizeField.getText());
-
 
       device.setId(deviceidField.getText());
       device.setManufacturer(manufacturerField.getText());
@@ -75,28 +84,16 @@ public class AddDeviceController implements Initializable {
       device.setModelName(modelnameField.getText());
       device.setModelYear(modelyearField.getText());
       device.setMacAddress(macaddressField.getText());
-      //device.setConfiguration(configuration);
-      //device.setStatus(status);
+      //device.setStatus();
+      device.setNickname(nicknameField.getText());
+
       dao.devices.create(device);
 
+      clearFields();
     });
 
     cancelButton.setOnAction(e-> {
-      platformChoicebox.setValue(null);
-      deviceidField.clear();
-      manufacturerField.clear();
-      modelidField.clear();
-      modelnameField.clear();
-      statusChoicebox.setValue(null);
-      modelyearField.clear();
-      nicknameField.clear();
-      operatingsystemField.clear();
-      macaddressField.clear();
-      cpuField.clear();
-      gpuField.clear();
-      memoryField.clear();
-      disksizeField.clear();
-      screensizeField.clear();
+      clearFields();
     });
   }
 
