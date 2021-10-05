@@ -22,14 +22,16 @@
         <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="6">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="8">
                <left>
                   <Button fx:id="okButton" mnemonicParsing="false" text="OK" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -51,14 +53,14 @@
                   </Button>
                </right>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
                <center>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <top>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status" BorderPane.alignment="CENTER" />
                      </top>
                      <center>
-                        <ChoiceBox fx:id="status" prefWidth="150.0" BorderPane.alignment="CENTER">
+                        <ChoiceBox fx:id="statusChoicebox" prefWidth="150.0" BorderPane.alignment="CENTER">
                            <BorderPane.margin>
                               <Insets left="10.0" right="10.0" />
                            </BorderPane.margin>
@@ -67,7 +69,7 @@
                   </BorderPane>
                </center>
             </BorderPane>
-            <BorderPane layoutX="10.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <BorderPane layoutX="10.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model year" BorderPane.alignment="CENTER" />
                </top>
@@ -79,7 +81,7 @@
                   </TextField>
                </center>
             </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <BorderPane layoutX="160.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <center>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <center>
@@ -95,7 +97,7 @@
                   </BorderPane>
                </center>
             </BorderPane>
-            <BorderPane layoutX="310.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+            <BorderPane layoutX="310.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
                <center>
                   <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                      <top>
@@ -111,7 +113,7 @@
                   </BorderPane>
                </center>
             </BorderPane>
-            <BorderPane layoutX="460.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="3">
+            <BorderPane layoutX="460.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                <center>
                   <TextField fx:id="macaddressField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -123,43 +125,43 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="MAC Address" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane layoutX="10.0" layoutY="170.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-               <center>
-                  <TextField fx:id="userField" BorderPane.alignment="CENTER">
-                     <BorderPane.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </BorderPane.margin>
-                  </TextField>
-               </center>
+            <BorderPane layoutX="10.0" layoutY="170.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User" BorderPane.alignment="CENTER" />
                </top>
-            </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="170.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
                <center>
-                  <TextField fx:id="locationField" BorderPane.alignment="CENTER">
+                  <ChoiceBox fx:id="user" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets left="10.0" right="10.0" />
                      </BorderPane.margin>
-                  </TextField>
+                  </ChoiceBox>
                </center>
+            </BorderPane>
+            <BorderPane layoutX="160.0" layoutY="170.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Location" BorderPane.alignment="CENTER" />
                </top>
-            </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <center>
-                  <TextField fx:id="configurationidField" BorderPane.alignment="CENTER">
+                  <ChoiceBox fx:id="location" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets left="10.0" right="10.0" />
                      </BorderPane.margin>
-                  </TextField>
+                  </ChoiceBox>
                </center>
+            </BorderPane>
+            <BorderPane layoutX="160.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Configuration ID" BorderPane.alignment="CENTER" />
                </top>
+               <center>
+                  <ChoiceBox fx:id="configurationId" prefWidth="150.0" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </BorderPane.margin>
+                  </ChoiceBox>
+               </center>
             </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="211.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+            <BorderPane layoutX="160.0" layoutY="211.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
                <center>
                   <TextField fx:id="cpuField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -171,7 +173,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="CPU" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="211.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="4">
+            <BorderPane layoutX="160.0" layoutY="211.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
                <center>
                   <TextField fx:id="gpuField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -183,7 +185,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="GPU" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+            <BorderPane layoutX="160.0" layoutY="144.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                <center>
                   <TextField fx:id="memoryField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -195,7 +197,7 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Memory" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane layoutX="160.0" layoutY="278.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="5">
+            <BorderPane layoutX="160.0" layoutY="278.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
                <center>
                   <TextField fx:id="disksizeField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
@@ -207,9 +209,9 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Disk size" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane layoutX="310.0" layoutY="278.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="5">
+            <BorderPane layoutX="310.0" layoutY="278.0" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="6">
                <center>
-                  <TextField fx:id="sreensizeField" BorderPane.alignment="CENTER">
+                  <TextField fx:id="screensizeField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets left="10.0" right="10.0" />
                      </BorderPane.margin>
@@ -219,19 +221,26 @@
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Screen size" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" />
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" />
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" />
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
+            <BorderPane prefHeight="77.0" prefWidth="150.0" GridPane.columnIndex="3">
                <center>
-                  <ChoiceBox fx:id="platform" prefWidth="150.0" BorderPane.alignment="CENTER">
+                  <ChoiceBox fx:id="platformChoicebox" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
-                        <Insets left="10.0" right="10.0" />
+                        <Insets bottom="10.0" left="10.0" right="10.0" />
                      </BorderPane.margin>
                   </ChoiceBox>
                </center>
+               <top>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Configuration" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" top="20.0" />
+                     </BorderPane.margin>
+                  </Text>
+               </top>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Device ID" BorderPane.alignment="CENTER" />
                </top>
@@ -243,7 +252,7 @@
                   </TextField>
                </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer" BorderPane.alignment="CENTER" />
                </top>
@@ -255,7 +264,7 @@
                   </TextField>
                </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model ID" BorderPane.alignment="CENTER" />
                </top>
@@ -267,7 +276,7 @@
                   </TextField>
                </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <top>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model name" BorderPane.alignment="CENTER" />
                </top>

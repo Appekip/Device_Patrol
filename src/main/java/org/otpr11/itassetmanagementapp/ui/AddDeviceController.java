@@ -4,41 +4,100 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.Status;
+import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 
 public class AddDeviceController implements Initializable {
   ObservableList list1 = FXCollections.observableArrayList();
   ObservableList list2 = FXCollections.observableArrayList();
   @FXML
-  private ChoiceBox<String> platform;
+  private ChoiceBox<String> platformChoicebox, statusChoicebox, user, location, configurationId;
 
   @FXML
-  private ChoiceBox<String> status;
+  private TextField deviceidField, manufacturerField, modelidField, modelnameField, modelyearField, nicknameField, operatingsystemField,
+      macaddressField, cpuField, gpuField, memoryField, disksizeField, screensizeField;
+
+  @FXML
+  private Button okButton, cancelButton;
+
+  private Device device = new Device();
+  private Configuration configuration = new Configuration();
+  private Status status = new Status();
+
+  private final GlobalDAO dao = GlobalDAO.getInstance();
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    loadData();
+    loadPlatform();
     loadStatus();
+    addDevice();
   }
 
-  private void loadData(){
+  private void loadPlatform(){
     val types = Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
     list1.addAll(types);
-    platform.getItems().addAll(list1);
+    platformChoicebox.getItems().addAll(list1);
   }
 
   private void loadStatus(){
     val types = Arrays.stream(DeviceStatus.values()).map(DeviceStatus::toString).collect(Collectors.toList());
     list2.addAll(types);
-    status.getItems().addAll(list2);
+    statusChoicebox.getItems().addAll(list2);
+  }
+
+  private void addDevice(){
+    okButton.setOnAction(e-> {
+      //System.out.println(
+      //  platform.getValue() + deviceidField.getText() + manufacturerField.getText() +
+      //      modelidField.getText() + modelnameField.getText() + status.getValue()
+      //      + modelyearField.getText() + nicknameField.getText() + operatingsystemField.getText()
+      //      +
+      //      macaddressField.getText() + cpuField.getText() + gpuField.getText()
+      //      + memoryField.getText() + disksizeField.getText() + screensizeField.getText());
+
+
+      device.setId(deviceidField.getText());
+      device.setManufacturer(manufacturerField.getText());
+      device.setModelID(modelidField.getText());
+      device.setModelName(modelnameField.getText());
+      device.setModelYear(modelyearField.getText());
+      device.setMacAddress(macaddressField.getText());
+      //device.setConfiguration(configuration);
+      //device.setStatus(status);
+      dao.devices.create(device);
+
+    });
+
+    cancelButton.setOnAction(e-> {
+      platformChoicebox.setValue(null);
+      deviceidField.clear();
+      manufacturerField.clear();
+      modelidField.clear();
+      modelnameField.clear();
+      statusChoicebox.setValue(null);
+      modelyearField.clear();
+      nicknameField.clear();
+      operatingsystemField.clear();
+      macaddressField.clear();
+      cpuField.clear();
+      gpuField.clear();
+      memoryField.clear();
+      disksizeField.clear();
+      screensizeField.clear();
+    });
   }
 
 }
