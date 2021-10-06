@@ -22,7 +22,7 @@ public class Main extends Application {
 
   @Override
   public void start(Stage stage) throws IOException {
-    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/main.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("scenes/MainView.fxml"));
     Scene scene = new Scene(fxmlLoader.load());
     stage.setTitle("Hello World, this is a " + getTest());
     stage.setScene(scene);
@@ -30,6 +30,6 @@ public class Main extends Application {
 
     // FIXME: Temp so that the DB inits on program boot, feel free to remove once actually
     // reference in application code
-    val dao = GlobalDAO.getInstance();
+    //val dao = GlobalDAO.getInstance();
   }
 }
