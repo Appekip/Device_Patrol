@@ -5,6 +5,10 @@
 
 Course project for Ohjelmistotuotantoprojekti TX00CF81-3012 course at Metropolia UAS, themed around IT asset management (similarly to tools like Snipe IT).
 
+The vision of this project is to create a program to register a companys IT devices such as desktops and laptops by using agile software development. The user of this program would easily observe and manage the data of devices. This data contains IT-terminal, posession of the device, status and amount of devices. The product will increase a companys effiency in management of IT equipment.
+
+We have used IntelliJ IDEA, Docker and PostgreSQL as development enviroment.
+
 ## Development
 
 Prerequisites:
