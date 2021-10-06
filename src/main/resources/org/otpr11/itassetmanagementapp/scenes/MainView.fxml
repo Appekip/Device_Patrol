@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.MainViewController">
+   <children>
+      <MenuBar prefHeight="22.0" prefWidth="300.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File" >
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="New" onAction="#newClick">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Add" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" onAction="#aboutClick"/>
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox alignment="CENTER" layoutX="273.0" layoutY="66.0" prefHeight="639.0" prefWidth="734.0" spacing="20.0">
+         <TextField promptText="Search..." fx:id="searchField">
+            <VBox.margin>
+               <Insets left="200.0" right="200.0" />
+            </VBox.margin>
+         </TextField>
+         <Button fx:id="EditBtn" mnemonicParsing="false" onAction="#editClick" text="View selected row" />
+         <TableView fx:id="TV" prefHeight="464.0" prefWidth="634.0">
+            <columns>
+               <TableColumn fx:id="idColumn" prefWidth="62.0" text="Id" />
+               <TableColumn fx:id="deviceColumn" minWidth="190.0" prefWidth="75.0" text="Device" />
+               <TableColumn fx:id="ownerColumn" prefWidth="190.0" text="Owner" />
+               <TableColumn fx:id="locationColumn" prefWidth="190.0" text="Location" />
+            </columns>
+         </TableView>
+         <padding>
+            <Insets bottom="20.0" left="50.0" right="50.0" top="20.0" />
+         </padding>
+          
+                                    </VBox>
+   </children>
+</AnchorPane>
