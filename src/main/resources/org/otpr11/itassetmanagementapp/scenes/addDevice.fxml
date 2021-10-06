@@ -228,7 +228,7 @@
                <center>
                   <ChoiceBox fx:id="platformChoicebox" prefWidth="150.0" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
-                        <Insets bottom="10.0" left="10.0" right="10.0" />
+                        <Insets bottom="10.0" left="35.0" right="30.0" />
                      </BorderPane.margin>
                   </ChoiceBox>
                </center>
