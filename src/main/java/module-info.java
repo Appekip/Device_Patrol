@@ -20,10 +20,15 @@ module org.otpr11.itassetmanagementapp {
 
   opens org.otpr11.itassetmanagementapp to
       javafx.fxml;
+  opens org.otpr11.itassetmanagementapp.ui.controllers to
+      javafx.fxml;
   opens org.otpr11.itassetmanagementapp.db.model to
+      javafx.base,
       org.hibernate.orm.core;
   opens org.otpr11.itassetmanagementapp.db.model.configuration to
+      javafx.base,
       org.hibernate.orm.core;
 
   exports org.otpr11.itassetmanagementapp;
+  exports org.otpr11.itassetmanagementapp.ui.controllers;
 }
