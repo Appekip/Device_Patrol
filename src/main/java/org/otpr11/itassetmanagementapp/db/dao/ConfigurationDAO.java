@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DAO;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
@@ -37,10 +38,13 @@ public class ConfigurationDAO extends DAO {
    * Configuration entity.
    *
    * @param deviceCfg {@link DesktopConfiguration}
+   * @return {@link Configuration}
    */
-  public void createDesktop(DesktopConfiguration deviceCfg) {
+  public Configuration createDesktop(DesktopConfiguration deviceCfg) {
     dao.desktopConfigurations.create(deviceCfg);
-    dao.configurations.create(new Configuration(deviceCfg));
+    val cfg = new Configuration(deviceCfg);
+    create(cfg);
+    return cfg;
   }
 
   /**
@@ -51,10 +55,13 @@ public class ConfigurationDAO extends DAO {
    * Configuration entity.
    *
    * @param deviceCfg {@link LaptopConfiguration}
+   * @return {@link Configuration}
    */
-  public void createLaptop(LaptopConfiguration deviceCfg) {
+  public Configuration createLaptop(LaptopConfiguration deviceCfg) {
     dao.laptopConfigurations.create(deviceCfg);
-    create(new Configuration(deviceCfg));
+    val cfg = new Configuration(deviceCfg);
+    create(cfg);
+    return cfg;
   }
 
   @Override

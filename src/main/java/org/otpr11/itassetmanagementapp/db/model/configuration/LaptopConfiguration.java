@@ -54,20 +54,23 @@ public class LaptopConfiguration extends DTO {
 
   @Getter
   @Setter
-  @NotNull
   @Column(nullable = false, name = "screen_size")
-  private String screenSize;
+  private int screenSize; // In inches
 
   public LaptopConfiguration(
       @NotNull String cpu,
       @NotNull String gpu,
       @NotNull String memory,
       @NotNull String diskSize,
-      @NotNull String screenSize) {
+      int screenSize) {
     this.cpu = cpu;
     this.gpu = gpu;
     this.memory = memory;
     this.diskSize = diskSize;
     this.screenSize = screenSize;
+  }
+
+  public String toPrettyString() {
+    return "%s\", %s, %s, %s RAM, %s disk".formatted(screenSize, cpu, gpu, memory, diskSize);
   }
 }

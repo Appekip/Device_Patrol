@@ -59,4 +59,8 @@ public class DesktopConfiguration extends DTO {
     this.memory = memory;
     this.diskSize = diskSize;
   }
+
+  public String toPrettyString() {
+    return "%s, %s, %s RAM, %s disk".formatted(cpu, gpu, memory, diskSize);
+  }
 }
