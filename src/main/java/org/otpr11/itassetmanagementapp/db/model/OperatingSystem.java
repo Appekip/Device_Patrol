@@ -26,7 +26,7 @@ public class OperatingSystem extends DTO {
   @Id
   @Getter
   @Column(nullable = false, name = "os_id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
   @Getter
@@ -56,5 +56,9 @@ public class OperatingSystem extends DTO {
     this.name = name;
     this.version = version;
     this.buildNumber = buildNumber;
+  }
+
+  public String toPrettyString() {
+    return "%s %s".formatted(name, version);
   }
 }

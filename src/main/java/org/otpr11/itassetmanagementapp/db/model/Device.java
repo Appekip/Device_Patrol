@@ -4,9 +4,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -77,11 +76,9 @@ public class Device extends DTO {
   @Getter
   @Setter
   @NotNull
-  @ManyToMany(cascade = {CascadeType.ALL})
+  @ManyToMany(
+      cascade = {CascadeType.ALL},
+      fetch = FetchType.EAGER)
   @Exclude
-  @JoinTable(
-      name = "runs",
-      joinColumns = {@JoinColumn(name = "device_id")},
-      inverseJoinColumns = {@JoinColumn(name = "os_id")})
   private List<OperatingSystem> operatingSystems;
 }
