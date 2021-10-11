@@ -67,10 +67,10 @@ public class Device extends DTO {
 
   // Associations
 
-  //@Getter @Setter @ManyToOne private User user;
-  //@Getter @Setter @NotNull @ManyToOne private Configuration configuration;
-  //@Getter @Setter @NotNull @ManyToOne private Status status;
-  //@Getter @Setter @ManyToOne private Location location;
+  @Getter @Setter @ManyToOne private User user;
+  @Getter @Setter @NotNull @ManyToOne private Configuration configuration;
+  @Getter @Setter @NotNull @ManyToOne private Status status;
+  @Getter @Setter @ManyToOne private Location location;
   // TODO: Leaving ^ nullable for now, but that might have to change if we want to mandate a loc
 
   @Getter

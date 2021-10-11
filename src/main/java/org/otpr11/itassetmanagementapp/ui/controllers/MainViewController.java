@@ -12,15 +12,20 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
+import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 
 @Log4j2
-public class MainViewController implements Initializable {
+public class MainViewController implements Initializable, ViewController {
   private final GlobalDAO dao = GlobalDAO.getInstance();
+  @Setter private Main main;
+  @Setter private Stage stage;
 
   @FXML private TableView<Device> deviceTable;
   @FXML private TableColumn<Device, String> idColumn;
@@ -88,7 +93,7 @@ public class MainViewController implements Initializable {
 
   @FXML
   private void handleNewDeviceClick() {
-    log.trace("New device");
+    main.showEditor();
   }
 
   @FXML

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 
 public abstract class StringUtils {
   public static String getFullExceptionStack(@NotNull Exception e) {
@@ -12,4 +13,11 @@ public abstract class StringUtils {
     e.printStackTrace(printWriter);
     return stringWriter.toString();
   }
-}
+
+  public static String getPrettyDeviceString(@NotNull Configuration cfg) {
+    return switch (cfg.getDeviceType()) {
+      case DESKTOP -> cfg.getDesktopConfiguration().toPrettyString();
+      case LAPTOP -> cfg.getLaptopConfiguration().toPrettyString();
+    };
+  }
+ }
