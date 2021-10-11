@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.otpr11.itassetmanagementapp.db.model</OriginalElement>
+  <nodes>
+    <node x="1063.5" y="839.5">org.otpr11.itassetmanagementapp.db.model.Location</node>
+    <node x="746.0" y="139.5">org.otpr11.itassetmanagementapp.db.model.OperatingSystem</node>
+    <node x="1034.5" y="185.0">org.otpr11.itassetmanagementapp.db.model.configuration</node>
+    <node x="1363.0" y="408.5">org.otpr11.itassetmanagementapp.db.model.User</node>
+    <node x="983.0" y="331.5">org.otpr11.itassetmanagementapp.db.model.Device</node>
+    <node x="554.5" y="452.5">org.otpr11.itassetmanagementapp.db.model.Status</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.configuration" relationship="DEPENDENCY">
+      <point x="5.0" y="-148.5" />
+      <point x="5.0" y="15.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.OperatingSystem" relationship="TO_MANY">
+      <point x="0.0" y="-25.0" />
+      <point x="845.0" y="455.0" />
+      <point x="5.0" y="-0.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.OperatingSystem" target="org.otpr11.itassetmanagementapp.db.model.Device" relationship="TO_MANY">
+      <point x="-15.0" y="-0.0" />
+      <point x="825.0" y="475.0" />
+      <point x="0.0" y="-5.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.configuration" target="org.otpr11.itassetmanagementapp.db.model.configuration" relationship="DEPENDENCY">
+      <point x="105.5" y="-2.5" />
+      <point x="1297.5" y="197.5" />
+      <point x="1297.5" y="2.5" />
+      <point x="1142.5" y="2.5" />
+      <point x="2.5" y="-15.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.configuration" target="org.otpr11.itassetmanagementapp.db.model.configuration" relationship="TO_ONE">
+      <point x="105.5" y="2.5" />
+      <point x="1302.5" y="202.5" />
+      <point x="1302.5" y="-2.5" />
+      <point x="1137.5" y="-2.5" />
+      <point x="-2.5" y="-15.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.Location" relationship="TO_ONE">
+      <point x="0.0" y="148.5" />
+      <point x="0.0" y="-60.5" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.User" target="org.otpr11.itassetmanagementapp.db.model.Device" relationship="DEPENDENCY">
+      <point x="0.0" y="-10.0" />
+      <point x="157.0" y="-10.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.User" relationship="DEPENDENCY">
+      <point x="157.0" y="-0.0" />
+      <point x="-77.0" y="-0.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.User" relationship="TO_ONE">
+      <point x="157.0" y="10.0" />
+      <point x="0.0" y="10.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.configuration" relationship="TO_ONE">
+      <point x="-5.0" y="-148.5" />
+      <point x="-5.0" y="-0.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Location" target="org.otpr11.itassetmanagementapp.db.model.Device" relationship="DEPENDENCY">
+      <point x="10.0" y="-60.5" />
+      <point x="10.0" y="-0.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.Location" relationship="DEPENDENCY">
+      <point x="-10.0" y="-0.0" />
+      <point x="-10.0" y="-60.5" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Status" target="org.otpr11.itassetmanagementapp.db.model.Device" relationship="DEPENDENCY">
+      <point x="65.5" y="10.0" />
+      <point x="0.0" y="10.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.Status" relationship="DEPENDENCY">
+      <point x="0.0" y="-10.0" />
+      <point x="65.5" y="-10.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.OperatingSystem" target="org.otpr11.itassetmanagementapp.db.model.Device" relationship="DEPENDENCY">
+      <point x="-5.0" y="60.5" />
+      <point x="835.0" y="465.0" />
+      <point x="-157.0" y="-15.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.OperatingSystem" relationship="DEPENDENCY">
+      <point x="0.0" y="-35.0" />
+      <point x="855.0" y="445.0" />
+      <point x="15.0" y="-0.0" />
+    </edge>
+    <edge source="org.otpr11.itassetmanagementapp.db.model.Device" target="org.otpr11.itassetmanagementapp.db.model.Status" relationship="TO_ONE">
+      <point x="-157.0" y="-0.0" />
+      <point x="65.5" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="Orthogonal Groups" zoom="0.47074904319300165" showDependencies="true" x="752.5" y="901.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+
