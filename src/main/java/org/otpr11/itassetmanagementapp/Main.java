@@ -13,7 +13,6 @@ import lombok.val;
 import org.otpr11.itassetmanagementapp.config.Config;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
 import org.otpr11.itassetmanagementapp.ui.controllers.ViewController;
-import org.otpr11.itassetmanagementapp.ui.utils.WindowSize;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.DevUtils;
 import org.otpr11.itassetmanagementapp.utils.LogUtils;
@@ -69,18 +68,6 @@ public class Main extends Application {
   private void initStage(Stage stage, Scenes sceneDef) {
     // Set stage title
     stage.setTitle(sceneDef.getStageTitle());
-
-    WindowSize windowSizing = null;
-
-    // FIXME: Do we actually need this?
-    //noinspection ConstantConditions
-    if (windowSizing != null) {
-      // Lock window size
-      stage.setMinWidth(windowSizing.getWidth());
-      stage.setMaxWidth(windowSizing.getHeight());
-      stage.setMinHeight(windowSizing.getWidth());
-      stage.setMaxHeight(windowSizing.getHeight());
-    }
   }
 
   /**

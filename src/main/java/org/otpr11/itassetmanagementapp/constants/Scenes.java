@@ -10,8 +10,6 @@ public enum Scenes {
 
   @Getter private final String resourcePath;
   @Getter private final String stageTitle;
-  // TODO: Do we need this?
-  // @Getter private final WindowSize windowSizing;
   private final boolean usesPrimaryStage;
   @Getter private final boolean isPopup;
 

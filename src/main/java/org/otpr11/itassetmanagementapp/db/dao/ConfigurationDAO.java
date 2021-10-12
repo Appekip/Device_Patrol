@@ -27,9 +27,6 @@ public class ConfigurationDAO extends DAO {
     dao = globalDao;
   }
 
-  // TODO: Eventually move these to some kind of more sophisticated DB driver class?
-  // TODO: Wait for feedback from UI dev to investigate what a good and intuitive DB driver would be
-
   /**
    * Helper function to easily and quickly create a desktop configuration.
    *
