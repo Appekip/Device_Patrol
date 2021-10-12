@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp.db.model;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,13 +16,16 @@ import lombok.ToString;
 import lombok.ToString.Exclude;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /** Represents an operating system a {@link Device} is running. */
 @Entity
 @Table(name = "operating_systems")
 @ToString
+@EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
-public class OperatingSystem extends DTO {
+public class OperatingSystem extends DTO implements PrettyStringifiable {
 
   @Id
   @Getter
@@ -59,6 +63,6 @@ public class OperatingSystem extends DTO {
   }
 
   public String toPrettyString() {
-    return "%s %s".formatted(name, version);
+    return "%s %s (%s)".formatted(name, version, buildNumber);
   }
 }

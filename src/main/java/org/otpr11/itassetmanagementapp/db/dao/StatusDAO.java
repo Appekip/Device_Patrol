@@ -7,39 +7,39 @@ import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DAO;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.Status;
 
 /**
- * {@link Device} DAO implementation.
+ * {@link org.otpr11.itassetmanagementapp.db.model.Status} DAO implementation.
  *
  * <p>Methods in this class are proxy methods for {@link GlobalDAO} with merely some added
  * operation-specific logging; the actual business logic resides in the aforementioned class.
  */
 @Log4j2
-public class DeviceDAO extends DAO {
+public class StatusDAO extends DAO {
   private final GlobalDAO dao;
 
-  protected DeviceDAO(GlobalDAO globalDao) {
+  protected StatusDAO(GlobalDAO globalDao) {
     super(globalDao);
     dao = globalDao;
   }
 
   @Override
-  public Device get(@NonNull Serializable id) {
+  public Status get(@NonNull Serializable id) {
     try {
-      return dao.get(Device.class, id);
+      return dao.get(Status.class, id);
     } catch (Exception e) {
-      log.error("Could not get device {}:", id, e);
+      log.error("Could not get status {}:", id, e);
       return null;
     }
   }
 
   @Override
-  public List<Device> getAll() {
+  public List<Status> getAll() {
     try {
-      return dao.getAll(Device.class);
+      return dao.getAll(Status.class);
     } catch (Exception e) {
-      log.error("Could not get devices:", e);
+      log.error("Could not get statuses:", e);
       return null;
     }
   }
@@ -47,11 +47,11 @@ public class DeviceDAO extends DAO {
   @Override
   public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Saving device {}.", dto);
+      log.trace("Saving status {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not save device {}:", dto, e);
+      log.error("Could not save status {}:", dto, e);
       return false;
     }
   }
@@ -59,11 +59,11 @@ public class DeviceDAO extends DAO {
   @Override
   public <T extends DTO> boolean delete(@NotNull T dto) {
     try {
-      log.trace("Deleting device {}.", dto);
+      log.trace("Deleting status {}.", dto);
       dao.delete(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not delete device {}:", dto, e);
+      log.error("Could not delete status {}:", dto, e);
       return false;
     }
   }

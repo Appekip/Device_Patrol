@@ -27,9 +27,6 @@ public class ConfigurationDAO extends DAO {
     dao = globalDao;
   }
 
-  // TODO: Eventually move these to some kind of more sophisticated DB driver class?
-  // TODO: Wait for feedback from UI dev to investigate what a good and intuitive DB driver would be
-
   /**
    * Helper function to easily and quickly create a desktop configuration.
    *
@@ -41,9 +38,9 @@ public class ConfigurationDAO extends DAO {
    * @return {@link Configuration}
    */
   public Configuration createDesktop(DesktopConfiguration deviceCfg) {
-    dao.desktopConfigurations.create(deviceCfg);
+    dao.desktopConfigurations.save(deviceCfg);
     val cfg = new Configuration(deviceCfg);
-    create(cfg);
+    save(cfg);
     return cfg;
   }
 
@@ -58,9 +55,9 @@ public class ConfigurationDAO extends DAO {
    * @return {@link Configuration}
    */
   public Configuration createLaptop(LaptopConfiguration deviceCfg) {
-    dao.laptopConfigurations.create(deviceCfg);
+    dao.laptopConfigurations.save(deviceCfg);
     val cfg = new Configuration(deviceCfg);
-    create(cfg);
+    save(cfg);
     return cfg;
   }
 
@@ -85,25 +82,13 @@ public class ConfigurationDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating configuration {}.", dto);
+      log.trace("Saving configuration {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create configuration {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating configuration {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update configuration {}:", dto, e);
+      log.error("Could not save configuration {}:", dto, e);
       return false;
     }
   }

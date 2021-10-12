@@ -14,9 +14,7 @@ public abstract class DAO {
 
   public abstract List<? extends DTO> getAll();
 
-  public abstract <T extends DTO> boolean create(@NotNull T dto);
-
-  public abstract <T extends DTO> boolean update(@NotNull T dto);
+  public abstract <T extends DTO> boolean save(@NotNull T dto);
 
   public abstract <T extends DTO> boolean delete(@NotNull T dto);
 }

@@ -4,19 +4,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
 public abstract class CellDataFormatter {
   public static SimpleStringProperty formatHWConfig(CellDataFeatures<Device, String> data) {
     val cfg = data.getValue().getConfiguration();
-    String content;
-
-    switch (cfg.getDeviceType()) {
-      case DESKTOP -> content = cfg.getDesktopConfiguration().toPrettyString();
-      case LAPTOP -> content = cfg.getLaptopConfiguration().toPrettyString();
-      default -> throw new IllegalStateException("Unknown device type %s".formatted(cfg.getDeviceType()));
-    }
-
-    return new SimpleStringProperty(content);
+    return new SimpleStringProperty(StringUtils.getPrettyDeviceString(cfg));
   }
 
   public static SimpleStringProperty formatOS(CellDataFeatures<Device, String> data) {
@@ -29,7 +22,7 @@ public abstract class CellDataFormatter {
       content.append(os.toPrettyString());
 
       // Append commas where relevant
-      if (operatingSystems.size() > 1 && i < operatingSystems.size()) {
+      if (operatingSystems.size() > 1 && i < operatingSystems.size() - 1) {
         content.append(", ");
       }
     }
@@ -43,5 +36,9 @@ public abstract class CellDataFormatter {
 
   public static SimpleStringProperty formatLocation(CellDataFeatures<Device, String> data) {
     return new SimpleStringProperty(data.getValue().getLocation().getId());
+  }
+
+  public static SimpleStringProperty formatDeviceType(CellDataFeatures<Device, String> data) {
+    return new SimpleStringProperty(data.getValue().getConfiguration().getDeviceType().toString());
   }
 }

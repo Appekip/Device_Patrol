@@ -22,6 +22,8 @@ module org.otpr11.itassetmanagementapp {
       javafx.fxml;
   opens org.otpr11.itassetmanagementapp.ui.controllers to
       javafx.fxml;
+  opens org.otpr11.itassetmanagementapp.db.core to
+      org.hibernate.orm.core;
   opens org.otpr11.itassetmanagementapp.db.model to
       javafx.base,
       org.hibernate.orm.core;
@@ -30,5 +32,18 @@ module org.otpr11.itassetmanagementapp {
       org.hibernate.orm.core;
 
   exports org.otpr11.itassetmanagementapp;
+  exports org.otpr11.itassetmanagementapp.config;
+  exports org.otpr11.itassetmanagementapp.constants;
+  exports org.otpr11.itassetmanagementapp.db.core;
+  exports org.otpr11.itassetmanagementapp.db.dao;
+  exports org.otpr11.itassetmanagementapp.db.model;
+  exports org.otpr11.itassetmanagementapp.db.model.configuration;
+  exports org.otpr11.itassetmanagementapp.interfaces;
   exports org.otpr11.itassetmanagementapp.ui.controllers;
+  exports org.otpr11.itassetmanagementapp.ui.utils;
+  exports org.otpr11.itassetmanagementapp.utils;
+
+  opens org.otpr11.itassetmanagementapp.interfaces to
+      javafx.fxml,
+      org.hibernate.orm.core;
 }

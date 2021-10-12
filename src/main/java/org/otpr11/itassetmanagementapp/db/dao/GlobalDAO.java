@@ -74,6 +74,9 @@ public class GlobalDAO {
   /** Exposes CRUD operations for the laptop-specific hardware configuration database. */
   public final LaptopConfigurationDAO laptopConfigurations = new LaptopConfigurationDAO(this);
 
+  /** Exposes CRUD operations for the status database. */
+  public final StatusDAO statuses = new StatusDAO(this);
+
   private SessionFactory sessionFactory;
 
   private GlobalDAO() {

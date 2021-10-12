@@ -2,6 +2,7 @@ package org.otpr11.itassetmanagementapp.db.model.configuration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,8 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /**
  * Represents a desktop-specific hardware configuration of a {@link
@@ -20,8 +23,9 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 @Entity
 @Table(name = "desktop_configurations")
 @ToString
+@EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
-public class DesktopConfiguration extends DTO {
+public class DesktopConfiguration extends DTO implements PrettyStringifiable {
   @Id
   @Getter
   @Column(nullable = false)
