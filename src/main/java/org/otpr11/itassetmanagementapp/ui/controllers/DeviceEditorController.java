@@ -37,9 +37,16 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
+/**
+ * Device editor controller class.
+ *
+ * <p>This class accepts a device ID as scene change data, to change the title of window based on
+ * whether a device is being created or edited.
+ */
 public class DeviceEditorController implements Initializable, ViewController {
   @Setter private Main main;
   @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final Device device = new Device();
@@ -154,10 +161,10 @@ public class DeviceEditorController implements Initializable, ViewController {
                   }
                 });
 
-    addHWConfigButton.setOnAction(event -> main.showHWConfigEditor());
-    addOSButton.setOnAction(event -> main.showOSEditor());
-    addUserButton.setOnAction(event -> main.showUserEditor());
-    addLocationButton.setOnAction(event -> main.showLocationEditor());
+    addHWConfigButton.setOnAction(event -> main.showHWConfigEditor(null));
+    addOSButton.setOnAction(event -> main.showOSEditor(null));
+    addUserButton.setOnAction(event -> main.showUserEditor(null));
+    addLocationButton.setOnAction(event -> main.showLocationEditor(null));
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
   }
@@ -261,5 +268,15 @@ public class DeviceEditorController implements Initializable, ViewController {
             })
         .decorates(field)
         .immediate();
+  }
+
+  @Override
+  public void afterInitialize() {
+    System.out.println(sceneChangeData);
+    if (sceneChangeData != null) {
+      stage.setTitle("Manage device %s".formatted(sceneChangeData));
+    } else {
+      stage.setTitle("Create device");
+    }
   }
 }

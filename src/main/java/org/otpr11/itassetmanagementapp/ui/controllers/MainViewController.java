@@ -18,16 +18,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DatabaseEventType;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.db.core.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -37,6 +36,7 @@ public class MainViewController implements Initializable, ViewController, Databa
   private final GlobalDAO dao = GlobalDAO.getInstance();
   @Setter private Main main;
   @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
 
   @FXML private TableView<Device> deviceTable;
   @FXML private TableColumn<Device, String> idColumn;
@@ -89,22 +89,45 @@ public class MainViewController implements Initializable, ViewController, Databa
     updateItems(dao.devices.getAll());
   }
 
-  private void updateItems(List<Device> devices) {
-    deviceTable.setItems(FXCollections.observableArrayList(devices));
+  @FXML
+  private void handleNewDeviceClick() {
+    main.showDeviceEditor(null);
   }
 
   @FXML
+  private void handleNewHWConfigurationClick() {
+    main.showHWConfigEditor(null);
+  }
+
+  @FXML
+  private void handleNewOSClick() {
+    main.showOSEditor(null);
+  }
+
+  @FXML
+  private void handleNewUserClick() {
+    main.showUserEditor(null);
+  }
+
+  @FXML
+  private void handleNewLocationClick() {
+    main.showLocationEditor(null);
+  }
+
+  @FXML
+  private void handleAboutClick() {
+    log.trace("Open about");
+  }
+
   private void handleViewClick(String deviceID) {
     // TODO: Pretty device view
     log.trace("Opening view menu for device {}.", deviceID);
   }
 
-  @FXML
   private void handleEditClick(String deviceID) {
-    log.trace("Opening edit menu for device {}.", deviceID);
+    main.showDeviceEditor(deviceID);
   }
 
-  @FXML
   private void handleDeleteClick(String deviceID) {
     val actionResult =
         AlertUtils.showAlert(
@@ -115,36 +138,6 @@ public class MainViewController implements Initializable, ViewController, Databa
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
       dao.devices.delete(dao.devices.get(deviceID));
     }
-  }
-
-  @FXML
-  private void handleNewDeviceClick() {
-    main.showDeviceEditor();
-  }
-
-  @FXML
-  private void handleNewHWConfigurationClick() {
-    main.showHWConfigEditor();
-  }
-
-  @FXML
-  private void handleNewOSClick() {
-    main.showOSEditor();
-  }
-
-  @FXML
-  private void handleNewUserClick() {
-    main.showUserEditor();
-  }
-
-  @FXML
-  private void handleNewLocationClick() {
-    main.showLocationEditor();
-  }
-
-  @FXML
-  private void handleAboutClick() {
-    log.trace("Open about");
   }
 
   private SplitMenuButton createDeviceActionButton(String deviceID) {
@@ -166,7 +159,10 @@ public class MainViewController implements Initializable, ViewController, Databa
     return button;
   }
 
-  @SneakyThrows
+  private void updateItems(List<Device> devices) {
+    deviceTable.setItems(FXCollections.observableArrayList(devices));
+  }
+
   @Override
   public void onDatabaseEvent(DatabaseEventType eventType, DTO entity) {
     switch (eventType) {
@@ -185,5 +181,10 @@ public class MainViewController implements Initializable, ViewController, Databa
       }
       case POST_PERSIST -> updateItems(dao.devices.getAll());
     }
+  }
+
+  @Override
+  public void afterInitialize() {
+
   }
 }

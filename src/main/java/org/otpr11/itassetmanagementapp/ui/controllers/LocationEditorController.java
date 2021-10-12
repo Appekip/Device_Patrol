@@ -11,7 +11,11 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 public class LocationEditorController implements Initializable, ViewController {
   @Setter private Main main;
   @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {}
+
+  @Override
+  public void afterInitialize() {}
 }

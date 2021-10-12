@@ -36,31 +36,27 @@ public class Main extends Application {
   @Override
   public void start(Stage primary) {
     primaryStage = primary;
-    setScene(Scenes.MAIN);
+    setScene(Scenes.MAIN, null);
   }
 
-  public void showDeviceEditor() {
-    setScene(Scenes.DEVICE_EDITOR);
+  public void showDeviceEditor(Object sceneChangeData) {
+    setScene(Scenes.DEVICE_EDITOR, sceneChangeData);
   }
 
-  public void showHWConfigEditor() {
-    // TODO
-    System.out.println("Shows HW config editor");
+  public void showHWConfigEditor(Object sceneChangeData) {
+    setScene(Scenes.HW_CFG_EDITOR, sceneChangeData);
   }
 
-  public void showOSEditor() {
-    // TODO
-    System.out.println("Shows OS editor");
+  public void showOSEditor(Object sceneChangeData) {
+    setScene(Scenes.OS_EDITOR, sceneChangeData);
   }
 
-  public void showUserEditor() {
-    // TODO
-    System.out.println("Shows user editor");
+  public void showUserEditor(Object sceneChangeData) {
+    setScene(Scenes.USER_EDITOR, sceneChangeData);
   }
 
-  public void showLocationEditor() {
-    // TODO
-    System.out.println("Shows location editor");
+  public void showLocationEditor(Object sceneChangeData) {
+    setScene(Scenes.LOCATION_EDITOR, sceneChangeData);
   }
 
   /**
@@ -79,8 +75,10 @@ public class Main extends Application {
    * Main#initStage}.
    *
    * @param sceneDef The scene definition from {@link Scenes} to initialise.
+   * @param sceneChangeData Arbitrary data to pass to the new scene. Useful for context-triggered
+   *     modals.
    */
-  private void setScene(Scenes sceneDef) {
+  private void setScene(Scenes sceneDef, Object sceneChangeData) {
     val sceneResourcePath = sceneDef.getResourcePath();
 
     try {
@@ -105,10 +103,12 @@ public class Main extends Application {
       ViewController controller = loader.getController();
       controller.setMain(this);
       controller.setStage(stage);
+      controller.setSceneChangeData(sceneChangeData);
 
       val scene = new Scene(rootScene);
       stage.setScene(scene);
       stage.show();
+      controller.afterInitialize();
 
       log.trace("Opening view {}.", sceneResourcePath);
     } catch (IOException e) {

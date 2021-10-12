@@ -9,6 +9,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 import org.otpr11.itassetmanagementapp.constants.DatabaseEventType;
+import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 
 public class DatabaseEventPropagator {
   private static final ArrayList<DatabaseEventListener> listeners = new ArrayList<>();

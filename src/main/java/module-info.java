@@ -44,5 +44,6 @@ module org.otpr11.itassetmanagementapp {
   exports org.otpr11.itassetmanagementapp.utils;
 
   opens org.otpr11.itassetmanagementapp.interfaces to
-      javafx.fxml;
+      javafx.fxml,
+      org.hibernate.orm.core;
 }
