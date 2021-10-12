@@ -1,7 +1,9 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -16,9 +18,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
+import org.otpr11.itassetmanagementapp.constants.DatabaseEventType;
+import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventListener;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
@@ -26,7 +33,7 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
-public class MainViewController implements Initializable, ViewController {
+public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
   private final GlobalDAO dao = GlobalDAO.getInstance();
   @Setter private Main main;
   @Setter private Stage stage;
@@ -48,6 +55,8 @@ public class MainViewController implements Initializable, ViewController {
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    DatabaseEventPropagator.addListener(this);
+
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
     manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
@@ -77,9 +86,11 @@ public class MainViewController implements Initializable, ViewController {
                 setGraphic(createDeviceActionButton(device.getId()));
               }
             });
+    updateItems(dao.devices.getAll());
+  }
 
-    val devices = FXCollections.observableArrayList(dao.devices.getAll());
-    deviceTable.setItems(devices);
+  private void updateItems(List<Device> devices) {
+    deviceTable.setItems(FXCollections.observableArrayList(devices));
   }
 
   @FXML
@@ -153,5 +164,26 @@ public class MainViewController implements Initializable, ViewController {
     items.add(deleteItem);
 
     return button;
+  }
+
+  @SneakyThrows
+  @Override
+  public void onDatabaseEvent(DatabaseEventType eventType, DTO entity) {
+    switch (eventType) {
+      case PRE_REMOVE, POST_REMOVE -> {
+        if (entity instanceof Device) {
+          // Hibernate results may take some time to become fully accurate, let's remove the deleted device in the meantime
+          val filtered = dao
+              .devices
+              .getAll()
+              .stream()
+              .filter(device -> !device.getId().equals(((Device) entity).getId()))
+              .collect(Collectors.toList());
+
+          updateItems(filtered);
+        }
+      }
+      case POST_PERSIST -> updateItems(dao.devices.getAll());
+    }
   }
 }

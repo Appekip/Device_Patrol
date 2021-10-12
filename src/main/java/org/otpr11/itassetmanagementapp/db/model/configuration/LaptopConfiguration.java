@@ -2,6 +2,7 @@ package org.otpr11.itassetmanagementapp.db.model.configuration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,6 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /**
@@ -21,6 +23,7 @@ import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 @Entity
 @Table(name = "laptop_configurations")
 @ToString
+@EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
 public class LaptopConfiguration extends DTO implements PrettyStringifiable {
   @Id
