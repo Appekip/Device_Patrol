@@ -45,25 +45,13 @@ public class DeviceDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating device {}.", dto);
+      log.trace("Saving device {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create device {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating device {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update device {}:", dto, e);
+      log.error("Could not save device {}:", dto, e);
       return false;
     }
   }

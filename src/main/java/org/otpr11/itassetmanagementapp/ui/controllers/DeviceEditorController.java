@@ -213,7 +213,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       device.setStatus(status);
 
       // Save
-      dao.devices.create(device);
+      dao.devices.save(device);
 
       // Close modal
       stage.close();

@@ -30,19 +30,19 @@ public abstract class DevUtils {
 
     val os1 = new OperatingSystem("Windows", "10", "19043.1266");
     val os2 = new OperatingSystem("Ubuntu Linux", "20.10", "kernel 5.1.4");
-    dao.operatingSystems.create(os1);
-    dao.operatingSystems.create(os2);
+    dao.operatingSystems.save(os1);
+    dao.operatingSystems.save(os2);
     val osList = new ArrayList<OperatingSystem>();
     osList.add(os1);
     osList.add(os2);
 
     for (int i = 0; i < 10; i++) {
       val user = new User("john" + i, "John", "Doe", "+35844123456", "john.doe@company.com");
-      dao.users.create(user);
+      dao.users.save(user);
 
       val status = new Status(DeviceStatus.VACANT.toString());
       val loc = new Location("office" + i, "office" + i, "Yliopistonkatu 4, Helsinki", "00100");
-      dao.locations.create(loc);
+      dao.locations.save(loc);
       val device =
           new Device(
               "dev" + i,
@@ -57,7 +57,7 @@ public abstract class DevUtils {
               status,
               loc,
               osList);
-      dao.devices.create(device);
+      dao.devices.save(device);
     }
   }
 }

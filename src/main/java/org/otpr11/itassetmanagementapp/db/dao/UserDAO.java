@@ -45,25 +45,13 @@ public class UserDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating user {}.", dto);
+      log.trace("Saving user {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create user {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating user {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update user {}:", dto, e);
+      log.error("Could not save user {}:", dto, e);
       return false;
     }
   }

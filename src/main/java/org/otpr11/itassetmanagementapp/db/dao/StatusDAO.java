@@ -39,31 +39,19 @@ public class StatusDAO extends DAO {
     try {
       return dao.getAll(Status.class);
     } catch (Exception e) {
-      log.error("Could not get statuss:", e);
+      log.error("Could not get statuses:", e);
       return null;
     }
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating status {}.", dto);
+      log.trace("Saving status {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create status {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating status {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update status {}:", dto, e);
+      log.error("Could not save status {}:", dto, e);
       return false;
     }
   }

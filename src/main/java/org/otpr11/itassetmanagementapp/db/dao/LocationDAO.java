@@ -45,25 +45,13 @@ public class LocationDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating location {}.", dto);
+      log.trace("Saving location {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create location {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating location {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update location {}:", dto, e);
+      log.error("Could not save location {}:", dto, e);
       return false;
     }
   }

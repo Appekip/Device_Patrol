@@ -45,25 +45,13 @@ public class OperatingSystemDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating operating system {}.", dto);
+      log.trace("Saving operating system {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create operating system {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating operating system {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update operating system {}:", dto, e);
+      log.error("Could not save operating system {}:", dto, e);
       return false;
     }
   }
