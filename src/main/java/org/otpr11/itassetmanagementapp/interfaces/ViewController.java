@@ -1,4 +1,4 @@
-package org.otpr11.itassetmanagementapp.ui.controllers;
+package org.otpr11.itassetmanagementapp.interfaces;
 
 import javafx.stage.Stage;
 import org.otpr11.itassetmanagementapp.Main;

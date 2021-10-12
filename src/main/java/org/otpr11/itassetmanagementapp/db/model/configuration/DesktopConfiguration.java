@@ -12,7 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.utils.PrettyStringifiable;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /**
  * Represents a desktop-specific hardware configuration of a {@link

@@ -15,7 +15,7 @@ import lombok.ToString;
 import lombok.ToString.Exclude;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.utils.PrettyStringifiable;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /** Represents an operating system a {@link Device} is running. */
 @Entity

@@ -31,4 +31,8 @@ module org.otpr11.itassetmanagementapp {
 
   exports org.otpr11.itassetmanagementapp;
   exports org.otpr11.itassetmanagementapp.ui.controllers;
+  exports org.otpr11.itassetmanagementapp.interfaces;
+
+  opens org.otpr11.itassetmanagementapp.interfaces to
+      javafx.fxml;
 }

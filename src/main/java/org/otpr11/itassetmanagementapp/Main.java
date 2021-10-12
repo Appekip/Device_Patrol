@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.config.Config;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
-import org.otpr11.itassetmanagementapp.ui.controllers.ViewController;
+import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.DevUtils;
 import org.otpr11.itassetmanagementapp.utils.LogUtils;
@@ -44,18 +44,22 @@ public class Main extends Application {
   }
 
   public void showHWConfigEditor() {
+    // TODO
     System.out.println("Shows HW config editor");
   }
 
   public void showOSEditor() {
+    // TODO
     System.out.println("Shows OS editor");
   }
 
   public void showUserEditor() {
+    // TODO
     System.out.println("Shows user editor");
   }
 
   public void showLocationEditor() {
+    // TODO
     System.out.println("Shows location editor");
   }
 

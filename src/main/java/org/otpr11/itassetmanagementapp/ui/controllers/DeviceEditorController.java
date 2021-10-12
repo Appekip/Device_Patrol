@@ -33,6 +33,7 @@ import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
+import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 

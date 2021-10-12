@@ -6,6 +6,7 @@ import java.util.List;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 public abstract class StringUtils {
   public static String getFullExceptionStack(@NotNull Exception e) {
