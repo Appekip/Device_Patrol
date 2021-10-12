@@ -46,25 +46,13 @@ public class DesktopConfigurationDAO extends DAO {
   }
 
   @Override
-  public <T extends DTO> boolean create(@NotNull T dto) {
+  public <T extends DTO> boolean save(@NotNull T dto) {
     try {
-      log.trace("Creating desktop configuration {}.", dto);
+      log.trace("Saving desktop configuration {}.", dto);
       dao.saveOrUpdate(dto);
       return true;
     } catch (Exception e) {
-      log.error("Could not create desktop configuration {}:", dto, e);
-      return false;
-    }
-  }
-
-  @Override
-  public <T extends DTO> boolean update(@NotNull T dto) {
-    try {
-      log.trace("Updating desktop configuration {}.", dto);
-      dao.saveOrUpdate(dto);
-      return true;
-    } catch (Exception e) {
-      log.error("Could not update desktop configuration {}:", dto, e);
+      log.error("Could not save desktop configuration {}:", dto, e);
       return false;
     }
   }

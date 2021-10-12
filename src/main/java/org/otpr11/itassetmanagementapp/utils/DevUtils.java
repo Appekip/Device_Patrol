@@ -10,28 +10,47 @@ import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
 
 public abstract class DevUtils {
   private static final GlobalDAO dao = GlobalDAO.getInstance();
 
   public static void generateTestData() {
+    // Create demo desktops
+    val desktopCfg1 =
+        dao.configurations.createDesktop(
+            new DesktopConfiguration(
+                "AMD Ryzen 9 3900X", "NVIDIA Tesla V100", "64 GB 3200 MHz", "4 TB"));
+    dao.configurations.createDesktop(
+        new DesktopConfiguration(
+            "Intel i9-9900K", "AMD Radeon Pro 6900X", "32 GB 3200 MHz", "8 TB"));
+
+    // Create demo laptops
+    val laptopCfg1 =
+        dao.configurations.createLaptop(
+            new LaptopConfiguration(
+                "Intel Core i7-1185G7", "AMD Radeon Pro 5300M", "16 GB 3200 MHz", "2 TB", 16));
+    dao.configurations.createLaptop(
+        new LaptopConfiguration(
+            "AMD Ryzen 9 5900HX", "NVIDIA GTX 1060 Ti", "32 GB 3200 MHz", "4 TB", 17));
+
+    val os1 = new OperatingSystem("Windows", "10", "19043.1266");
+    val os2 = new OperatingSystem("Ubuntu Linux", "20.10", "kernel 5.1.4");
+    val os3 = new OperatingSystem("macOS Big Sur", "11.5", "20G40");
+    dao.operatingSystems.save(os1);
+    dao.operatingSystems.save(os2);
+    dao.operatingSystems.save(os3);
+    val osList = new ArrayList<OperatingSystem>();
+    osList.add(os1);
+    osList.add(os2);
+
     for (int i = 0; i < 10; i++) {
       val user = new User("john" + i, "John", "Doe", "+35844123456", "john.doe@company.com");
-      dao.users.create(user);
-      val desktop =
-          new DesktopConfiguration(
-              "Intel Core i7-1185G7", "NVIDIA Tesla V100", "32 GB 3200 MHz", "2 TB");
-      val configuration = dao.configurations.createDesktop(desktop);
+      dao.users.save(user);
+
       val status = new Status(DeviceStatus.VACANT.toString());
       val loc = new Location("office" + i, "office" + i, "Yliopistonkatu 4, Helsinki", "00100");
-      dao.locations.create(loc);
-      val os1 = new OperatingSystem("Windows", "10", "19043.1266");
-      val os2 = new OperatingSystem("Ubuntu Linux", "20.10", "kernel 5.1.4");
-      dao.operatingSystems.create(os1);
-      dao.operatingSystems.create(os2);
-      val osList = new ArrayList<OperatingSystem>();
-      osList.add(os1);
-      osList.add(os2);
+      dao.locations.save(loc);
       val device =
           new Device(
               "dev" + i,
@@ -42,11 +61,11 @@ public abstract class DevUtils {
               "2021",
               "ff:ff:ff:ff:ff:ff",
               user,
-              configuration,
+              i % 2 == 0 ? laptopCfg1 : desktopCfg1, // Randomise
               status,
               loc,
               osList);
-      dao.devices.create(device);
+      dao.devices.save(device);
     }
   }
 }

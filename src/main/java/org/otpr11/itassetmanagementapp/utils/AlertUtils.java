@@ -26,6 +26,7 @@ package org.otpr11.itassetmanagementapp.utils;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
@@ -42,14 +43,16 @@ public abstract class AlertUtils {
    * @param type The {@link AlertType} to use.
    * @param title The title for the alert.
    * @param message The message body of the alert.
+   * @return {@link ButtonType} that shows what the user clicked in the alert.
    */
-  public static void showAlert(
+  public static ButtonType showAlert(
       @NotNull AlertType type, @NotNull String title, @NotNull String message) {
     val alert = new Alert(type);
     alert.setTitle(title);
     alert.setHeaderText(null);
     alert.setContentText(message);
     alert.showAndWait();
+    return alert.getResult();
   }
 
   /**

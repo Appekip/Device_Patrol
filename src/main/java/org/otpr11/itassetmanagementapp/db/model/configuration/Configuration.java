@@ -2,6 +2,7 @@ package org.otpr11.itassetmanagementapp.db.model.configuration;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 
 /**
  * Represents the hardware configuration of a {@link
@@ -22,6 +24,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 @Entity
 @Table(name = "configurations")
 @ToString
+@EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
 public class Configuration extends DTO {
   @Id
