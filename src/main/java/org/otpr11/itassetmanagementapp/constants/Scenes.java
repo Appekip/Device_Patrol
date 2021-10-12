@@ -1,4 +1,4 @@
-package org.otpr11.itassetmanagementapp.ui;
+package org.otpr11.itassetmanagementapp.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ public enum Scenes {
   // TODO: Do we need this?
   // @Getter private final WindowSize windowSizing;
   private final boolean usesPrimaryStage;
-  @Getter private final boolean isTop;
+  @Getter private final boolean isPopup;
 
   // Manual getter because Lombok cannot generate a grammatically correct name for this
   public boolean usesPrimaryStage() {

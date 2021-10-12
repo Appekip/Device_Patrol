@@ -21,7 +21,7 @@ import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 
 /** Represents a device. */
 @Entity
-@Table(name = "runs")
+@Table(name = "devices")
 @ToString()
 @AllArgsConstructor
 @NoArgsConstructor
@@ -77,7 +77,7 @@ public class Device extends DTO {
   @Setter
   @NotNull
   @ManyToMany(
-      cascade = {CascadeType.ALL},
+      cascade = {CascadeType.PERSIST},
       fetch = FetchType.EAGER)
   @Exclude
   private List<OperatingSystem> operatingSystems;

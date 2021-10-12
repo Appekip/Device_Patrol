@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.config.Config;
-import org.otpr11.itassetmanagementapp.ui.Scenes;
+import org.otpr11.itassetmanagementapp.constants.Scenes;
 import org.otpr11.itassetmanagementapp.ui.controllers.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.WindowSize;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -50,6 +50,14 @@ public class Main extends Application {
 
   public void showOSEditor() {
     System.out.println("Shows OS editor");
+  }
+
+  public void showUserEditor() {
+    System.out.println("Shows user editor");
+  }
+
+  public void showLocationEditor() {
+    System.out.println("Shows location editor");
   }
 
   /**
@@ -93,8 +101,7 @@ public class Main extends Application {
         stage = new Stage();
       }
 
-      if (sceneDef.isTop()) {
-        stage.setAlwaysOnTop(true);
+      if (sceneDef.isPopup()) {
         stage.initModality(Modality.APPLICATION_MODAL);
       }
 

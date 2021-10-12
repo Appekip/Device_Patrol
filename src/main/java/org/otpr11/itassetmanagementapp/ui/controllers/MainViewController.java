@@ -6,6 +6,8 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
@@ -20,6 +22,7 @@ import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
+import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
 public class MainViewController implements Initializable, ViewController {
@@ -91,7 +94,15 @@ public class MainViewController implements Initializable, ViewController {
 
   @FXML
   private void handleDeleteClick(String deviceID) {
-    log.trace("Opening delete menu for device {}.", deviceID);
+    val actionResult =
+        AlertUtils.showAlert(
+            AlertType.CONFIRMATION,
+            "Are you sure?",
+            "Are you sure you want to delete device %s?".formatted(deviceID));
+
+    if (actionResult.getButtonData() == ButtonData.OK_DONE) {
+      dao.devices.delete(dao.devices.get(deviceID));
+    }
   }
 
   @FXML
@@ -101,22 +112,22 @@ public class MainViewController implements Initializable, ViewController {
 
   @FXML
   private void handleNewHWConfigurationClick() {
-    log.trace("New HW cfg");
+    main.showHWConfigEditor();
   }
 
   @FXML
   private void handleNewOSClick() {
-    log.trace("New OS");
+    main.showOSEditor();
   }
 
   @FXML
   private void handleNewUserClick() {
-    log.trace("New user");
+    main.showUserEditor();
   }
 
   @FXML
   private void handleNewLocationClick() {
-    log.trace("New location");
+    main.showLocationEditor();
   }
 
   @FXML
