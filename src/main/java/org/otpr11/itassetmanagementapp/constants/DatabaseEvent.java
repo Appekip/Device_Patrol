@@ -1,6 +1,6 @@
 package org.otpr11.itassetmanagementapp.constants;
 
-public enum DatabaseEventType {
+public enum DatabaseEvent {
   PRE_PERSIST,
   POST_PERSIST,
   PRE_REMOVE,

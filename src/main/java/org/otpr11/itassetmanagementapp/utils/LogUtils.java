@@ -8,12 +8,21 @@ import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.config.Config;
 
 public abstract class LogUtils {
+
+  /**
+   * Pre-configures the global log4j logger.
+   */
   public static void configureLogger () {
     val config = Config.getConfig();
     val level = parseLogLevel(config.get("LOG_LEVEL"));
     Configurator.setLevel("org.otpr11", level);
   }
 
+  /**
+   * Parses a text-form log level into a log4j {@link Level}.
+   * @param level String representation of a {@link Level}.
+   * @return {@link Level}
+   */
   private static Level parseLogLevel(@NotNull String level) {
     return switch (level.toUpperCase()) {
       case "OFF" -> Level.OFF;

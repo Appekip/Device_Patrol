@@ -70,6 +70,11 @@ public class Device extends DTO {
 
   // Associations
 
+  // FIXME: Cascades aren't currently implemented properly (as sub-entity management is not mandated
+  // by any user story, but will need to be at some point for the app to operate correctly)
+  // Hibernate cannot replicate ON DELETE SET NULL, so we might have to custom develop that. Ref:
+  // https://stackoverflow.com/questions/9944137/have-jpa-hibernate-to-replicate-the-on-delete-set-null-functionality
+
   @Getter @Setter @ManyToOne private User user;
   @Getter @Setter @NotNull @ManyToOne private Configuration configuration;
   @Getter @Setter @NotNull @ManyToOne private Status status;

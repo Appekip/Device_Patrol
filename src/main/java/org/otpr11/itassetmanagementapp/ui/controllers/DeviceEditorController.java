@@ -1,6 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
-import static org.otpr11.itassetmanagementapp.utils.JFXUtils.getSelectedIndex;
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.getChoiceIndex;
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.controlsfx.control.CheckComboBox;
@@ -43,6 +45,7 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  * <p>This class accepts a device ID as scene change data, to change the title of window based on
  * whether a device is being created or edited.
  */
+@Log4j2
 public class DeviceEditorController implements Initializable, ViewController {
   @Setter private Main main;
   @Setter private Stage stage;
@@ -57,6 +60,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
   private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
+  private static boolean IS_EDIT_MODE;
 
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
@@ -70,7 +74,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   private final List<String> locations =
       dao.locations.getAll().stream().map(Location::getId).collect(Collectors.toList());
 
-  private List<String> configs = getAvailableHWConfigs(DEFAULT_DEVICE_TYPE);
+  private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
 
   private final List<String> operatingSystems =
       dao.operatingSystems.getAll().stream()
@@ -185,6 +189,9 @@ public class DeviceEditorController implements Initializable, ViewController {
           AlertType.ERROR,
           "No operating system selected",
           "No operating system has been selected for this device.");
+    } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
+      AlertUtils.showAlert(
+          AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
     } else {
       // Set basic properties
       device.setId(deviceIDField.getText());
@@ -197,7 +204,8 @@ public class DeviceEditorController implements Initializable, ViewController {
 
       // Determine selected hardware configuration
       val hwConfig =
-          dao.configurations.getAll().get(getSelectedIndex(configSelector.getSelectionModel()));
+          getRelevantHWConfigs(DeviceType.fromString(deviceTypeSelector.getValue()))
+              .get(getChoiceIndex(configSelector));
 
       // Determine selected operating systems
       val oses = dao.operatingSystems.getAll();
@@ -208,10 +216,9 @@ public class DeviceEditorController implements Initializable, ViewController {
       }
 
       // Determine metadata like user, location and status
-      val user = dao.users.getAll().get(getSelectedIndex(userSelector.getSelectionModel()));
-      val location =
-          dao.locations.getAll().get(getSelectedIndex(locationSelector.getSelectionModel()));
-      val status = dao.statuses.getAll().get(getSelectedIndex(statusSelector.getSelectionModel()));
+      val user = dao.users.getAll().get(getChoiceIndex(userSelector));
+      val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
+      val status = dao.statuses.getAll().get(getChoiceIndex(statusSelector));
 
       // Update device object
       device.setConfiguration(hwConfig);
@@ -221,10 +228,13 @@ public class DeviceEditorController implements Initializable, ViewController {
       device.setStatus(status);
 
       // Save
-      dao.devices.save(device);
+      val success = dao.devices.save(device);
 
-      // Close modal
-      stage.close();
+      if (!success) {
+        AlertUtils.showAlert(AlertType.ERROR, "Error", "Could not save device.");
+      } else {
+        stage.close();
+      }
     }
   }
 
@@ -233,18 +243,23 @@ public class DeviceEditorController implements Initializable, ViewController {
   }
 
   private void updateAvailableHWConfigs(DeviceType deviceType) {
-    configs = getAvailableHWConfigs(deviceType);
+    configs = formatRelevantHWConfigs(deviceType);
     initDropdown(configSelector, configs, configs.get(0));
   }
 
-  private List<String> getAvailableHWConfigs(DeviceType deviceType) {
-    return dao.configurations.getAll().stream()
-        .filter(cfg -> cfg.getDeviceType() == deviceType)
+  private List<String> formatRelevantHWConfigs(DeviceType deviceType) {
+    return getRelevantHWConfigs(deviceType).stream()
         .map(StringUtils::getPrettyDeviceString)
         .collect(Collectors.toList());
   }
 
-  // TODO: More sophisticated validation for MAC addresses
+  private List<Configuration> getRelevantHWConfigs(DeviceType deviceType) {
+    return dao.configurations.getAll().stream()
+        .filter(cfg -> cfg.getDeviceType() == deviceType)
+        .collect(Collectors.toList());
+  }
+
+  // TODO: More sophisticated validation for MAC addresses, number fields, etc.
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
@@ -272,10 +287,41 @@ public class DeviceEditorController implements Initializable, ViewController {
 
   @Override
   public void afterInitialize() {
-    System.out.println(sceneChangeData);
-    if (sceneChangeData != null) {
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.devices.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing device {}.", sceneChangeData);
       stage.setTitle("Manage device %s".formatted(sceneChangeData));
+
+      // Determine device to edit
+      val device = dao.devices.get((String) sceneChangeData);
+
+      // Fill in data for this device
+      select(deviceTypeSelector, device.getConfiguration().getDeviceType().toString());
+
+      deviceIDField.setText(device.getId());
+      nicknameField.setText(device.getNickname());
+      manufacturerField.setText(device.getManufacturer());
+      modelNameField.setText(device.getModelName());
+      modelIDField.setText(device.getModelName());
+      modelYearField.setText(device.getModelYear());
+      macAddressField.setText(device.getMacAddress());
+
+      select(configSelector, StringUtils.getPrettyDeviceString(device.getConfiguration()));
+
+      val checkModel = osSelector.getCheckModel();
+
+      for (val os : device.getOperatingSystems()) {
+        checkModel.check(os.toPrettyString());
+      }
+
+      select(userSelector, device.getUser().getId());
+      select(locationSelector, device.getLocation().getId());
+      select(statusSelector, device.getStatus().toString());
     } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new device.");
       stage.setTitle("Create device");
     }
   }

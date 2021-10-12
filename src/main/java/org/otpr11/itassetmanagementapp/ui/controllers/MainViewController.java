@@ -1,6 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
-import org.otpr11.itassetmanagementapp.constants.DatabaseEventType;
+import org.otpr11.itassetmanagementapp.constants.DatabaseEvent;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -164,19 +165,39 @@ public class MainViewController implements Initializable, ViewController, Databa
   }
 
   @Override
-  public void onDatabaseEvent(DatabaseEventType eventType, DTO entity) {
-    switch (eventType) {
+  public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
+    switch (event) {
       case PRE_REMOVE, POST_REMOVE -> {
-        if (entity instanceof Device) {
+        if (entity instanceof Device device) {
           // Hibernate results may take some time to become fully accurate, let's remove the deleted device in the meantime
           val filtered = dao
               .devices
               .getAll()
               .stream()
-              .filter(device -> !device.getId().equals(((Device) entity).getId()))
+              .filter(d -> !d.getId().equals(device.getId()))
               .collect(Collectors.toList());
 
           updateItems(filtered);
+        }
+      }
+      case POST_UPDATE -> {
+        if (entity instanceof Device device) {
+          val items = dao.devices.getAll();
+          Integer updatedIndex = null;
+
+          for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getId().equals(((Device) entity).getId())) {
+              updatedIndex = i;
+            }
+          }
+
+          if (updatedIndex == null) {
+            throw new IllegalStateException("Non-existent device %s updated");
+          }
+
+          items.set(updatedIndex, device);
+          items.sort(Comparator.comparing(Device::getId));
+          updateItems(items);
         }
       }
       case POST_PERSIST -> updateItems(dao.devices.getAll());
