@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.utils.PrettyStringifiable;
 
 /**
  * Represents a laptop-specific hardware configuration of a {@link
@@ -21,7 +22,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 @Table(name = "laptop_configurations")
 @ToString
 @NoArgsConstructor
-public class LaptopConfiguration extends DTO {
+public class LaptopConfiguration extends DTO implements PrettyStringifiable {
   @Id
   @Getter
   @Column(nullable = false)

@@ -15,13 +15,14 @@ import lombok.ToString;
 import lombok.ToString.Exclude;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.utils.PrettyStringifiable;
 
 /** Represents an operating system a {@link Device} is running. */
 @Entity
 @Table(name = "operating_systems")
 @ToString
 @NoArgsConstructor
-public class OperatingSystem extends DTO {
+public class OperatingSystem extends DTO implements PrettyStringifiable {
 
   @Id
   @Getter
@@ -59,6 +60,6 @@ public class OperatingSystem extends DTO {
   }
 
   public String toPrettyString() {
-    return "%s %s".formatted(name, version);
+    return "%s %s (%s)".formatted(name, version, buildNumber);
   }
 }

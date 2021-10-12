@@ -37,4 +37,8 @@ public abstract class CellDataFormatter {
   public static SimpleStringProperty formatLocation(CellDataFeatures<Device, String> data) {
     return new SimpleStringProperty(data.getValue().getLocation().getId());
   }
+
+  public static SimpleStringProperty formatDeviceType(CellDataFeatures<Device, String> data) {
+    return new SimpleStringProperty(data.getValue().getConfiguration().getDeviceType().toString());
+  }
 }

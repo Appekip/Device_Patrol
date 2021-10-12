@@ -12,6 +12,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.utils.PrettyStringifiable;
 
 /**
  * Represents a desktop-specific hardware configuration of a {@link
@@ -21,7 +22,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 @Table(name = "desktop_configurations")
 @ToString
 @NoArgsConstructor
-public class DesktopConfiguration extends DTO {
+public class DesktopConfiguration extends DTO implements PrettyStringifiable {
   @Id
   @Getter
   @Column(nullable = false)

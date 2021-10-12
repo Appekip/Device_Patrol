@@ -34,6 +34,7 @@ public class MainViewController implements Initializable, ViewController {
   @FXML private TableColumn<Device, String> modelNameColumn;
   @FXML private TableColumn<Device, String> modelIDColumn;
   @FXML private TableColumn<Device, String> modelYearColumn;
+  @FXML private TableColumn<Device, String> deviceTypeColumn;
   @FXML private TableColumn<Device, String> hwConfigurationColumn;
   @FXML private TableColumn<Device, String> userColumn;
   @FXML private TableColumn<Device, String> statusColumn;
@@ -49,6 +50,7 @@ public class MainViewController implements Initializable, ViewController {
     modelNameColumn.setCellValueFactory(new PropertyValueFactory<>("modelName"));
     modelIDColumn.setCellValueFactory(new PropertyValueFactory<>("modelID"));
     modelYearColumn.setCellValueFactory(new PropertyValueFactory<>("modelYear"));
+    deviceTypeColumn.setCellValueFactory(CellDataFormatter::formatDeviceType);
     hwConfigurationColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
@@ -78,6 +80,7 @@ public class MainViewController implements Initializable, ViewController {
 
   @FXML
   private void handleViewClick(String deviceID) {
+    // TODO: Pretty device view
     log.trace("Opening view menu for device {}.", deviceID);
   }
 
@@ -93,7 +96,7 @@ public class MainViewController implements Initializable, ViewController {
 
   @FXML
   private void handleNewDeviceClick() {
-    main.showEditor();
+    main.showDeviceEditor();
   }
 
   @FXML
