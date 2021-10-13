@@ -24,4 +24,14 @@ public abstract class JFXUtils {
     //noinspection unchecked
     choiceBox.getSelectionModel().select(toSelect);
   }
+
+  /**
+   * Get a width as a percentage of the total available width.
+   *
+   * @param percentage Percentage of width to get
+   * @return Floating-point integer representing the desired percentage
+   */
+  public static double getPercentageWidth(double percentage) {
+    return 1f * Integer.MAX_VALUE * percentage;
+  }
 }

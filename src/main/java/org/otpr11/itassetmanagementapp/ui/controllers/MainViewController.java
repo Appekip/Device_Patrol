@@ -31,6 +31,7 @@ import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
 public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
@@ -57,6 +58,9 @@ public class MainViewController implements Initializable, ViewController, Databa
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
+
+    hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
+    osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
