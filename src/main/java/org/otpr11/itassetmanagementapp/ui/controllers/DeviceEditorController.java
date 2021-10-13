@@ -47,39 +47,32 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  */
 @Log4j2
 public class DeviceEditorController implements Initializable, ViewController {
-  @Setter private Main main;
-  @Setter private Stage stage;
-  @Setter private Object sceneChangeData;
-
-  private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final Device device = new Device();
-  private final Configuration configuration = new Configuration();
-  private final Status status = new Status();
-  private final Validator validator = new Validator();
-
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
   private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
   private static boolean IS_EDIT_MODE;
 
+  private final GlobalDAO dao = GlobalDAO.getInstance();
+  private final Device device = new Device();
+  private final Validator validator = new Validator();
+
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
-
   private final List<String> deviceStatuses =
       dao.statuses.getAll().stream().map(Status::toString).collect(Collectors.toList());
-
   private final List<String> users =
       dao.users.getAll().stream().map(User::getId).collect(Collectors.toList());
-
   private final List<String> locations =
       dao.locations.getAll().stream().map(Location::getId).collect(Collectors.toList());
-
-  private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
-
   private final List<String> operatingSystems =
       dao.operatingSystems.getAll().stream()
           .map(OperatingSystem::toPrettyString)
           .collect(Collectors.toList());
+  private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
+
+  @Setter private Main main;
+  @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
 
   @FXML private CheckComboBox<String> osSelector;
   @FXML
@@ -118,9 +111,9 @@ public class DeviceEditorController implements Initializable, ViewController {
     // Init dropdowns
     initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
     initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
-    initDropdown(userSelector, users, users.get(0));
-    initDropdown(locationSelector, locations, locations.get(0));
-    initDropdown(configSelector, configs, configs.get(0));
+    initDropdown(userSelector, users, users.size() == 0 ? null : users.get(0));
+    initDropdown(locationSelector, locations, locations.size() == 0 ? null : locations.get(0));
+    initDropdown(configSelector, configs, configs.size() == 0 ? null : configs.get(0));
 
     // Update HW configs when device type changes
     deviceTypeSelector.setOnAction(
@@ -179,7 +172,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   }
 
   private void onSave(ActionEvent event) {
-    if (validator.containsErrors()) {
+    if (validator.containsWarnings() || validator.containsErrors()) {
       AlertUtils.showAlert(
           AlertType.ERROR,
           "Invalid input",
@@ -304,7 +297,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       nicknameField.setText(device.getNickname());
       manufacturerField.setText(device.getManufacturer());
       modelNameField.setText(device.getModelName());
-      modelIDField.setText(device.getModelName());
+      modelIDField.setText(device.getModelID());
       modelYearField.setText(device.getModelYear());
       macAddressField.setText(device.getMacAddress());
 
