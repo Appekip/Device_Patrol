@@ -111,9 +111,9 @@ public class DeviceEditorController implements Initializable, ViewController {
     // Init dropdowns
     initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
     initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
-    initDropdown(userSelector, users, users.get(0));
-    initDropdown(locationSelector, locations, locations.get(0));
-    initDropdown(configSelector, configs, configs.get(0));
+    initDropdown(userSelector, users, users.size() == 0 ? null : users.get(0));
+    initDropdown(locationSelector, locations, locations.size() == 0 ? null : locations.get(0));
+    initDropdown(configSelector, configs, configs.size() == 0 ? null : configs.get(0));
 
     // Update HW configs when device type changes
     deviceTypeSelector.setOnAction(
