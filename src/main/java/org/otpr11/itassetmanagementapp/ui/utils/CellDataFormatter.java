@@ -6,10 +6,11 @@ import lombok.val;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
+/** Formatter to turn nested data types in table cells into their correct string representations. */
 public abstract class CellDataFormatter {
   public static SimpleStringProperty formatHWConfig(CellDataFeatures<Device, String> data) {
     val cfg = data.getValue().getConfiguration();
-    return new SimpleStringProperty(StringUtils.getPrettyDeviceString(cfg));
+    return new SimpleStringProperty(StringUtils.getPrettyHWConfig(cfg));
   }
 
   public static SimpleStringProperty formatOS(CellDataFeatures<Device, String> data) {

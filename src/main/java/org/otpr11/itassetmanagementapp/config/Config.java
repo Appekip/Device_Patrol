@@ -6,7 +6,14 @@ import lombok.Getter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 
-/** Configuration manager. Access to the config is provided via {@code Config.getConfig()}. */
+/**
+ * Configuration manager. Access to the config is provided via {@code Config.getConfig()}, which
+ * exposes a standard {@link Dotenv} API.
+ *
+ * <p>Configuration is loaded from a .env file in the resources folder. An example of this file is
+ * in the root of the repository, in a file called .env.example.
+ */
+// TODO: Currently no validation on that values declared in .env.example have been declared in .env
 public abstract class Config {
   @Getter private static Dotenv config;
 
