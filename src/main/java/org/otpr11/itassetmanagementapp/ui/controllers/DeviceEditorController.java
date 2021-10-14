@@ -118,8 +118,7 @@ public class DeviceEditorController implements Initializable, ViewController {
     // Update HW configs when device type changes
     deviceTypeSelector.setOnAction(
         event -> {
-          val type =
-              DeviceType.fromString(deviceTypeSelector.getSelectionModel().getSelectedItem());
+          val type = DeviceType.valueOf(deviceTypeSelector.getSelectionModel().getSelectedItem());
           updateAvailableHWConfigs(type);
         });
 
@@ -143,14 +142,13 @@ public class DeviceEditorController implements Initializable, ViewController {
                     val changeListString = changeList.toString();
 
                     // Workaround for https://github.com/controlsfx/controlsfx/issues/1030
-                    // FIXME: This doesn't work if two OSes have the same pretty string, but we'll
-                    // have to address that some other way
+                    // FIXME: This doesn't work correctly if two OSes have the same pretty string,
+                    // but we'll have to address that some other way
                     if (!changeListString.equals(ref.lastChange)) {
                       ref.lastChange = changeListString;
 
                       if (changeList.size() != 0) {
-                        //noinspection unchecked
-                        osSelector.setTitle(StringUtils.joinStrings((List<String>) changeList));
+                        osSelector.setTitle(String.join(", ", changeList));
                       } else {
                         osSelector.setTitle(OS_SELECTOR_DEFAULT_TILE);
                       }
@@ -197,7 +195,7 @@ public class DeviceEditorController implements Initializable, ViewController {
 
       // Determine selected hardware configuration
       val hwConfig =
-          getRelevantHWConfigs(DeviceType.fromString(deviceTypeSelector.getValue()))
+          getRelevantHWConfigs(DeviceType.valueOf(deviceTypeSelector.getValue()))
               .get(getChoiceIndex(configSelector));
 
       // Determine selected operating systems
@@ -242,7 +240,7 @@ public class DeviceEditorController implements Initializable, ViewController {
 
   private List<String> formatRelevantHWConfigs(DeviceType deviceType) {
     return getRelevantHWConfigs(deviceType).stream()
-        .map(StringUtils::getPrettyDeviceString)
+        .map(StringUtils::getPrettyHWConfig)
         .collect(Collectors.toList());
   }
 
@@ -301,7 +299,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       modelYearField.setText(device.getModelYear());
       macAddressField.setText(device.getMacAddress());
 
-      select(configSelector, StringUtils.getPrettyDeviceString(device.getConfiguration()));
+      select(configSelector, StringUtils.getPrettyHWConfig(device.getConfiguration()));
 
       val checkModel = osSelector.getCheckModel();
 

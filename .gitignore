@@ -41,6 +41,8 @@ buildNumber.properties
 
 # Config
 **/.env
+# Retain test env
+!**/test/**/.env
 
 # IntelliJ keeps changing this file incorrectly, freezing the version for now
 it-asset-management-app.iml
