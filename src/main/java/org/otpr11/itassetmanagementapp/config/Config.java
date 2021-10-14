@@ -2,7 +2,7 @@ package org.otpr11.itassetmanagementapp.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Arrays;
-import lombok.Getter;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 
@@ -14,10 +14,21 @@ import org.otpr11.itassetmanagementapp.Main;
  * in the root of the repository, in a file called .env.example.
  */
 // TODO: Currently no validation on that values declared in .env.example have been declared in .env
+@Log4j2
 public abstract class Config {
-  @Getter private static Dotenv config;
+  private static Dotenv config;
 
-  public static void load() {
+  public static Dotenv getConfig() {
+    if (config == null) {
+      log.trace("Loading configuration.");
+      Config.load();
+      log.trace("Configuration loaded.");
+    }
+
+    return config;
+  }
+
+  private static void load() {
     // Because we're using JavaFX, we need to adhere to the `resources` folder; hence
     // some path parsing magic is needed to figure out where the .env file is
 
