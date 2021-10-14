@@ -19,4 +19,14 @@ open module org.otpr11.itassetmanagementapp {
   requires org.jetbrains.annotations;
 
   exports org.otpr11.itassetmanagementapp;
+  exports org.otpr11.itassetmanagementapp.config;
+  exports org.otpr11.itassetmanagementapp.constants;
+  exports org.otpr11.itassetmanagementapp.db.core;
+  exports org.otpr11.itassetmanagementapp.db.dao;
+  exports org.otpr11.itassetmanagementapp.db.model;
+  exports org.otpr11.itassetmanagementapp.db.model.configuration;
+  exports org.otpr11.itassetmanagementapp.interfaces;
+  exports org.otpr11.itassetmanagementapp.ui.controllers;
+  exports org.otpr11.itassetmanagementapp.ui.utils;
+  exports org.otpr11.itassetmanagementapp.utils;
 }
