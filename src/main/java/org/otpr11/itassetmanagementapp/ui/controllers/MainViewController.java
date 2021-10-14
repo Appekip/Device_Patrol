@@ -35,6 +35,9 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
+/**
+ * Main application view controller class.
+ */
 @Log4j2
 public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
   private final GlobalDAO dao = GlobalDAO.getInstance();

@@ -2,6 +2,7 @@ package org.otpr11.itassetmanagementapp.utils;
 
 import javafx.scene.control.ChoiceBox;
 
+/** Generic JavaFX utilities. */
 public abstract class JFXUtils {
 
   /**

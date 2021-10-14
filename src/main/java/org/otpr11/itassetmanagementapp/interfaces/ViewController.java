@@ -8,6 +8,12 @@ public interface ViewController {
 
   void setStage(Stage stage);
 
+  /**
+   * Use this method to pass any kind of important data over a scene change, similar to Android
+   * ResourceBundles.
+   *
+   * @param o Object to transfer
+   */
   void setSceneChangeData(Object o);
 
   void afterInitialize();
