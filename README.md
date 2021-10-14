@@ -5,6 +5,18 @@
 
 Course project for Ohjelmistotuotantoprojekti TX00CF81-3012 course at Metropolia UAS, themed around IT asset management (similarly to tools like Snipe IT).
 
+The vision of this project is to create a program to track the IT devices of a company, such as desktops and laptops, by using agile software development. The user of this program should be able to easily observe and manage the data of devices. This data contains basic information about the device, who is in possession of the device, status and amount of devices. The product will increase a company's efficiency in management of IT equipment.
+
+We have used IntelliJ IDEA, Docker and PostgreSQL as development environment.
+
+## Documentation
+
+This README contains some basic development environment level documentation. Further development documentation may be found in the `docs` folder.
+
+(Side note: The `documents` and `diagrams` folders contain mainly project meta-documentation, like reports and UML diagrams. No code documentation will be found here.)
+
+For actual code documentation, feel free to browse the Javadoc in either the source code, or at the built site found at https://ohjelmistotuotantoprojekti-tx00cf81-3012-r11.gitlab.io/it-asset-management-app.
+
 ## Development
 
 Prerequisites:
