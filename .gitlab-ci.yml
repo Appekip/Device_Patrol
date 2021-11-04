@@ -35,6 +35,7 @@ build-and-test:
 mirror-to-metropolia-gitlab:
   stage: mirror
   script:
+    - exit 0 # FIXME: Temp
     - cd $GIT_CLONE_PATH
     - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
     - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
