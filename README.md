@@ -33,6 +33,12 @@ Prerequisites:
 
 Run the "Docker" configuration before starting the application (as this will start the prerequisite database). Then run the "Main" configuration.
 
+### Generating test data
+
+The application supports the generation of test data into the database, to speed up development when the need to manually create new devices for debugging is eliminated. To do this, set the `FORCE_DB_RECREATE` and `INSERT_TEST_DATA` environment variables to `true`.
+
+(Tip: You can set these variables to `false` again after one startup to speed up the feedback loop, if you don't want to recreate the DB and insert the data again on each boot. This may come in handy if you don't need to mess with the data itself, and are instead using it purely for visual reference purposes.)
+
 ## Configuration
 
 Configuration of the application is handled via environment variables in accordance with the [Twelve Factor App methodology](https://12factor.net/config).
