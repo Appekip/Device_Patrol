@@ -41,9 +41,7 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
-/**
- * Main application view controller class.
- */
+/** Main application view controller class. */
 @Log4j2
 public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
   private static final int TITLE_TEXT_SIZE = 22;
@@ -81,18 +79,20 @@ public class MainViewController implements Initializable, ViewController, Databa
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    deviceTable.setRowFactory(tableView -> {
-      TableRow<Device> row = new TableRow<>();
+    deviceTable.setRowFactory(
+        tableView -> {
+          TableRow<Device> row = new TableRow<>();
 
-      // Detect row double click
-      row.setOnMouseClicked(event -> {
-        if (event.getClickCount() == 2 && (!row.isEmpty())) {
-          handleViewClick(row.getItem().getId());
-        }
-      });
+          // Detect row double click
+          row.setOnMouseClicked(
+              event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                  handleViewClick(row.getItem().getId());
+                }
+              });
 
-      return row;
-    });
+          return row;
+        });
 
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
@@ -219,7 +219,8 @@ public class MainViewController implements Initializable, ViewController, Databa
     val dropdown = new ChoiceBox<String>();
     JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
     statuses.forEach(status -> dropdown.getItems().add(status.toString()));
-    dropdown.setOnAction(event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+    dropdown.setOnAction(
+        event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
     return dropdown;
   }
 
@@ -232,24 +233,41 @@ public class MainViewController implements Initializable, ViewController, Databa
 
     // Device title
     deviceInfoGrid.add(
-        createText("Device %s (%s)".formatted(device.getId(), device.getNickname()), TITLE_TEXT_SIZE, "bolder"), 0, 0);
+        createText(
+            "Device %s (%s)".formatted(device.getId(), device.getNickname()),
+            TITLE_TEXT_SIZE,
+            "bolder"),
+        0,
+        0);
 
     // Device description
-    deviceInfoGrid.add(createText("%s %s %s (%s)".formatted(device.getModelYear(),
-        device.getManufacturer(), device.getModelName(), device.getModelID()), SUBTITLE_TEXT_SIZE), 0, 1);
+    deviceInfoGrid.add(
+        createText(
+            "%s %s %s (%s)"
+                .formatted(
+                    device.getModelYear(),
+                    device.getManufacturer(),
+                    device.getModelName(),
+                    device.getModelID()),
+            SUBTITLE_TEXT_SIZE),
+        0,
+        1);
 
     // HW config
     val configuration = device.getConfiguration();
 
     switch (configuration.getDeviceType()) {
-      // Turning off dupe inspections here because it's more convenient to dupe once than to write tons of code to create a generic type for both desktop and laptop and whatever other future configurations
+      // Turning off dupe inspections here because it's more convenient to dupe once than to write
+      // tons of code to create a generic type for both desktop and laptop and whatever other
+      // future configurations
       case DESKTOP -> {
         val cfg = configuration.getDesktopConfiguration();
         //noinspection DuplicatedCode
         deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), BODY_TEXT_SIZE), 0, 2);
         deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), BODY_TEXT_SIZE), 0, 3);
         deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), BODY_TEXT_SIZE), 0, 4);
-        deviceInfoGrid.add(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
+        deviceInfoGrid.add(
+            createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
       }
       case LAPTOP -> {
         val cfg = configuration.getLaptopConfiguration();
@@ -257,10 +275,14 @@ public class MainViewController implements Initializable, ViewController, Databa
         deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), BODY_TEXT_SIZE), 0, 2);
         deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), BODY_TEXT_SIZE), 0, 3);
         deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), BODY_TEXT_SIZE), 0, 4);
-        deviceInfoGrid.add(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
-        deviceInfoGrid.add(createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_TEXT_SIZE), 0, 6);
+        deviceInfoGrid.add(
+            createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
+        deviceInfoGrid.add(
+            createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_TEXT_SIZE), 0, 6);
       }
-      default -> throw new IllegalStateException("Support for device type %s not yet implemented".formatted(configuration.getDeviceType()));
+      default -> throw new IllegalStateException(
+          "Support for device type %s not yet implemented"
+              .formatted(configuration.getDeviceType()));
     }
   }
 
@@ -289,13 +311,12 @@ public class MainViewController implements Initializable, ViewController, Databa
     switch (event) {
       case PRE_REMOVE, POST_REMOVE -> {
         if (entity instanceof Device device) {
-          // Hibernate results may take some time to become fully accurate, let's remove the deleted device in the meantime
-          val filtered = dao
-              .devices
-              .getAll()
-              .stream()
-              .filter(d -> !d.getId().equals(device.getId()))
-              .collect(Collectors.toList());
+          // Hibernate results may take some time to become fully accurate, let's remove the deleted
+          // device in the meantime
+          val filtered =
+              dao.devices.getAll().stream()
+                  .filter(d -> !d.getId().equals(device.getId()))
+                  .collect(Collectors.toList());
 
           updateItems(filtered);
         }
