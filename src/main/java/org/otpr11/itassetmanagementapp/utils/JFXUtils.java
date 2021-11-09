@@ -1,6 +1,8 @@
 package org.otpr11.itassetmanagementapp.utils;
 
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.text.Text;
+import lombok.val;
 
 /** Generic JavaFX utilities. */
 public abstract class JFXUtils {
@@ -34,5 +36,21 @@ public abstract class JFXUtils {
    */
   public static double getPercentageWidth(double percentage) {
     return 1f * Integer.MAX_VALUE * percentage;
+  }
+
+  public static Text createText(String content) {
+    return new Text(content);
+  }
+
+  public static Text createText(String content, int fontSize) {
+    val text = new Text(content);
+    text.setStyle(String.format("-fx-font-size: %s", fontSize));
+    return text;
+  }
+
+  public static Text createText(String content, int fontSize, String fontWeight) {
+    val text = new Text(content);
+    text.setStyle(String.format("-fx-font-size: %d; -fx-font-weight: %s", fontSize, fontWeight));
+    return text;
   }
 }
