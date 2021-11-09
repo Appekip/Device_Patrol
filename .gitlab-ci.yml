@@ -6,19 +6,15 @@ variables:
   # when running from the command line.
   # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
-  # Repo configs
-  GIT_CLONE_PATH: "/builds/it-asset-management-app"
-  SOURCE_REPO_URL: "https://gitlab.com/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app"
-  MIRROR_REPO_URL: "gitlab.metropolia.fi/ohjelmistotuotantoprojekti-tx00cf81-3012-r11/it-asset-management-app.git"
-  GIT_REMOTE_NAME: "metropolia"
-  # Secrets
-  GIT_COMMIT_NAME: "GitLab CI on behalf of Linus Willner"
-  GIT_COMMIT_EMAIL: $GIT_COMMIT_EMAIL
-  METROPOLIA_GITLAB_TOKEN: $METROPOLIA_GITLAB_TOKEN
+  JENKINS_PROJECT_NAME: "it-asset-management-app"
+  JENKINS_ADDRESS: $JENKINS_ADDRESS
+  JENKINS_USER: $JENKINS_USER
+  JENKINS_PASS: $JENKINS_PASS
+  JENKINS_TOKEN: $JENKINS_TOKEN
 
 stages:
   - build
-  - mirror
+  - jenkins
   - deploy
 
 image: maven:3.8.2-adoptopenjdk-16
@@ -32,20 +28,11 @@ build-and-test:
   script:
     - mvn $MAVEN_CLI_OPTS verify
 
-mirror-to-metropolia-gitlab:
-  stage: mirror
+trigger-jenkins-build:
+  stage: jenkins
   script:
-    - exit 0 # FIXME: Temp
-    - cd $GIT_CLONE_PATH
-    - export COMMIT_SHA_LONG=$(git rev-parse HEAD)
-    - export COMMIT_SHA_SHORT=$(git rev-parse --short HEAD)
-    - git config --global user.name "$GIT_COMMIT_NAME"
-    - git config --global user.email "$GIT_COMMIT_EMAIL"
-    - git remote add $GIT_REMOTE_NAME https://gitlab-ci-token:$METROPOLIA_GITLAB_TOKEN@$MIRROR_REPO_URL
-    - git ls-remote $GIT_REMOTE_NAME
-    - git fetch -q $GIT_REMOTE_NAME
-    - git checkout -B $CI_COMMIT_BRANCH
-    - git push $GIT_REMOTE_NAME $CI_COMMIT_BRANCH
+    - apk add --no-cache curl
+    - curl -sSL -X GET -u $JENKINS_USER:$JENKINS_PASS $JENKINS_ADDRESS/job/$JENKINS_PROJECT_NAME/build?token=$JENKINS_TOKEN
 
 pages:
   stage: deploy
