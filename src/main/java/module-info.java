@@ -2,6 +2,7 @@ open module org.otpr11.itassetmanagementapp {
   requires java.persistence;
   requires java.naming;
   requires java.sql;
+  requires java.prefs;
   requires lombok;
   requires com.google.common;
   requires javafx.controls;

@@ -41,7 +41,7 @@ public abstract class StringUtils {
    * @param array List of {@link PrettyStringifiable} objects to join together
    * @return Joined string representations of the passed objects delimited by commas
    */
-  public static String joinPrettyStrings(@NotNull List<PrettyStringifiable> array) {
+  public static String joinPrettyStrings(@NotNull List<? extends PrettyStringifiable> array) {
     val content = new StringBuilder();
 
     for (int i = 0; i < array.size(); i++) {

@@ -9,6 +9,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
@@ -16,8 +17,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -35,13 +39,13 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
-/**
- * Main application view controller class.
- */
+/** Main application view controller class. */
 @Log4j2
 public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
+
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
+  private final BorderPane prettyDevicePane = new BorderPane();
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -59,13 +63,48 @@ public class MainViewController implements Initializable, ViewController, Databa
   @FXML private TableColumn<Device, String> locationColumn;
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, Device> actionColumn;
+  @FXML private BorderPane deviceViewPane;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
 
+    PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
+
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
+
+    val moreInfoTooltip = new Tooltip("Double-click show information about device");
+
+    deviceTable.setRowFactory(
+        tableView -> {
+          TableRow<Device> row = new TableRow<>();
+
+          row.setOnMouseEntered(
+              event -> {
+                // Show pointer cursor and tooltip when hovering over rows that have items
+                // We have to it on hover because we can't set the pointer style properly at
+                // startup,
+                // and instead must do it dynamically at runtime because JavaFX
+                // HACK: If someone from the future is trying to style rows and wonders why their
+                // styles keep resetting, this is why
+                if (row.getItem() != null) {
+                  // Also thanks JavaFX for renaming all the cursors for no reason
+                  row.setStyle("-fx-cursor: hand;");
+                  row.setTooltip(moreInfoTooltip);
+                }
+              });
+
+          // Detect row double click
+          row.setOnMouseClicked(
+              event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                  handleViewClick(row.getItem().getId(), true);
+                }
+              });
+
+          return row;
+        });
 
     idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
     nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
@@ -77,7 +116,6 @@ public class MainViewController implements Initializable, ViewController, Databa
     hwConfigurationColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
-    // statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
     statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
@@ -146,9 +184,17 @@ public class MainViewController implements Initializable, ViewController, Databa
     log.trace("Open about");
   }
 
-  private void handleViewClick(String deviceID) {
-    // TODO: Pretty device view
-    log.trace("Opening view menu for device {}.", deviceID);
+  private void handleViewClick(String deviceID, boolean wasDoubleClick) {
+    // Hide on double click of same item
+    if (wasDoubleClick
+        && PrettyDeviceViewerController.isOpen()
+        && PrettyDeviceViewerController.getCurrentDeviceID().equals(deviceID)) {
+      PrettyDeviceViewerController.setCurrentDeviceID(null);
+      PrettyDeviceViewerController.hide();
+    } else {
+      PrettyDeviceViewerController.setCurrentDeviceID(deviceID);
+      PrettyDeviceViewerController.show(deviceID);
+    }
   }
 
   private void handleEditClick(String deviceID) {
@@ -171,11 +217,15 @@ public class MainViewController implements Initializable, ViewController, Databa
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditClick(deviceID));
+    // Don't show pointer cursor or tooltip for this element
+    button.setCursor(Cursor.DEFAULT);
+    button.setTooltip(null);
+
     val items = button.getItems();
 
     val viewItem = new MenuItem();
     viewItem.setText("View");
-    viewItem.setOnAction(event -> handleViewClick(deviceID));
+    viewItem.setOnAction(event -> handleViewClick(deviceID, false));
     items.add(viewItem);
 
     val deleteItem = new MenuItem();
@@ -190,7 +240,13 @@ public class MainViewController implements Initializable, ViewController, Databa
     val dropdown = new ChoiceBox<String>();
     JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
     statuses.forEach(status -> dropdown.getItems().add(status.toString()));
-    dropdown.setOnAction(event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+    dropdown.setOnAction(
+        event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+
+    // Don't show pointer cursor or tooltip for this element
+    dropdown.setCursor(Cursor.DEFAULT);
+    dropdown.setTooltip(null);
+
     return dropdown;
   }
 
@@ -209,13 +265,12 @@ public class MainViewController implements Initializable, ViewController, Databa
     switch (event) {
       case PRE_REMOVE, POST_REMOVE -> {
         if (entity instanceof Device device) {
-          // Hibernate results may take some time to become fully accurate, let's remove the deleted device in the meantime
-          val filtered = dao
-              .devices
-              .getAll()
-              .stream()
-              .filter(d -> !d.getId().equals(device.getId()))
-              .collect(Collectors.toList());
+          // Hibernate results may take some time to become fully accurate, let's remove the deleted
+          // device in the meantime
+          val filtered =
+              dao.devices.getAll().stream()
+                  .filter(d -> !d.getId().equals(device.getId()))
+                  .collect(Collectors.toList());
 
           updateItems(filtered);
         }
@@ -245,7 +300,5 @@ public class MainViewController implements Initializable, ViewController, Databa
   }
 
   @Override
-  public void afterInitialize() {
-
-  }
+  public void afterInitialize() {}
 }
