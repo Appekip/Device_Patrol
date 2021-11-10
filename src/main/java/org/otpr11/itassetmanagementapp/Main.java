@@ -45,17 +45,20 @@ public class Main extends Application {
     val wPosY = getSettingName(Settings.WINDOW_POSITION_Y);
     val wWidth = getSettingName(Settings.WINDOW_WIDTH);
     val wHeight = getSettingName(Settings.WINDOW_HEIGHT);
+    val isMax = getSettingName(Settings.IS_WINDOW_MAXIMIZED);
 
     val screenBounds = Screen.getPrimary().getBounds();
     val x = preferences.getDouble(wPosX, screenBounds.getMinX());
     val y = preferences.getDouble(wPosY, screenBounds.getMinY());
     val width = preferences.getDouble(wWidth, screenBounds.getWidth());
     val height = preferences.getDouble(wHeight, screenBounds.getHeight());
+    val isMaximized = preferences.getBoolean(isMax, primaryStage.isMaximized());
 
     primaryStage.setX(x);
     primaryStage.setY(y);
     primaryStage.setWidth(width);
     primaryStage.setHeight(height);
+    primaryStage.setMaximized(isMaximized);
 
     // Save window position on program shutdown
     Runtime.getRuntime()
@@ -66,6 +69,7 @@ public class Main extends Application {
                   preferences.putDouble(wPosY, primaryStage.getY());
                   preferences.putDouble(wWidth, primaryStage.getWidth());
                   preferences.putDouble(wHeight, primaryStage.getHeight());
+                  preferences.putBoolean(isMax, primaryStage.isMaximized());
                 }));
 
     setScene(Scenes.MAIN, null);

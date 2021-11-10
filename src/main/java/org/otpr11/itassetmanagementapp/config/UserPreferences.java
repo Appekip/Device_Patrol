@@ -35,6 +35,7 @@ public abstract class UserPreferences {
     WINDOW_POSITION_X,
     WINDOW_POSITION_Y,
     WINDOW_WIDTH,
-    WINDOW_HEIGHT
+    WINDOW_HEIGHT,
+    IS_WINDOW_MAXIMIZED
   }
 }
