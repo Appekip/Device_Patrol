@@ -1,7 +1,5 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
-import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createText;
-
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +9,6 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -25,7 +22,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -42,19 +38,14 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
-import org.otpr11.itassetmanagementapp.utils.JFXUtils.TextProperties;
-import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
 /** Main application view controller class. */
 @Log4j2
 public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
-  private static final int TITLE_TEXT_SIZE = 22;
-  private static final int SUBTITLE_TEXT_SIZE = 16;
-  private static final int BODY_TEXT_SIZE = 14;
+
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
-  private final GridPane deviceInfoGrid = new GridPane();
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -72,13 +63,13 @@ public class MainViewController implements Initializable, ViewController, Databa
   @FXML private TableColumn<Device, String> locationColumn;
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, Device> actionColumn;
-  @FXML private BorderPane viewPane;
+  @FXML private BorderPane deviceViewPane;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
 
-    initDeviceViewer();
+    PrettyDeviceViewerController.init(prettyDevicePane);
 
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
@@ -192,10 +183,10 @@ public class MainViewController implements Initializable, ViewController, Databa
   }
 
   private void handleViewClick(String deviceID) {
-    updateDeviceViewer(deviceID);
+    PrettyDeviceViewerController.update(deviceID);
 
-    if (viewPane.getBottom() == null) {
-      viewPane.setBottom(prettyDevicePane);
+    if (deviceViewPane.getLeft() == null) {
+      deviceViewPane.setLeft(prettyDevicePane);
     }
   }
 
@@ -250,84 +241,6 @@ public class MainViewController implements Initializable, ViewController, Databa
     dropdown.setTooltip(null);
 
     return dropdown;
-  }
-
-  // FIXME: Style in this file might be broken
-  private void updateDeviceViewer(String deviceID) {
-    val device = dao.devices.get(deviceID);
-
-    // Reset
-    deviceInfoGrid.getChildren().clear();
-
-    // Device title
-    deviceInfoGrid.add(
-        createText(
-            "Device %s (%s)".formatted(device.getId(), device.getNickname()),
-            new TextProperties(TITLE_TEXT_SIZE, "bolder")),
-        0,
-        0);
-
-    // Device description
-    deviceInfoGrid.add(
-        createText(
-            "%s %s %s %s (%s)"
-                .formatted(
-                    device.getModelYear(),
-                    device.getManufacturer(),
-                    device.getModelName(),
-                    device.getConfiguration().getDeviceType().toString().toLowerCase(),
-                    device.getModelID()),
-            new TextProperties(SUBTITLE_TEXT_SIZE)),
-        0,
-        1);
-
-    // HW config
-    val configuration = device.getConfiguration();
-    val bodyProps = new TextProperties(BODY_TEXT_SIZE);
-    int lastRowIndex;
-
-    switch (configuration.getDeviceType()) {
-      // Turning off dupe inspections here because it's more convenient to dupe once than to write
-      // tons of code to create a generic type for both desktop and laptop and whatever other
-      // future configurations
-      case DESKTOP -> {
-        val cfg = configuration.getDesktopConfiguration();
-        //noinspection DuplicatedCode
-        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), bodyProps), 0, 2);
-        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), bodyProps), 0, 3);
-        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), bodyProps), 0, 4);
-        deviceInfoGrid.add(
-            createText("Disk: %s".formatted(cfg.getDiskSize()), bodyProps), 0, 5);
-        lastRowIndex = 5;
-      }
-      case LAPTOP -> {
-        val cfg = configuration.getLaptopConfiguration();
-        //noinspection DuplicatedCode
-        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), bodyProps), 0, 2);
-        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), bodyProps), 0, 3);
-        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), bodyProps), 0, 4);
-        deviceInfoGrid.add(
-            createText("Disk: %s".formatted(cfg.getDiskSize()), bodyProps), 0, 5);
-        deviceInfoGrid.add(
-            createText("Display size: %s\"".formatted(cfg.getScreenSize()), bodyProps), 0, 6);
-        lastRowIndex = 6;
-      }
-      default -> throw new IllegalStateException(
-          "Support for device type %s not yet implemented"
-              .formatted(configuration.getDeviceType()));
-    }
-
-    deviceInfoGrid.add(createText("OS: %s".formatted(StringUtils.joinPrettyStrings(device.getOperatingSystems())), bodyProps), 0, lastRowIndex + 1);
-  }
-
-  private void initDeviceViewer() {
-    prettyDevicePane.setPrefHeight(200);
-    prettyDevicePane.setPrefWidth(JFXUtils.getPercentageWidth(100));
-    prettyDevicePane.setCenter(deviceInfoGrid);
-
-    deviceInfoGrid.setPadding(new Insets(20, 20, 20, 20));
-    deviceInfoGrid.setHgap(10);
-    deviceInfoGrid.setVgap(1);
   }
 
   private void updateItems(List<Device> devices) {

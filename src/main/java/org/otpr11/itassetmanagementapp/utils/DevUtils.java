@@ -53,7 +53,7 @@ public abstract class DevUtils {
       val user = new User("john" + i, "John", "Doe", "+35844123456", "john.doe@company.com");
       dao.users.save(user);
 
-      val status = new Status(DeviceStatus.VACANT.toString());
+      val status = new Status(DeviceStatus.IN_USE.toString());
       val loc = new Location("office" + i, "office" + i, "Yliopistonkatu 4, Helsinki", "00100");
       dao.locations.save(loc);
       val device =
