@@ -57,13 +57,16 @@ public class Main extends Application {
     primaryStage.setWidth(width);
     primaryStage.setHeight(height);
 
-    primaryStage.setOnCloseRequest(
-        event -> {
-          preferences.putDouble(wPosX, primaryStage.getX());
-          preferences.putDouble(wPosY, primaryStage.getY());
-          preferences.putDouble(wWidth, primaryStage.getWidth());
-          preferences.putDouble(wHeight, primaryStage.getHeight());
-        });
+    // Save window position on program shutdown
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  preferences.putDouble(wPosX, primaryStage.getX());
+                  preferences.putDouble(wPosY, primaryStage.getY());
+                  preferences.putDouble(wWidth, primaryStage.getWidth());
+                  preferences.putDouble(wHeight, primaryStage.getHeight());
+                }));
 
     setScene(Scenes.MAIN, null);
   }
