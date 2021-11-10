@@ -80,18 +80,20 @@ public class MainViewController implements Initializable, ViewController, Databa
         tableView -> {
           TableRow<Device> row = new TableRow<>();
 
-          row.setOnMouseEntered(event -> {
-            // Show pointer cursor and tooltip when hovering over rows that have items
-            // We have to it on hover because we can't set the pointer style properly at startup,
-            // and instead must do it dynamically at runtime because JavaFX
-            // HACK: If someone from the future is trying to style rows and wonders why their
-            // styles keep resetting, this is why
-            if (row.getItem() != null) {
-              // Also thanks JavaFX for renaming all the cursors for no reason
-              row.setStyle("-fx-cursor: hand;");
-              row.setTooltip(moreInfoTooltip);
-            }
-          });
+          row.setOnMouseEntered(
+              event -> {
+                // Show pointer cursor and tooltip when hovering over rows that have items
+                // We have to it on hover because we can't set the pointer style properly at
+                // startup,
+                // and instead must do it dynamically at runtime because JavaFX
+                // HACK: If someone from the future is trying to style rows and wonders why their
+                // styles keep resetting, this is why
+                if (row.getItem() != null) {
+                  // Also thanks JavaFX for renaming all the cursors for no reason
+                  row.setStyle("-fx-cursor: hand;");
+                  row.setTooltip(moreInfoTooltip);
+                }
+              });
 
           // Detect row double click
           row.setOnMouseClicked(
@@ -184,7 +186,9 @@ public class MainViewController implements Initializable, ViewController, Databa
 
   private void handleViewClick(String deviceID, boolean wasDoubleClick) {
     // Hide on double click of same item
-    if (wasDoubleClick && PrettyDeviceViewerController.isOpen() && PrettyDeviceViewerController.getCurrentDeviceID().equals(deviceID)) {
+    if (wasDoubleClick
+        && PrettyDeviceViewerController.isOpen()
+        && PrettyDeviceViewerController.getCurrentDeviceID().equals(deviceID)) {
       PrettyDeviceViewerController.setCurrentDeviceID(null);
       PrettyDeviceViewerController.hide();
     } else {

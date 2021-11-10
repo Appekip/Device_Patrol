@@ -26,8 +26,7 @@ public abstract class PrettyDeviceViewerController {
   private static final GlobalDAO dao = GlobalDAO.getInstance();
   private static final GridPane deviceInfoGrid = new GridPane();
   @Getter private static boolean isOpen = false;
-  @Getter @Setter
-  private static String currentDeviceID = null;
+  @Getter @Setter private static String currentDeviceID = null;
   private static BorderPane mainViewPane = null;
   private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
@@ -78,24 +77,27 @@ public abstract class PrettyDeviceViewerController {
     lastRowIndex = 0;
 
     // Device title
-    addRow(createText(
-        "Device %s (%s)".formatted(device.getId(), device.getNickname()),
-        TITLE_STYLE));
+    addRow(
+        createText("Device %s (%s)".formatted(device.getId(), device.getNickname()), TITLE_STYLE));
 
     // Device description
-    addRow(createText(
-        "%s %s %s %s (%s)"
-            .formatted(
-                device.getModelYear(),
-                device.getManufacturer(),
-                device.getModelName(),
-                device.getConfiguration().getDeviceType().toString().toLowerCase(),
-                device.getModelID()),
-        SUBTITLE_STYLE));
+    addRow(
+        createText(
+            "%s %s %s %s (%s)"
+                .formatted(
+                    device.getModelYear(),
+                    device.getManufacturer(),
+                    device.getModelName(),
+                    device.getConfiguration().getDeviceType().toString().toLowerCase(),
+                    device.getModelID()),
+            SUBTITLE_STYLE));
 
     // Status
-    addRow(createText("Status: %s".formatted(
-        DeviceStatus.fromString(device.getStatus().toString()).getPrettyName()), SUBTITLE_STYLE));
+    addRow(
+        createText(
+            "Status: %s"
+                .formatted(DeviceStatus.fromString(device.getStatus().toString()).getPrettyName()),
+            SUBTITLE_STYLE));
 
     addSpacer();
 
@@ -106,9 +108,9 @@ public abstract class PrettyDeviceViewerController {
     addRow(createText("MAC address: %s".formatted(device.getMacAddress()), BODY_STYLE));
 
     switch (configuration.getDeviceType()) {
-      // Turning off dupe inspections here because it's more convenient to dupe once than to write
-      // tons of code to create a generic type for both desktop and laptop and whatever other
-      // future configurations
+        // Turning off dupe inspections here because it's more convenient to dupe once than to write
+        // tons of code to create a generic type for both desktop and laptop and whatever other
+        // future configurations
       case DESKTOP -> {
         val cfg = configuration.getDesktopConfiguration();
         //noinspection DuplicatedCode
@@ -133,7 +135,9 @@ public abstract class PrettyDeviceViewerController {
 
     val osString = new StringBuilder();
     osString.append("Operating systems:");
-    device.getOperatingSystems().forEach(os -> osString.append("\n• %s".formatted(os.toPrettyString())));
+    device
+        .getOperatingSystems()
+        .forEach(os -> osString.append("\n• %s".formatted(os.toPrettyString())));
     addRow(createText(osString.toString(), BODY_STYLE));
     addSpacer();
 
@@ -141,7 +145,11 @@ public abstract class PrettyDeviceViewerController {
     val user = device.getUser();
 
     if (device.getUser() != null) {
-      addRow(createText("In use by: %s %s (%s)".formatted(user.getFirstName(), user.getLastName(), user.getId()), SUBTITLE_STYLE));
+      addRow(
+          createText(
+              "In use by: %s %s (%s)"
+                  .formatted(user.getFirstName(), user.getLastName(), user.getId()),
+              SUBTITLE_STYLE));
       // TODO: Click to copy on these?
       addRow(createText("Email: %s".formatted(user.getEmail()), BODY_STYLE));
       addRow(createText("Phone: %s".formatted(user.getPhone()), BODY_STYLE));
@@ -150,9 +158,13 @@ public abstract class PrettyDeviceViewerController {
     }
 
     val location = device.getLocation();
-    addRow(createText("Located at: %s (%s)".formatted(location.getId(), location.getNickname()), BODY_STYLE));
+    addRow(
+        createText(
+            "Located at: %s (%s)".formatted(location.getId(), location.getNickname()), BODY_STYLE));
     // TODO: Click to copy on this?
-    addRow(createText("Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
+    addRow(
+        createText(
+            "Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
 
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
