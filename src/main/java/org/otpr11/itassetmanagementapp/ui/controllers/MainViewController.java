@@ -69,7 +69,7 @@ public class MainViewController implements Initializable, ViewController, Databa
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
 
-    PrettyDeviceViewerController.init(prettyDevicePane);
+    PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
 
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
@@ -96,8 +96,8 @@ public class MainViewController implements Initializable, ViewController, Databa
           // Detect row double click
           row.setOnMouseClicked(
               event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
-                  handleViewClick(row.getItem().getId());
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                  handleViewClick(row.getItem().getId(), true);
                 }
               });
 
@@ -182,11 +182,14 @@ public class MainViewController implements Initializable, ViewController, Databa
     log.trace("Open about");
   }
 
-  private void handleViewClick(String deviceID) {
-    PrettyDeviceViewerController.update(deviceID);
-
-    if (deviceViewPane.getLeft() == null) {
-      deviceViewPane.setLeft(prettyDevicePane);
+  private void handleViewClick(String deviceID, boolean wasDoubleClick) {
+    // Hide on double click of same item
+    if (wasDoubleClick && PrettyDeviceViewerController.isOpen() && PrettyDeviceViewerController.getCurrentDeviceID().equals(deviceID)) {
+      PrettyDeviceViewerController.setCurrentDeviceID(null);
+      PrettyDeviceViewerController.hide();
+    } else {
+      PrettyDeviceViewerController.setCurrentDeviceID(deviceID);
+      PrettyDeviceViewerController.show(deviceID);
     }
   }
 
@@ -218,7 +221,7 @@ public class MainViewController implements Initializable, ViewController, Databa
 
     val viewItem = new MenuItem();
     viewItem.setText("View");
-    viewItem.setOnAction(event -> handleViewClick(deviceID));
+    viewItem.setOnAction(event -> handleViewClick(deviceID, false));
     items.add(viewItem);
 
     val deleteItem = new MenuItem();

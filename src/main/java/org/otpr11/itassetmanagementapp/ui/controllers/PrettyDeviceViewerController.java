@@ -3,9 +3,14 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createText;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -19,23 +24,53 @@ public abstract class PrettyDeviceViewerController {
   private static final TextProperties SUBTITLE_STYLE = new TextProperties(SUBTITLE_TEXT_SIZE);
   private static final TextProperties BODY_STYLE = new TextProperties(BODY_TEXT_SIZE);
   private static final GlobalDAO dao = GlobalDAO.getInstance();
-  private static final BorderPane prettyDevicePane = new BorderPane();
   private static final GridPane deviceInfoGrid = new GridPane();
-  private static BorderPane deviceViewPane;
+  @Getter private static boolean isOpen = false;
+  @Getter @Setter
+  private static String currentDeviceID = null;
+  private static BorderPane mainViewPane = null;
+  private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
 
-  public static void init(BorderPane deviceView) {
-    deviceViewPane = deviceView;
+  public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
+    mainViewPane = _mainViewPane;
+    prettyDevicePane = _prettyDevicePane;
 
     prettyDevicePane.setMaxWidth(100);
     prettyDevicePane.setCenter(deviceInfoGrid);
 
-    deviceInfoGrid.setPadding(new Insets(20, 20, 20, 20));
+    deviceInfoGrid.setPadding(new Insets(10, 10, 10, 10));
     deviceInfoGrid.setHgap(10);
     deviceInfoGrid.setVgap(1);
+
+    val anchorPane = new AnchorPane();
+
+    val closeButton = new Button("\uD83D\uDFA9");
+    closeButton.setAlignment(Pos.TOP_RIGHT);
+    closeButton.setOnAction(event -> hide());
+
+    AnchorPane.setTopAnchor(closeButton, 5d);
+    AnchorPane.setRightAnchor(closeButton, 5d);
+    anchorPane.getChildren().add(closeButton);
+
+    prettyDevicePane.setRight(anchorPane);
   }
 
-  public static void update(String deviceID) {
+  public static void show(String deviceID) {
+    isOpen = true;
+    update(deviceID);
+
+    if (mainViewPane.getLeft() == null) {
+      mainViewPane.setLeft(prettyDevicePane);
+    }
+  }
+
+  public static void hide() {
+    isOpen = false;
+    mainViewPane.setLeft(null);
+  }
+
+  private static void update(String deviceID) {
     val device = dao.devices.get(deviceID);
 
     // Reset
@@ -68,6 +103,7 @@ public abstract class PrettyDeviceViewerController {
     val configuration = device.getConfiguration();
 
     addRow(createText("Hardware details:", SUBTITLE_STYLE));
+    addRow(createText("MAC address: %s".formatted(device.getMacAddress()), BODY_STYLE));
 
     switch (configuration.getDeviceType()) {
       // Turning off dupe inspections here because it's more convenient to dupe once than to write
@@ -118,7 +154,7 @@ public abstract class PrettyDeviceViewerController {
     // TODO: Click to copy on this?
     addRow(createText("Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
 
-    deviceViewPane.setCenter(deviceInfoGrid);
+    prettyDevicePane.setCenter(deviceInfoGrid);
   }
 
   private static void addRow(HBox row) {
