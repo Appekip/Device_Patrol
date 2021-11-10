@@ -12,6 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
@@ -21,6 +22,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -40,6 +42,8 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
+import org.otpr11.itassetmanagementapp.utils.JFXUtils.TextProperties;
+import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
 /** Main application view controller class. */
 @Log4j2
@@ -79,9 +83,24 @@ public class MainViewController implements Initializable, ViewController, Databa
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
+    val moreInfoTooltip = new Tooltip("Double-click show information about device");
+
     deviceTable.setRowFactory(
         tableView -> {
           TableRow<Device> row = new TableRow<>();
+
+          row.setOnMouseEntered(event -> {
+            // Show pointer cursor and tooltip when hovering over rows that have items
+            // We have to it on hover because we can't set the pointer style properly at startup,
+            // and instead must do it dynamically at runtime because JavaFX
+            // HACK: If someone from the future is trying to style rows and wonders why their
+            // styles keep resetting, this is why
+            if (row.getItem() != null) {
+              // Also thanks JavaFX for renaming all the cursors for no reason
+              row.setStyle("-fx-cursor: hand;");
+              row.setTooltip(moreInfoTooltip);
+            }
+          });
 
           // Detect row double click
           row.setOnMouseClicked(
@@ -200,6 +219,10 @@ public class MainViewController implements Initializable, ViewController, Databa
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditClick(deviceID));
+    // Don't show pointer cursor or tooltip for this element
+    button.setCursor(Cursor.DEFAULT);
+    button.setTooltip(null);
+
     val items = button.getItems();
 
     val viewItem = new MenuItem();
@@ -221,6 +244,11 @@ public class MainViewController implements Initializable, ViewController, Databa
     statuses.forEach(status -> dropdown.getItems().add(status.toString()));
     dropdown.setOnAction(
         event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+
+    // Don't show pointer cursor or tooltip for this element
+    dropdown.setCursor(Cursor.DEFAULT);
+    dropdown.setTooltip(null);
+
     return dropdown;
   }
 
@@ -235,26 +263,28 @@ public class MainViewController implements Initializable, ViewController, Databa
     deviceInfoGrid.add(
         createText(
             "Device %s (%s)".formatted(device.getId(), device.getNickname()),
-            TITLE_TEXT_SIZE,
-            "bolder"),
+            new TextProperties(TITLE_TEXT_SIZE, "bolder")),
         0,
         0);
 
     // Device description
     deviceInfoGrid.add(
         createText(
-            "%s %s %s (%s)"
+            "%s %s %s %s (%s)"
                 .formatted(
                     device.getModelYear(),
                     device.getManufacturer(),
                     device.getModelName(),
+                    device.getConfiguration().getDeviceType().toString().toLowerCase(),
                     device.getModelID()),
-            SUBTITLE_TEXT_SIZE),
+            new TextProperties(SUBTITLE_TEXT_SIZE)),
         0,
         1);
 
     // HW config
     val configuration = device.getConfiguration();
+    val bodyProps = new TextProperties(BODY_TEXT_SIZE);
+    int lastRowIndex;
 
     switch (configuration.getDeviceType()) {
       // Turning off dupe inspections here because it's more convenient to dupe once than to write
@@ -263,27 +293,31 @@ public class MainViewController implements Initializable, ViewController, Databa
       case DESKTOP -> {
         val cfg = configuration.getDesktopConfiguration();
         //noinspection DuplicatedCode
-        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), BODY_TEXT_SIZE), 0, 2);
-        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), BODY_TEXT_SIZE), 0, 3);
-        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), BODY_TEXT_SIZE), 0, 4);
+        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), bodyProps), 0, 2);
+        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), bodyProps), 0, 3);
+        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), bodyProps), 0, 4);
         deviceInfoGrid.add(
-            createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
+            createText("Disk: %s".formatted(cfg.getDiskSize()), bodyProps), 0, 5);
+        lastRowIndex = 5;
       }
       case LAPTOP -> {
         val cfg = configuration.getLaptopConfiguration();
         //noinspection DuplicatedCode
-        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), BODY_TEXT_SIZE), 0, 2);
-        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), BODY_TEXT_SIZE), 0, 3);
-        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), BODY_TEXT_SIZE), 0, 4);
+        deviceInfoGrid.add(createText("CPU: %s".formatted(cfg.getCpu()), bodyProps), 0, 2);
+        deviceInfoGrid.add(createText("GPU: %s".formatted(cfg.getGpu()), bodyProps), 0, 3);
+        deviceInfoGrid.add(createText("RAM: %s".formatted(cfg.getMemory()), bodyProps), 0, 4);
         deviceInfoGrid.add(
-            createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_TEXT_SIZE), 0, 5);
+            createText("Disk: %s".formatted(cfg.getDiskSize()), bodyProps), 0, 5);
         deviceInfoGrid.add(
-            createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_TEXT_SIZE), 0, 6);
+            createText("Display size: %s\"".formatted(cfg.getScreenSize()), bodyProps), 0, 6);
+        lastRowIndex = 6;
       }
       default -> throw new IllegalStateException(
           "Support for device type %s not yet implemented"
               .formatted(configuration.getDeviceType()));
     }
+
+    deviceInfoGrid.add(createText("OS: %s".formatted(StringUtils.joinPrettyStrings(device.getOperatingSystems())), bodyProps), 0, lastRowIndex + 1);
   }
 
   private void initDeviceViewer() {

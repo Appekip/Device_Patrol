@@ -39,6 +39,9 @@ public class Main extends Application {
   public void start(Stage primary) {
     primaryStage = primary;
 
+    // Remember window positions across program reboots
+    // FIXME: This does not yet apply to popups, they still go to the primary monitor every time
+
     val preferences = UserPreferences.get();
 
     val wPosX = getSettingName(Settings.WINDOW_POSITION_X);

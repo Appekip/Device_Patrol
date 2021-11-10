@@ -1,12 +1,16 @@
 package org.otpr11.itassetmanagementapp.utils;
 
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.val;
 
 /** Generic JavaFX utilities. */
 public abstract class JFXUtils {
-
   /**
    * Shortcut to get the selection index of a {@link ChoiceBox}.
    *
@@ -42,15 +46,39 @@ public abstract class JFXUtils {
     return new Text(content);
   }
 
-  public static Text createText(String content, int fontSize) {
+  public static HBox createText(String content, TextProperties properties) {
     val text = new Text(content);
-    text.setStyle(String.format("-fx-font-size: %s", fontSize));
-    return text;
+
+    // Workaround for JFX not allowing margins on Text elements
+    val container = new HBox();
+    container.getChildren().add(text);
+
+    val style = new StringBuilder();
+
+    if (properties.getFontSize() != null) {
+      style.append(String.format("-fx-font-size: %s;", properties.getFontSize()));
+    }
+
+    if (properties.getFontWeight() != null) {
+      style.append(String.format("-fx-font-weight: %s;", properties.getFontWeight()));
+    }
+
+    text.setStyle(style.toString());
+
+    return container;
   }
 
-  public static Text createText(String content, int fontSize, String fontWeight) {
-    val text = new Text(content);
-    text.setStyle(String.format("-fx-font-size: %d; -fx-font-weight: %s", fontSize, fontWeight));
-    return text;
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class TextProperties {
+    @Getter @Setter public Integer fontSize;
+    @Getter @Setter public String fontWeight;
+
+    // Adding optional combinatory constructors
+    // Christ why can't Java just add simple key/value objects already
+
+    public TextProperties(Integer fontSize) {
+      this.fontSize = fontSize;
+    }
   }
 }
