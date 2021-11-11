@@ -16,6 +16,8 @@ public class UserEditorController implements Initializable, ViewController {
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {}
 
+
+
   @Override
   public void afterInitialize() {}
 }
