@@ -9,21 +9,21 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.MainViewController">
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.MainViewController">
   <children>
-    <BorderPane fx:id="deviceViewPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+    <BorderPane prefHeight="1080.0" prefWidth="1920.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <center>
         <TableView fx:id="deviceTable" BorderPane.alignment="CENTER">
           <columns>
-            <TableColumn fx:id="idColumn" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="ID" />
-            <TableColumn fx:id="nicknameColumn" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="Nickname" />
+            <TableColumn fx:id="idColumn" maxWidth="-1.0" minWidth="150.0" prefWidth="-1.0" text="ID" />
+            <TableColumn fx:id="nicknameColumn" maxWidth="-1.0" minWidth="150.0" prefWidth="-1.0" text="Nickname" />
             <TableColumn fx:id="manufacturerColumn" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="Manufacturer" />
             <TableColumn fx:id="modelNameColumn" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="Model Name" />
             <TableColumn fx:id="modelIDColumn" maxWidth="-1.0" minWidth="75.0" prefWidth="-1.0" text="Model ID" />
             <TableColumn fx:id="modelYearColumn" maxWidth="-1.0" minWidth="75.0" prefWidth="-1.0" text="Model Year" />
             <TableColumn fx:id="deviceTypeColumn" maxWidth="-1.0" minWidth="75.0" prefWidth="-1.0" text="Device Type" />
-            <TableColumn fx:id="hwConfigurationColumn" maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="HW Configuration" />
-            <TableColumn fx:id="osColumn" maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="Operating Systems" />
+            <TableColumn fx:id="hwConfigurationColumn" maxWidth="-1.0" minWidth="500.0" prefWidth="-1.0" text="HW Configuration" />
+            <TableColumn fx:id="osColumn" maxWidth="-1.0" minWidth="250.0" prefWidth="-1.0" text="Operating Systems" />
             <TableColumn fx:id="userColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="User" />
             <TableColumn fx:id="statusColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Status" />
             <TableColumn fx:id="locationColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Location" />
