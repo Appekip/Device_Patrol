@@ -162,7 +162,7 @@ public class GlobalDAO {
    *
    * @param dtoClass Class of the DTO entity.
    * @param <T> DTO class (i.e. any class from db.model, which all need to extend {@link DTO})
-   * @return {@link List}<{@link DTO}>
+   * @return {@link List}&lt;{@link DTO}&gt;
    * @throws DatabaseQueryException to rethrow any underlying exceptions from Hibernate.
    */
   protected <T extends DTO> List<T> getAll(Class<T> dtoClass) throws DatabaseQueryException {

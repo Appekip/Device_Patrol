@@ -2,7 +2,9 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import lombok.Setter;
 import org.otpr11.itassetmanagementapp.Main;
@@ -13,9 +15,20 @@ public class LocationEditorController implements Initializable, ViewController {
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
+  @FXML
+  private Button saveBtn, cancelBtn;
+
+  @FXML
+  private TextField idField, addField, zipField, nickField;
+
+
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {}
 
   @Override
   public void afterInitialize() {}
+
+
+
 }
+

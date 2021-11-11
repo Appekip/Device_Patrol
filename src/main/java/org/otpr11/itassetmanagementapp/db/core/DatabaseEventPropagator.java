@@ -15,6 +15,18 @@ import org.otpr11.itassetmanagementapp.config.Config;
 import org.otpr11.itassetmanagementapp.constants.DatabaseEvent;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 
+/**
+ * This class listens to all database events from all {@link DTO}s and propagates them to registered
+ * listeners. Listeners are registered by calling {@link DatabaseEventPropagator#addListener}.
+ * Classes can implement the {@link DatabaseEventListener} interface, after which they can declare
+ * an <code>onDatabaseEvent()</code> method.
+ *
+ * <p>Please note: Due to limitations of Java, merely implementing the interface does not guarantee
+ * event delivery; classes still have to call <code>DatabaseEventPropagator.addListener(this)</code>
+ * , should they wish to actually receive events. This behaviour is subject to change in the future,
+ * as there are plans to turn {@link DatabaseEventListener} into an annotation instead.
+ */
+// TODO: Turn listener registration into a custom annotation instead?
 @Log4j2
 public class DatabaseEventPropagator {
   private static final Dotenv config = Config.getConfig();

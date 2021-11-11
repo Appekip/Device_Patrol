@@ -5,6 +5,18 @@
 
 Course project for Ohjelmistotuotantoprojekti TX00CF81-3012 course at Metropolia UAS, themed around IT asset management (similarly to tools like Snipe IT).
 
+The vision of this project is to create a program to track the IT devices of a company, such as desktops and laptops, by using agile software development. The user of this program should be able to easily observe and manage the data of devices. This data contains basic information about the device, who is in possession of the device, status and amount of devices. The product will increase a company's efficiency in management of IT equipment.
+
+We have used IntelliJ IDEA, Docker and PostgreSQL as development environment.
+
+## Documentation
+
+This README contains some basic development environment level documentation. Further development documentation may be found in the `docs` folder.
+
+(Side note: The `documents` and `diagrams` folders contain mainly project meta-documentation, like reports and UML diagrams. No code documentation will be found here.)
+
+For actual code documentation, feel free to browse the Javadoc in either the source code, or at the built site found at https://ohjelmistotuotantoprojekti-tx00cf81-3012-r11.gitlab.io/it-asset-management-app.
+
 ## Development
 
 Prerequisites:
@@ -20,6 +32,12 @@ Prerequisites:
 ### Starting
 
 Run the "Docker" configuration before starting the application (as this will start the prerequisite database). Then run the "Main" configuration.
+
+### Generating test data
+
+The application supports the generation of test data into the database, to speed up development when the need to manually create new devices for debugging is eliminated. To do this, set the `FORCE_DB_RECREATE` and `INSERT_TEST_DATA` environment variables to `true`.
+
+(Tip: You can set these variables to `false` again after one startup to speed up the feedback loop, if you don't want to recreate the DB and insert the data again on each boot. This may come in handy if you don't need to mess with the data itself, and are instead using it purely for visual reference purposes.)
 
 ## Configuration
 

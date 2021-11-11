@@ -1,16 +1,20 @@
 package org.otpr11.itassetmanagementapp;
 
+import static org.otpr11.itassetmanagementapp.config.UserPreferences.getSettingName;
+
 import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.config.Config;
+import org.otpr11.itassetmanagementapp.config.UserPreferences;
+import org.otpr11.itassetmanagementapp.config.UserPreferences.Settings;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -19,11 +23,9 @@ import org.otpr11.itassetmanagementapp.utils.LogUtils;
 
 @Log4j2
 public class Main extends Application {
-  @Getter private final String test = "test";
   private Stage primaryStage;
 
   public static void main(String[] args) {
-    Config.load();
     LogUtils.configureLogger();
 
     if (Boolean.parseBoolean(Config.getConfig().get("INSERT_TEST_DATA"))) {
@@ -31,11 +33,49 @@ public class Main extends Application {
     }
 
     launch();
+
   }
 
   @Override
   public void start(Stage primary) {
     primaryStage = primary;
+
+    // Remember window positions across program reboots
+    // FIXME: This does not yet apply to popups, they still go to the primary monitor every time
+
+    val preferences = UserPreferences.get();
+
+    val wPosX = getSettingName(Settings.WINDOW_POSITION_X);
+    val wPosY = getSettingName(Settings.WINDOW_POSITION_Y);
+    val wWidth = getSettingName(Settings.WINDOW_WIDTH);
+    val wHeight = getSettingName(Settings.WINDOW_HEIGHT);
+    val isMax = getSettingName(Settings.IS_WINDOW_MAXIMIZED);
+
+    val screenBounds = Screen.getPrimary().getBounds();
+    val x = preferences.getDouble(wPosX, screenBounds.getMinX());
+    val y = preferences.getDouble(wPosY, screenBounds.getMinY());
+    val width = preferences.getDouble(wWidth, screenBounds.getWidth());
+    val height = preferences.getDouble(wHeight, screenBounds.getHeight());
+    val isMaximized = preferences.getBoolean(isMax, primaryStage.isMaximized());
+
+    primaryStage.setX(x);
+    primaryStage.setY(y);
+    primaryStage.setWidth(width);
+    primaryStage.setHeight(height);
+    primaryStage.setMaximized(isMaximized);
+
+    // Save window position on program shutdown
+    Runtime.getRuntime()
+        .addShutdownHook(
+            new Thread(
+                () -> {
+                  preferences.putDouble(wPosX, primaryStage.getX());
+                  preferences.putDouble(wPosY, primaryStage.getY());
+                  preferences.putDouble(wWidth, primaryStage.getWidth());
+                  preferences.putDouble(wHeight, primaryStage.getHeight());
+                  preferences.putBoolean(isMax, primaryStage.isMaximized());
+                }));
+
     setScene(Scenes.MAIN, null);
   }
 

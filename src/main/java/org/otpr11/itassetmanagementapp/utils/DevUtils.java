@@ -12,9 +12,14 @@ import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
 
+/** Generic development utilities. */
 public abstract class DevUtils {
   private static final GlobalDAO dao = GlobalDAO.getInstance();
 
+  /**
+   * Generates test data into the database. Useful for development and debugging without having to
+   * manually create devices.
+   */
   public static void generateTestData() {
     // Create demo desktops
     val desktopCfg1 =
@@ -48,7 +53,7 @@ public abstract class DevUtils {
       val user = new User("john" + i, "John", "Doe", "+35844123456", "john.doe@company.com");
       dao.users.save(user);
 
-      val status = new Status(DeviceStatus.VACANT.toString());
+      val status = new Status(DeviceStatus.IN_USE.toString());
       val loc = new Location("office" + i, "office" + i, "Yliopistonkatu 4, Helsinki", "00100");
       dao.locations.save(loc);
       val device =
