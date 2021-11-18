@@ -1,15 +1,20 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
@@ -45,4 +50,15 @@ public class Location extends DTO {
   @NotNull
   @Column(nullable = false, name = "zip_code")
   private String zipCode; // Not a number in all locales
+
+  @OneToMany @Exclude private List<Device> devices;
+
+  @PreRemove
+  private void preRemove() {
+    System.out.println(devices);
+
+    for (val device : devices) {
+      device.setLocation(null);
+    }
+  }
 }

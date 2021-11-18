@@ -8,15 +8,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /** Represents an operating system a {@link Device} is running. */
@@ -64,5 +67,18 @@ public class OperatingSystem extends DTO implements PrettyStringifiable {
 
   public String toPrettyString() {
     return "%s %s (%s)".formatted(name, version, buildNumber);
+  }
+
+  @PreRemove
+  private void preRemove() {
+    System.out.println(devices);
+
+    val dao = GlobalDAO.getInstance();
+
+    for (val device : devices) {
+      val operatingSystems = device.getOperatingSystems();
+      operatingSystems.remove(this);
+      device.setOperatingSystems(operatingSystems);
+    }
   }
 }

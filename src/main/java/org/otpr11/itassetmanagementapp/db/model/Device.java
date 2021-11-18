@@ -76,7 +76,7 @@ public class Device extends DTO {
   // https://stackoverflow.com/questions/9944137/have-jpa-hibernate-to-replicate-the-on-delete-set-null-functionality
 
   @Getter @Setter @ManyToOne private User user;
-  @Getter @Setter @NotNull @ManyToOne private Configuration configuration;
+  @Getter @Setter @ManyToOne private Configuration configuration;
   @Getter @Setter @NotNull @ManyToOne private Status status;
   @Getter @Setter @ManyToOne private Location location;
   // TODO: Leaving ^ nullable for now, but that might have to change if we want to mandate a loc
