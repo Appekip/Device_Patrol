@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,6 @@ import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 @Table(name = "users")
 @ToString
 @EntityListeners({DatabaseEventPropagator.class})
-@AllArgsConstructor
 @NoArgsConstructor
 public class User extends DTO {
   @Id
@@ -59,6 +57,19 @@ public class User extends DTO {
   private String email;
 
   @OneToMany @Exclude private List<Device> devices;
+
+  public User(
+      @NotNull String id,
+      @NotNull String firstName,
+      @NotNull String lastName,
+      @NotNull String phone,
+      @NotNull String email) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phone = phone;
+    this.email = email;
+  }
 
   @PreRemove
   private void preRemove() {

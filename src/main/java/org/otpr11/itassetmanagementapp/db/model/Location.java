@@ -8,7 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +23,6 @@ import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 @Table(name = "locations")
 @ToString
 @EntityListeners({DatabaseEventPropagator.class})
-@AllArgsConstructor
 @NoArgsConstructor
 public class Location extends DTO {
   @Id
@@ -52,6 +50,17 @@ public class Location extends DTO {
   private String zipCode; // Not a number in all locales
 
   @OneToMany @Exclude private List<Device> devices;
+
+  public Location(
+      @NotNull String id,
+      @NotNull String nickname,
+      @NotNull String address,
+      @NotNull String zipCode) {
+    this.id = id;
+    this.nickname = nickname;
+    this.address = address;
+    this.zipCode = zipCode;
+  }
 
   @PreRemove
   private void preRemove() {
