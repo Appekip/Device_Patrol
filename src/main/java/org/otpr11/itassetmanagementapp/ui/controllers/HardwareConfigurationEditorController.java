@@ -69,9 +69,9 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   public void initialize(URL url, ResourceBundle resourceBundle) {
     createTextFieldValidator(cpuField, "cpu", cpuField.textProperty());
     createTextFieldValidator(diskSizeField, "diskSize", diskSizeField.textProperty());
-    createTextFieldValidator(screenSizeField, "screenSize", screenSizeField.textProperty());
     createTextFieldValidator(gpuField, "gpu", gpuField.textProperty());
-    createTextFieldValidator(memoryField, "memory", memoryField.styleProperty());
+    createTextFieldValidator(memoryField, "memory", memoryField.textProperty());
+    //createTextFieldValidator(screenSizeField, "screenSize", screenSizeField.textProperty());
 
     initDropdown(deviceTypeField, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
 
@@ -101,7 +101,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
 
   private void onSave(ActionEvent event) {
 
-    if (validator.containsErrors()) {
+    if (validator.containsWarnings() || validator.containsErrors()) {
       AlertUtils.showAlert(
           AlertType.ERROR,
           "Invalid input",
@@ -116,8 +116,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
       }
     }
 
-    dao.devices.save(configuration);
-    stage.close();
+
   }
 
   private void saveLaptop() {
@@ -129,6 +128,8 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
 
     dao.devices.save(laptopConfiguration);
     configuration.setLaptopConfiguration(laptopConfiguration);
+    dao.devices.save(configuration);
+    stage.close();
   }
 
   private void saveDesktop() {
@@ -139,6 +140,8 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
 
     dao.devices.save(desktopConfiguration);
     configuration.setDesktopConfiguration(desktopConfiguration);
+    dao.devices.save(configuration);
+    stage.close();
   }
 
   private void onCancel(ActionEvent event) {
