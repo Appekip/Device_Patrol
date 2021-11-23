@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
-import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
 
 /** Generic development utilities. */
 public abstract class DevUtils {
@@ -23,19 +23,19 @@ public abstract class DevUtils {
   public static void generateTestData() {
     // Create demo desktops
     val desktopCfg1 =
-        dao.configurations.createDesktop(
+        dao.configurations.saveDesktop(
             new DesktopConfiguration(
                 "AMD Ryzen 9 3900X", "NVIDIA Tesla V100", "64 GB 3200 MHz", "4 TB"));
-    dao.configurations.createDesktop(
+    dao.configurations.saveDesktop(
         new DesktopConfiguration(
             "Intel i9-9900K", "AMD Radeon Pro 6900X", "32 GB 3200 MHz", "8 TB"));
 
     // Create demo laptops
     val laptopCfg1 =
-        dao.configurations.createLaptop(
+        dao.configurations.saveLaptop(
             new LaptopConfiguration(
                 "Intel Core i7-1185G7", "AMD Radeon Pro 5300M", "16 GB 3200 MHz", "2 TB", 16));
-    dao.configurations.createLaptop(
+    dao.configurations.saveLaptop(
         new LaptopConfiguration(
             "AMD Ryzen 9 5900HX", "NVIDIA GTX 1060 Ti", "32 GB 3200 MHz", "4 TB", 17));
 
@@ -49,13 +49,15 @@ public abstract class DevUtils {
     osList.add(os1);
     osList.add(os2);
 
-    for (int i = 0; i < 10; i++) {
-      val user = new User("john" + i, "John", "Doe", "+35844123456", "john.doe@company.com");
-      dao.users.save(user);
+    val loc = new Location("office", "office", "Yliopistonkatu 4, Helsinki", "00100");
+    dao.locations.save(loc);
 
-      val status = new Status(DeviceStatus.IN_USE.toString());
-      val loc = new Location("office" + i, "office" + i, "Yliopistonkatu 4, Helsinki", "00100");
-      dao.locations.save(loc);
+    val user = new User("john", "John", "Doe", "+35844123456", "john.doe@company.com");
+    dao.users.save(user);
+
+    val status = new Status(DeviceStatus.IN_USE.toString());
+
+    for (int i = 0; i < 10; i++) {
       val device =
           new Device(
               "dev" + i,
@@ -72,5 +74,11 @@ public abstract class DevUtils {
               osList);
       dao.devices.save(device);
     }
+
+    dao.configurations.delete(desktopCfg1);
+    dao.users.delete(user);
+    dao.locations.delete(loc);
+    dao.operatingSystems.delete(os1);
+    dao.operatingSystems.delete(os2);
   }
 }

@@ -6,6 +6,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 
 class ConfigurationTest {
 

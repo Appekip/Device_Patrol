@@ -7,7 +7,6 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 
 class DeviceTest {
 

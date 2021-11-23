@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +19,7 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 
 /** Represents a user of a {@link Device}. */
 @Entity
@@ -25,6 +28,11 @@ import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 @EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
 public class User extends DTO {
+  @Getter(AccessLevel.PACKAGE)
+  @OneToMany
+  @Exclude
+  private final List<Device> devices = new ArrayList<>();
+
   @Id
   @Getter
   @Setter
@@ -56,8 +64,6 @@ public class User extends DTO {
   @Column(nullable = false)
   private String email;
 
-  @OneToMany @Exclude private List<Device> devices;
-
   public User(
       @NotNull String id,
       @NotNull String firstName,
@@ -73,10 +79,11 @@ public class User extends DTO {
 
   @PreRemove
   private void preRemove() {
-    System.out.println(devices);
+    val dao = GlobalDAO.getInstance();
 
     for (val device : devices) {
       device.setUser(null);
+      dao.devices.save(device);
     }
   }
 }

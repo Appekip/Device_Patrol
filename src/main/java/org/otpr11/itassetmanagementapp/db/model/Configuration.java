@@ -1,5 +1,6 @@
-package org.otpr11.itassetmanagementapp.db.model.configuration;
+package org.otpr11.itassetmanagementapp.db.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,28 +13,35 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.ToString.Exclude;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
-import org.otpr11.itassetmanagementapp.db.model.Device;
 
 /**
  * Represents the hardware configuration of a {@link
  * org.otpr11.itassetmanagementapp.db.model.Device}. The getDeviceType() function can be used to
  * determine the type of the device.
  */
+@Log4j2
 @Entity
 @Table(name = "configurations")
 @ToString
 @EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
 public class Configuration extends DTO {
+  @Getter(AccessLevel.PACKAGE)
+  @OneToMany
+  @Exclude
+  private final List<Device> devices = new ArrayList<>();
+
   @Id
   @Getter
   @Column(nullable = false)
@@ -53,10 +61,6 @@ public class Configuration extends DTO {
   @Getter
   @Column(name = "device_type")
   private DeviceType deviceType;
-
-  @OneToMany
-  @Exclude
-  private List<Device> devices;
 
   /**
    * Creates a desktop configuration. (Proxies {@link
@@ -102,17 +106,11 @@ public class Configuration extends DTO {
 
   @PreRemove
   private void preRemove() {
-    System.out.println(devices);
-
     val dao = GlobalDAO.getInstance();
-
-    switch (deviceType) {
-      case DESKTOP -> dao.desktopConfigurations.delete(desktopConfiguration);
-      case LAPTOP -> dao.laptopConfigurations.delete(laptopConfiguration);
-    }
 
     for (val device : devices) {
       device.setConfiguration(null);
+      dao.devices.save(device);
     }
   }
 }
