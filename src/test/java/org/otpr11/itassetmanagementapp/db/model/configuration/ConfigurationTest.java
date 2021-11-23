@@ -1,11 +1,13 @@
 package org.otpr11.itassetmanagementapp.db.model.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 
 class ConfigurationTest {
 
@@ -15,7 +17,7 @@ class ConfigurationTest {
 
   @BeforeEach
   void setUp() {
-    initMocks(this);
+    openMocks(this);
     configurationUnderTest = new Configuration(mockCfg);
   }
 

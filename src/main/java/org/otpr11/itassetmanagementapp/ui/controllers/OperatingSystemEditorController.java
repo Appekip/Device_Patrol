@@ -1,11 +1,8 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -23,45 +20,32 @@ import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
-import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
 public class OperatingSystemEditorController implements Initializable, ViewController {
-  @Setter private Main main;
-  @Setter private Stage stage;
-  @Setter private Object sceneChangeData;
-
-
-  @Override
-  public void afterInitialize() {}
-
+  private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
+  private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
+  private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final OperatingSystem operatingSystem = new OperatingSystem();
   private final Configuration configuration = new Configuration();
   private final Status status = new Status();
   private final Validator validator = new Validator();
-
-  private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
-  private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
-  private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
-  private static boolean IS_EDIT_MODE;
-
-
-  @FXML
-  private TextField nameField,
-    buildNumberField,
-    versionField;
-
-  @FXML
-  private Button okButton,
-    cancelButton;
-
+  @Setter private Main main;
+  @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
+  @FXML private TextField nameField, buildNumberField, versionField;
+  @FXML private Button okButton, cancelButton;
   @FXML private CheckComboBox<String> osSelector;
+
+  @Override
+  public void afterInitialize() {}
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -92,9 +76,9 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
       operatingSystem.setName(nameField.getText());
       operatingSystem.setBuildNumber(buildNumberField.getText());
       operatingSystem.setVersion(versionField.getText());
-
     }
   }
+
   private void onCancel(ActionEvent event) {
     stage.close();
   }
