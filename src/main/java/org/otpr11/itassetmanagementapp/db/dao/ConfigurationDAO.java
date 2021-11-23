@@ -8,12 +8,12 @@ import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DAO;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 
 /**
- * {@link org.otpr11.itassetmanagementapp.db.model.configuration.Configuration} DAO implementation.
+ * {@link Configuration} DAO implementation.
  *
  * <p>Methods in this class are proxy methods for {@link GlobalDAO} with merely some added
  * operation-specific logging; the actual business logic resides in the aforementioned class.
@@ -28,7 +28,7 @@ public class ConfigurationDAO extends DAO {
   }
 
   /**
-   * Helper function to easily and quickly create a desktop configuration.
+   * Helper function to easily and quickly save a desktop configuration.
    *
    * <p>Prefer using this function over of stacking calls to the DAOs themselves, as this one
    * automatically saves the provided DesktopConfiguration object before self-creating a new
@@ -37,7 +37,7 @@ public class ConfigurationDAO extends DAO {
    * @param deviceCfg {@link DesktopConfiguration}
    * @return {@link Configuration}
    */
-  public Configuration createDesktop(DesktopConfiguration deviceCfg) {
+  public Configuration saveDesktop(DesktopConfiguration deviceCfg) {
     dao.desktopConfigurations.save(deviceCfg);
     val cfg = new Configuration(deviceCfg);
     save(cfg);
@@ -45,7 +45,7 @@ public class ConfigurationDAO extends DAO {
   }
 
   /**
-   * Helper function to easily and quickly create a laptop configuration.
+   * Helper function to easily and quickly save a laptop configuration.
    *
    * <p>Prefer using this function over of stacking calls to the DAOs themselves, as this one
    * automatically saves the provided LaptopConfiguration object before self-creating a new
@@ -54,7 +54,7 @@ public class ConfigurationDAO extends DAO {
    * @param deviceCfg {@link LaptopConfiguration}
    * @return {@link Configuration}
    */
-  public Configuration createLaptop(LaptopConfiguration deviceCfg) {
+  public Configuration saveLaptop(LaptopConfiguration deviceCfg) {
     dao.laptopConfigurations.save(deviceCfg);
     val cfg = new Configuration(deviceCfg);
     save(cfg);
@@ -97,6 +97,22 @@ public class ConfigurationDAO extends DAO {
   public <T extends DTO> boolean delete(@NotNull T dto) {
     try {
       log.trace("Deleting configuration {}.", dto);
+
+      // Delete connected object as well
+      val cfg = (Configuration) dto;
+
+      var success = false;
+
+      switch (cfg.getDeviceType()) {
+        case DESKTOP -> success = dao.desktopConfigurations.delete(cfg.getDesktopConfiguration());
+        case LAPTOP -> success = dao.laptopConfigurations.delete(cfg.getLaptopConfiguration());
+      }
+
+      if (!success) {
+        log.error("Deletion of connected entity failed, cannot delete configuration {}.", dto);
+        return false;
+      }
+
       dao.delete(dto);
       return true;
     } catch (Exception e) {

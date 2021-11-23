@@ -1,4 +1,4 @@
-package org.otpr11.itassetmanagementapp.db.model.configuration;
+package org.otpr11.itassetmanagementapp.db.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,14 +6,20 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /**
@@ -61,6 +67,12 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
   @Column(nullable = false, name = "screen_size")
   private int screenSize; // In inches
 
+  @Getter(AccessLevel.PACKAGE)
+  @Setter(AccessLevel.PACKAGE)
+  @OneToOne
+  @Exclude
+  private Configuration configuration;
+
   public LaptopConfiguration(
       @NotNull String cpu,
       @NotNull String gpu,
@@ -76,5 +88,12 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
 
   public String toPrettyString() {
     return "%s\", %s, %s, %s RAM, %s disk".formatted(screenSize, cpu, gpu, memory, diskSize);
+  }
+
+  @PreRemove
+  private void preRemove() {
+    val dao = GlobalDAO.getInstance();
+    configuration.setLaptopConfiguration(null);
+    dao.configurations.save(configuration);
   }
 }

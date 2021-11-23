@@ -5,9 +5,9 @@ import java.io.StringWriter;
 import java.util.List;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /**

@@ -7,11 +7,10 @@ import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DAO;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
-import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 
 /**
- * {@link org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration} DAO
- * implementation.
+ * {@link LaptopConfiguration} DAO implementation.
  *
  * <p>Methods in this class are proxy methods for {@link GlobalDAO} with merely some added
  * operation-specific logging; the actual business logic resides in the aforementioned class.

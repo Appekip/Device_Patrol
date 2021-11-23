@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,15 +9,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 
 /** Represents an operating system a {@link Device} is running. */
@@ -26,6 +31,12 @@ import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 @EntityListeners({DatabaseEventPropagator.class})
 @NoArgsConstructor
 public class OperatingSystem extends DTO implements PrettyStringifiable {
+
+  // Left unused as it's only needed to connect the database tables together
+  @Getter(AccessLevel.PACKAGE)
+  @ManyToMany
+  @Exclude
+  private final List<Device> devices = new ArrayList<>();
 
   @Id
   @Getter
@@ -44,16 +55,12 @@ public class OperatingSystem extends DTO implements PrettyStringifiable {
   @NotNull
   @Column(nullable = false)
   private String version;
-
+  // ^ is a string because macOS likes to add random letters into build numbers (thanks Apple)
   @Getter
   @Setter
   @NotNull
   @Column(nullable = false)
   private String buildNumber;
-  // ^ is a string because macOS likes to add random letters into build numbers (thanks Apple)
-
-  // Left unused as it's only needed to connect the database tables together
-  @ManyToMany @Exclude private List<Device> devices;
 
   public OperatingSystem(
       @NotNull String name, @NotNull String version, @NotNull String buildNumber) {
@@ -64,5 +71,16 @@ public class OperatingSystem extends DTO implements PrettyStringifiable {
 
   public String toPrettyString() {
     return "%s %s (%s)".formatted(name, version, buildNumber);
+  }
+
+  @PreRemove
+  private void preRemove() {
+    val dao = GlobalDAO.getInstance();
+
+    for (val device : devices) {
+      val operatingSystems = device.getOperatingSystems();
+      operatingSystems.remove(this);
+      dao.devices.save(device);
+    }
   }
 }

@@ -25,7 +25,6 @@ open module org.otpr11.itassetmanagementapp {
   exports org.otpr11.itassetmanagementapp.db.core;
   exports org.otpr11.itassetmanagementapp.db.dao;
   exports org.otpr11.itassetmanagementapp.db.model;
-  exports org.otpr11.itassetmanagementapp.db.model.configuration;
   exports org.otpr11.itassetmanagementapp.interfaces;
   exports org.otpr11.itassetmanagementapp.ui.controllers;
   exports org.otpr11.itassetmanagementapp.ui.utils;

@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -9,24 +10,23 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 
 /** Represents a device. */
 @Entity
 @Table(name = "devices")
 @ToString
 @EntityListeners({DatabaseEventPropagator.class})
-@AllArgsConstructor
 @NoArgsConstructor
 public class Device extends DTO {
   @Id
@@ -36,7 +36,7 @@ public class Device extends DTO {
   @Column(nullable = false, length = 64, name = "device_id")
   private String id;
 
-  @Getter @Setter @Column private String nickname;
+  @Getter @Setter @Column @NotNull private String nickname;
 
   @Getter
   @Setter
@@ -70,23 +70,116 @@ public class Device extends DTO {
 
   // Associations
 
-  // FIXME: Cascades aren't currently implemented properly (as sub-entity management is not mandated
-  // by any user story, but will need to be at some point for the app to operate correctly)
-  // Hibernate cannot replicate ON DELETE SET NULL, so we might have to custom develop that. Ref:
-  // https://stackoverflow.com/questions/9944137/have-jpa-hibernate-to-replicate-the-on-delete-set-null-functionality
-
-  @Getter @Setter @ManyToOne private User user;
-  @Getter @Setter @NotNull @ManyToOne private Configuration configuration;
+  @Getter @ManyToOne private User user;
+  @Getter @ManyToOne private Configuration configuration;
+  @Getter @ManyToOne private Location location;
   @Getter @Setter @NotNull @ManyToOne private Status status;
-  @Getter @Setter @ManyToOne private Location location;
-  // TODO: Leaving ^ nullable for now, but that might have to change if we want to mandate a loc
 
   @Getter
-  @Setter
   @NotNull
   @ManyToMany(
       cascade = {CascadeType.PERSIST},
       fetch = FetchType.EAGER)
   @Exclude
   private List<OperatingSystem> operatingSystems;
+
+  public Device(
+      @NotNull String id,
+      @NotNull String nickname,
+      @NotNull String manufacturer,
+      @NotNull String modelID,
+      @NotNull String modelName,
+      @NotNull String modelYear,
+      @NotNull String macAddress,
+      @NotNull User user,
+      @NotNull Configuration configuration,
+      @NotNull Status status,
+      @NotNull Location location,
+      @NotNull List<OperatingSystem> operatingSystems) {
+    this.id = id;
+    this.nickname = nickname;
+    this.manufacturer = manufacturer;
+    this.modelID = modelID;
+    this.modelName = modelName;
+    this.modelYear = modelYear;
+    this.macAddress = macAddress;
+    this.user = user;
+    this.configuration = configuration;
+    this.status = status;
+    this.location = location;
+    this.operatingSystems = operatingSystems;
+
+    configuration.getDevices().add(this);
+
+    switch (configuration.getDeviceType()) {
+      case DESKTOP -> configuration.getDesktopConfiguration().setConfiguration(configuration);
+      case LAPTOP -> configuration.getLaptopConfiguration().setConfiguration(configuration);
+    }
+
+    user.getDevices().add(this);
+    location.getDevices().add(this);
+    operatingSystems.forEach(os -> os.getDevices().add(this));
+  }
+
+  public void setConfiguration(Configuration cfg) {
+    this.configuration = cfg;
+
+    if (cfg != null) {
+      configuration.getDevices().add(this);
+
+      switch (configuration.getDeviceType()) {
+        case DESKTOP -> configuration.getDesktopConfiguration().setConfiguration(configuration);
+        case LAPTOP -> configuration.getLaptopConfiguration().setConfiguration(configuration);
+      }
+    }
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+
+    if (user != null) {
+      user.getDevices().add(this);
+    }
+  }
+
+  public void setLocation(Location location) {
+    this.location = location;
+
+    if (location != null) {
+      location.getDevices().add(this);
+    }
+  }
+
+  public void setOperatingSystems(List<OperatingSystem> operatingSystems) {
+    this.operatingSystems = operatingSystems;
+    operatingSystems.forEach(os -> os.getDevices().add(this));
+  }
+
+  @PreRemove
+  private void preRemove() {
+    configuration.getDevices().remove(this);
+    user.getDevices().remove(this);
+    location.getDevices().remove(this);
+    operatingSystems.forEach(os -> os.getDevices().remove(this));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    val device = (Device) o;
+
+    return Objects.equal(id, device.id);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
+  }
 }

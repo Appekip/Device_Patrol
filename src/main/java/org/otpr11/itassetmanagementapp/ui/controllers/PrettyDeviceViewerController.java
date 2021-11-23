@@ -81,6 +81,8 @@ public abstract class PrettyDeviceViewerController {
         createText("Device %s (%s)".formatted(device.getId(), device.getNickname()), TITLE_STYLE));
 
     // Device description
+    val configuration = device.getConfiguration();
+
     addRow(
         createText(
             "%s %s %s %s (%s)"
@@ -88,7 +90,7 @@ public abstract class PrettyDeviceViewerController {
                     device.getModelYear(),
                     device.getManufacturer(),
                     device.getModelName(),
-                    device.getConfiguration().getDeviceType().toString().toLowerCase(),
+                    configuration != null ? configuration.getDeviceType().toString().toLowerCase() : "(unknown device type)",
                     device.getModelID()),
             SUBTITLE_STYLE));
 
@@ -102,43 +104,52 @@ public abstract class PrettyDeviceViewerController {
     addSpacer();
 
     // HW config
-    val configuration = device.getConfiguration();
-
     addRow(createText("Hardware details:", SUBTITLE_STYLE));
     addRow(createText("MAC address: %s".formatted(device.getMacAddress()), BODY_STYLE));
 
-    switch (configuration.getDeviceType()) {
+    if (configuration != null) {
+      switch (configuration.getDeviceType()) {
         // Turning off dupe inspections here because it's more convenient to dupe once than to write
         // tons of code to create a generic type for both desktop and laptop and whatever other
         // future configurations
-      case DESKTOP -> {
-        val cfg = configuration.getDesktopConfiguration();
-        //noinspection DuplicatedCode
-        addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
-        addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
-        addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
-        addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
+        case DESKTOP -> {
+          val cfg = configuration.getDesktopConfiguration();
+          //noinspection DuplicatedCode
+          addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
+          addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
+          addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
+          addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
+        }
+        case LAPTOP -> {
+          val cfg = configuration.getLaptopConfiguration();
+          //noinspection DuplicatedCode
+          addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
+          addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
+          addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
+          addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
+          addRow(createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_STYLE));
+        }
+        default -> throw new IllegalStateException(
+            "Support for device type %s not yet implemented"
+                .formatted(configuration.getDeviceType()));
       }
-      case LAPTOP -> {
-        val cfg = configuration.getLaptopConfiguration();
-        //noinspection DuplicatedCode
-        addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
-        addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
-        addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
-        addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
-        addRow(createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_STYLE));
-      }
-      default -> throw new IllegalStateException(
-          "Support for device type %s not yet implemented"
-              .formatted(configuration.getDeviceType()));
     }
 
-    val osString = new StringBuilder();
-    osString.append("Operating systems:");
-    device
-        .getOperatingSystems()
-        .forEach(os -> osString.append("\n• %s".formatted(os.toPrettyString())));
-    addRow(createText(osString.toString(), BODY_STYLE));
+    String osString;
+
+    if (device.getOperatingSystems().size() > 0) {
+      val str = new StringBuilder();
+
+      device
+          .getOperatingSystems()
+          .forEach(os -> str.append("\n• %s".formatted(os.toPrettyString())));
+
+      osString = str.toString();
+    } else {
+      osString = "N/A";
+    }
+
+    addRow(createText("Operating systems: %s".formatted(osString), BODY_STYLE));
     addSpacer();
 
     // User info
@@ -154,17 +165,20 @@ public abstract class PrettyDeviceViewerController {
       addRow(createText("Email: %s".formatted(user.getEmail()), BODY_STYLE));
       addRow(createText("Phone: %s".formatted(user.getPhone()), BODY_STYLE));
     } else {
-      addRow(createText("In use by: (No user at present)", BODY_STYLE));
+      addRow(createText("In use by: N/A", BODY_STYLE));
     }
 
     val location = device.getLocation();
-    addRow(
-        createText(
-            "Located at: %s (%s)".formatted(location.getId(), location.getNickname()), BODY_STYLE));
-    // TODO: Click to copy on this?
-    addRow(
-        createText(
-            "Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
+    val locString = location != null ? "%s (%s)".formatted(location.getId(), location.getNickname()) : "N/A";
+
+    addRow(createText("Located at: %s".formatted(locString), BODY_STYLE));
+
+    if (location != null) {
+      // TODO: Click to copy on this?
+      addRow(
+          createText(
+              "Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
+    }
 
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
