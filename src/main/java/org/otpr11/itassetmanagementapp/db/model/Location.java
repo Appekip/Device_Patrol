@@ -23,6 +23,7 @@ import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 @NoArgsConstructor
 public class Location extends DTO {
   @Id
+  @Setter
   @Getter
   @NotNull
   @Column(nullable = false, length = 64, name = "location_id")
