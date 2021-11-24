@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.PreRemove;
@@ -29,7 +30,7 @@ import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 @NoArgsConstructor
 public class Location extends DTO {
   @Getter(AccessLevel.PACKAGE)
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @Exclude
   private final List<Device> devices = new ArrayList<>();
 

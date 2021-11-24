@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.ToString.Exclude;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
@@ -80,7 +79,6 @@ public class Device extends DTO {
   @ManyToMany(
       cascade = {CascadeType.PERSIST},
       fetch = FetchType.EAGER)
-  @Exclude
   private List<OperatingSystem> operatingSystems;
 
   public Device(
@@ -157,10 +155,21 @@ public class Device extends DTO {
 
   @PreRemove
   private void preRemove() {
-    configuration.getDevices().remove(this);
-    user.getDevices().remove(this);
-    location.getDevices().remove(this);
-    operatingSystems.forEach(os -> os.getDevices().remove(this));
+    if (configuration != null) {
+      configuration.getDevices().remove(this);
+    }
+
+    if (user != null) {
+      user.getDevices().remove(this);
+    }
+
+    if (location != null) {
+      location.getDevices().remove(this);
+    }
+
+    if (operatingSystems.size() > 0) {
+      operatingSystems.forEach(os -> os.getDevices().remove(this));
+    }
   }
 
   @Override

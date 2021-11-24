@@ -189,14 +189,6 @@ public class DeviceEditorController implements Initializable, ViewController {
           AlertType.ERROR,
           "No operating system selected",
           "No operating system has been selected for this device.");
-    } else if (userSelector.getSelectionModel().getSelectedIndex() == -1) {
-      AlertUtils.showAlert(
-          AlertType.ERROR, "No user selected", "No user has been selected for this device.");
-    } else if (locationSelector.getSelectionModel().getSelectedIndex() == -1) {
-      AlertUtils.showAlert(
-          AlertType.ERROR,
-          "No location selected",
-          "No location has been selected for this device.");
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
       AlertUtils.showAlert(
           AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
@@ -224,15 +216,24 @@ public class DeviceEditorController implements Initializable, ViewController {
       }
 
       // Determine metadata like user, location and status
-      val user = dao.users.getAll().get(getChoiceIndex(userSelector));
-      val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
       val status = dao.statuses.getAll().get(getChoiceIndex(statusSelector));
 
       // Update device object
       device.setConfiguration(hwConfig);
       device.setOperatingSystems(osList);
-      device.setUser(user);
-      device.setLocation(location);
+
+      // If user is selected (optional)
+      if (getChoiceIndex(userSelector) != -1) {
+        val user = dao.users.getAll().get(getChoiceIndex(userSelector));
+        device.setUser(user);
+      }
+
+      // If location is selected (optional)
+      if (getChoiceIndex(locationSelector) != -1) {
+        val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
+        device.setLocation(location);
+      }
+
       device.setStatus(status);
 
       // Save
