@@ -21,7 +21,7 @@
          </padding>
       </Label>
       <TextField fx:id="addressField" />
-      <Label text="Nicname">
+      <Label text="Nickname">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>
@@ -35,12 +35,12 @@
       <TextField fx:id="idField" />
       <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button fx:id="cancelBtn" alignment="TOP_LEFT" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Cancel">
+            <Button fx:id="cancelButton" alignment="TOP_LEFT" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Cancel">
                <HBox.margin>
                   <Insets right="10.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="saveBtn" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Save">
+            <Button fx:id="okButton" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="OK">
                <HBox.margin>
                   <Insets left="10.0" />
                </HBox.margin>

@@ -20,9 +20,7 @@ import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
-import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
-import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
@@ -34,8 +32,6 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final OperatingSystem operatingSystem = new OperatingSystem();
-  private final Configuration configuration = new Configuration();
-  private final Status status = new Status();
   private final Validator validator = new Validator();
   @Setter private Main main;
   @Setter private Stage stage;
@@ -58,24 +54,19 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   }
 
   private void onSave(ActionEvent event) {
-    if (validator.containsErrors()) {
+    if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
           AlertType.ERROR,
           "Invalid input",
           "One or more required field values are missing or invalid.");
-    } else if (osSelector.getCheckModel().getCheckedItems().size() == 0) {
-      AlertUtils.showAlert(
-          AlertType.ERROR,
-          "No operating system selected",
-          "No operating system has been selected for this device.");
-    } else if (!IS_EDIT_MODE && dao.devices.get(nameField.getText()) != null) {
-      AlertUtils.showAlert(
-          AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
     } else {
       // Set basic properties
       operatingSystem.setName(nameField.getText());
       operatingSystem.setBuildNumber(buildNumberField.getText());
       operatingSystem.setVersion(versionField.getText());
+
+      dao.devices.save(operatingSystem);
+      stage.close();
     }
   }
 
