@@ -1,27 +1,39 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.ToString.Exclude;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
+import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 
 /** Represents a user of a {@link Device}. */
 @Entity
 @Table(name = "users")
 @ToString
 @EntityListeners({DatabaseEventPropagator.class})
-@AllArgsConstructor
 @NoArgsConstructor
 public class User extends DTO {
+  @Getter(AccessLevel.PACKAGE)
+  @OneToMany(fetch = FetchType.EAGER)
+  @Exclude
+  private final List<Device> devices = new ArrayList<>();
+
   @Id
   @Getter
   @Setter
@@ -52,4 +64,27 @@ public class User extends DTO {
   @NotNull
   @Column(nullable = false)
   private String email;
+
+  public User(
+      @NotNull String id,
+      @NotNull String firstName,
+      @NotNull String lastName,
+      @NotNull String phone,
+      @NotNull String email) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.phone = phone;
+    this.email = email;
+  }
+
+  @PreRemove
+  private void preRemove() {
+    val dao = GlobalDAO.getInstance();
+
+    for (val device : devices) {
+      device.setUser(null);
+      dao.devices.save(device);
+    }
+  }
 }

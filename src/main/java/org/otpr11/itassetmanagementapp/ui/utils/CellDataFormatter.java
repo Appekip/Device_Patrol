@@ -10,11 +10,15 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
 public abstract class CellDataFormatter {
   public static SimpleStringProperty formatHWConfig(CellDataFeatures<Device, String> data) {
     val cfg = data.getValue().getConfiguration();
-    return new SimpleStringProperty(StringUtils.getPrettyHWConfig(cfg));
+    return new SimpleStringProperty(cfg != null ? StringUtils.getPrettyHWConfig(cfg) : "N/A");
   }
 
   public static SimpleStringProperty formatOS(CellDataFeatures<Device, String> data) {
     val operatingSystems = data.getValue().getOperatingSystems();
+
+    if (operatingSystems.size() == 0) {
+      return new SimpleStringProperty("N/A");
+    }
 
     val content = new StringBuilder();
 
@@ -32,14 +36,18 @@ public abstract class CellDataFormatter {
   }
 
   public static SimpleStringProperty formatUser(CellDataFeatures<Device, String> data) {
-    return new SimpleStringProperty(data.getValue().getUser().getId());
+    val user = data.getValue().getUser();
+    return new SimpleStringProperty(user != null ? user.getId() : "N/A");
   }
 
   public static SimpleStringProperty formatLocation(CellDataFeatures<Device, String> data) {
-    return new SimpleStringProperty(data.getValue().getLocation().getId());
+    val location = data.getValue().getLocation();
+    return new SimpleStringProperty(location != null ? location.getId() : "N/A");
   }
 
   public static SimpleStringProperty formatDeviceType(CellDataFeatures<Device, String> data) {
-    return new SimpleStringProperty(data.getValue().getConfiguration().getDeviceType().toString());
+    val cfg = data.getValue().getConfiguration();
+
+    return new SimpleStringProperty(cfg != null ? cfg.getDeviceType().toString() : "UNKNOWN");
   }
 }

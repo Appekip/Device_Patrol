@@ -17,23 +17,28 @@ import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
+import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
 public class OperatingSystemEditorController implements Initializable, ViewController {
-  @Setter private Main main;
-  @Setter private Stage stage;
-  @Setter private Object sceneChangeData;
-
-
-  @Override
-  public void afterInitialize() {}
-
+  private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
+  private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
+  private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
+  @Setter private Main main;
+  @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
+  @FXML private TextField nameField, buildNumberField, versionField;
+  @FXML private Button okButton, cancelButton;
+  @FXML private CheckComboBox<String> osSelector;
+
 
   @FXML
   private TextField nameField,
@@ -43,6 +48,9 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   @FXML
   private Button okButton,
     cancelButton;
+
+  @Override
+  public void afterInitialize() {}
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
@@ -72,6 +80,7 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
 
     }
   }
+
   private void onCancel(ActionEvent event) {
     stage.close();
   }

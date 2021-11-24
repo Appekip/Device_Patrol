@@ -84,8 +84,7 @@ public class MainViewController implements Initializable, ViewController, Databa
               event -> {
                 // Show pointer cursor and tooltip when hovering over rows that have items
                 // We have to it on hover because we can't set the pointer style properly at
-                // startup,
-                // and instead must do it dynamically at runtime because JavaFX
+                // startup, and instead must do it dynamically at runtime because JavaFX
                 // HACK: If someone from the future is trying to style rows and wonders why their
                 // styles keep resetting, this is why
                 if (row.getItem() != null) {
@@ -251,6 +250,7 @@ public class MainViewController implements Initializable, ViewController, Databa
   }
 
   private void updateItems(List<Device> devices) {
+    devices.sort(Comparator.comparing(Device::getId));
     deviceTable.setItems(FXCollections.observableArrayList(devices));
   }
 
@@ -277,11 +277,11 @@ public class MainViewController implements Initializable, ViewController, Databa
       }
       case POST_UPDATE -> {
         if (entity instanceof Device device) {
-          val items = dao.devices.getAll();
+          val devices = dao.devices.getAll();
           Integer updatedIndex = null;
 
-          for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getId().equals(((Device) entity).getId())) {
+          for (int i = 0; i < devices.size(); i++) {
+            if (devices.get(i).getId().equals(((Device) entity).getId())) {
               updatedIndex = i;
             }
           }
@@ -290,12 +290,19 @@ public class MainViewController implements Initializable, ViewController, Databa
             throw new IllegalStateException("Non-existent device %s updated");
           }
 
-          items.set(updatedIndex, device);
-          items.sort(Comparator.comparing(Device::getId));
-          updateItems(items);
+          devices.set(updatedIndex, device);
+          updateItems(devices);
         }
       }
-      case POST_PERSIST -> updateItems(dao.devices.getAll());
+      case POST_PERSIST -> {
+        // Hibernate results take some time to become 100% accurate, so let's add our new device
+        // to the list manually in the meantime
+        if (entity instanceof Device device) {
+          val devices = dao.devices.getAll();
+          devices.add(device);
+          updateItems(devices);
+        }
+      }
     }
   }
 

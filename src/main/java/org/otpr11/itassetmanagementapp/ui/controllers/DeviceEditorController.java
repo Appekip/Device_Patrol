@@ -29,12 +29,12 @@ import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
@@ -49,7 +49,7 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
 public class DeviceEditorController implements Initializable, ViewController {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
-  private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
+  private static final String SELECTOR_DEFAULT_TILE = "Select...";
   private static boolean IS_EDIT_MODE;
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
@@ -130,7 +130,7 @@ public class DeviceEditorController implements Initializable, ViewController {
         };
 
     osSelector.getItems().addAll(operatingSystems);
-    osSelector.setTitle(OS_SELECTOR_DEFAULT_TILE);
+    osSelector.setTitle(SELECTOR_DEFAULT_TILE);
     osSelector
         .getCheckModel()
         .getCheckedItems()
@@ -150,11 +150,15 @@ public class DeviceEditorController implements Initializable, ViewController {
                       if (changeList.size() != 0) {
                         osSelector.setTitle(String.join(", ", changeList));
                       } else {
-                        osSelector.setTitle(OS_SELECTOR_DEFAULT_TILE);
+                        osSelector.setTitle(SELECTOR_DEFAULT_TILE);
                       }
                     }
                   }
                 });
+
+    configSelector.setValue(SELECTOR_DEFAULT_TILE);
+    userSelector.setValue(SELECTOR_DEFAULT_TILE);
+    locationSelector.setValue(SELECTOR_DEFAULT_TILE);
 
     addHWConfigButton.setOnAction(event -> main.showHWConfigEditor(null));
     addOSButton.setOnAction(event -> main.showOSEditor(null));
@@ -175,6 +179,11 @@ public class DeviceEditorController implements Initializable, ViewController {
           AlertType.ERROR,
           "Invalid input",
           "One or more required field values are missing or invalid.");
+    } else if (configSelector.getSelectionModel().getSelectedIndex() == -1) {
+      AlertUtils.showAlert(
+          AlertType.ERROR,
+          "No hardware configuration selected",
+          "No hardware configuration has been selected for this device.");
     } else if (osSelector.getCheckModel().getCheckedItems().size() == 0) {
       AlertUtils.showAlert(
           AlertType.ERROR,
@@ -207,15 +216,24 @@ public class DeviceEditorController implements Initializable, ViewController {
       }
 
       // Determine metadata like user, location and status
-      val user = dao.users.getAll().get(getChoiceIndex(userSelector));
-      val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
       val status = dao.statuses.getAll().get(getChoiceIndex(statusSelector));
 
       // Update device object
       device.setConfiguration(hwConfig);
       device.setOperatingSystems(osList);
-      device.setUser(user);
-      device.setLocation(location);
+
+      // If user is selected (optional)
+      if (getChoiceIndex(userSelector) != -1) {
+        val user = dao.users.getAll().get(getChoiceIndex(userSelector));
+        device.setUser(user);
+      }
+
+      // If location is selected (optional)
+      if (getChoiceIndex(locationSelector) != -1) {
+        val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
+        device.setLocation(location);
+      }
+
       device.setStatus(status);
 
       // Save
@@ -289,7 +307,10 @@ public class DeviceEditorController implements Initializable, ViewController {
       val device = dao.devices.get((String) sceneChangeData);
 
       // Fill in data for this device
-      select(deviceTypeSelector, device.getConfiguration().getDeviceType().toString());
+      val cfg = device.getConfiguration();
+      select(
+          deviceTypeSelector,
+          cfg != null ? cfg.getDeviceType().toString() : DeviceType.LAPTOP.toString());
 
       deviceIDField.setText(device.getId());
       nicknameField.setText(device.getNickname());
@@ -299,7 +320,9 @@ public class DeviceEditorController implements Initializable, ViewController {
       modelYearField.setText(device.getModelYear());
       macAddressField.setText(device.getMacAddress());
 
-      select(configSelector, StringUtils.getPrettyHWConfig(device.getConfiguration()));
+      if (device.getConfiguration() != null) {
+        select(configSelector, StringUtils.getPrettyHWConfig(device.getConfiguration()));
+      }
 
       val checkModel = osSelector.getCheckModel();
 
@@ -307,8 +330,14 @@ public class DeviceEditorController implements Initializable, ViewController {
         checkModel.check(os.toPrettyString());
       }
 
-      select(userSelector, device.getUser().getId());
-      select(locationSelector, device.getLocation().getId());
+      if (device.getUser() != null) {
+        select(userSelector, device.getUser().getId());
+      }
+
+      if (device.getLocation() != null) {
+        select(locationSelector, device.getLocation().getId());
+      }
+
       select(statusSelector, device.getStatus().toString());
     } else {
       IS_EDIT_MODE = false;

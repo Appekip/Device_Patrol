@@ -149,6 +149,8 @@ public class GlobalDAO {
       transaction.commit();
       return result;
     } catch (Exception e) {
+      log.error("Transaction error:", e);
+
       if (transaction != null) {
         transaction.rollback();
       }
@@ -174,6 +176,7 @@ public class GlobalDAO {
 
       return session.createQuery(query).getResultList();
     } catch (Exception e) {
+      log.error("Transaction error:", e);
       throw new DatabaseQueryException(e);
     }
   }
@@ -193,6 +196,8 @@ public class GlobalDAO {
       session.saveOrUpdate(dto);
       transaction.commit();
     } catch (Exception e) {
+      log.error("Transaction error:", e);
+
       if (transaction != null) {
         transaction.rollback();
       }
@@ -216,6 +221,8 @@ public class GlobalDAO {
       session.delete(dto);
       transaction.commit();
     } catch (Exception e) {
+      log.error("Transaction error:", e);
+
       if (transaction != null) {
         transaction.rollback();
       }
