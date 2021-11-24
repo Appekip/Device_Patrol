@@ -8,5 +8,15 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/devices</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="org:otpr11:itassetmanagementapp:config:hibernate.cfg.xml/Hibernate" uuid="c426c2fc-87fc-4e03-abb6-84a5785ec279">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate
+
+C:/Users/35840/ohtu/it-asset-management-app/src/main/resources/org/otpr11/itassetmanagementapp/config/hibernate.cfg.xml</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

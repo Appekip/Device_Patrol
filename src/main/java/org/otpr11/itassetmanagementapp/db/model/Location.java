@@ -35,6 +35,7 @@ public class Location extends DTO {
   private final List<Device> devices = new ArrayList<>();
 
   @Id
+  @Setter
   @Getter
   @NotNull
   @Column(nullable = false, length = 64, name = "location_id")
