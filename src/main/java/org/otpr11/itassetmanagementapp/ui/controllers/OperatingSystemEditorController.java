@@ -15,11 +15,12 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.synedra.validatorfx.Validator;
+import org.controlsfx.control.CheckComboBox;
 import org.otpr11.itassetmanagementapp.Main;
+import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
+import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
-import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
-import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
@@ -38,16 +39,6 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   @FXML private TextField nameField, buildNumberField, versionField;
   @FXML private Button okButton, cancelButton;
   @FXML private CheckComboBox<String> osSelector;
-
-
-  @FXML
-  private TextField nameField,
-    buildNumberField,
-    versionField;
-
-  @FXML
-  private Button okButton,
-    cancelButton;
 
   @Override
   public void afterInitialize() {}
@@ -68,8 +59,7 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
           AlertType.ERROR,
           "Invalid input",
           "One or more required field values are missing or invalid.");
-    }
-    else {
+    } else {
       // Set basic properties
       operatingSystem.setName(nameField.getText());
       operatingSystem.setBuildNumber(buildNumberField.getText());
@@ -77,7 +67,6 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
 
       dao.devices.save(operatingSystem);
       stage.close();
-
     }
   }
 

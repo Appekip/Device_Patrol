@@ -23,9 +23,9 @@ import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
-import org.otpr11.itassetmanagementapp.db.model.configuration.Configuration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.DesktopConfiguration;
-import org.otpr11.itassetmanagementapp.db.model.configuration.LaptopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
@@ -39,31 +39,20 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
 
-
   private final List<String> deviceTypes =
-        Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
+      Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
 
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  @FXML
-  private ChoiceBox<String> deviceTypeField;
+  @FXML private ChoiceBox<String> deviceTypeField;
 
-  @FXML
-  private TextField cpuField,
-      diskSizeField,
-      screenSizeField,
-      gpuField,
-      memoryField;
+  @FXML private TextField cpuField, diskSizeField, screenSizeField, gpuField, memoryField;
 
-  @FXML
-  private Text screenSizeText;
+  @FXML private Text screenSizeText;
 
-  @FXML
-  private Button okButton,
-      cancelButton;
-
+  @FXML private Button okButton, cancelButton;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -71,7 +60,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     createTextFieldValidator(diskSizeField, "diskSize", diskSizeField.textProperty());
     createTextFieldValidator(gpuField, "gpu", gpuField.textProperty());
     createTextFieldValidator(memoryField, "memory", memoryField.textProperty());
-    //createTextFieldValidator(screenSizeField, "screenSize", screenSizeField.textProperty());
+    // createTextFieldValidator(screenSizeField, "screenSize", screenSizeField.textProperty());
 
     initDropdown(deviceTypeField, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
 
@@ -82,8 +71,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
             screenSizeField.setEditable(false);
             screenSizeField.setVisible(false);
             screenSizeText.setVisible(false);
-          }
-          else {
+          } else {
             screenSizeField.setEditable(true);
             screenSizeField.setVisible(true);
             screenSizeText.setVisible(true);
@@ -106,17 +94,13 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
           AlertType.ERROR,
           "Invalid input",
           "One or more required field values are missing or invalid.");
-    }
-    else {
+    } else {
       if (deviceTypeField.getValue().equals("LAPTOP")) {
         saveLaptop();
-      }
-      else {
+      } else {
         saveDesktop();
       }
     }
-
-
   }
 
   private void saveLaptop() {
@@ -148,7 +132,6 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     stage.close();
   }
 
-
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
@@ -165,8 +148,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
                 if (!edited.get()) { // Not yet edited, show only warning
                   ctx.warn(warn);
                   edited.set(true);
-                }
-                else { // Already edited, show error now
+                } else { // Already edited, show error now
                   ctx.error(error);
                 }
               }
@@ -175,8 +157,6 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
         .immediate();
   }
 
-
   @Override
-  public void afterInitialize() {
-  }
+  public void afterInitialize() {}
 }
