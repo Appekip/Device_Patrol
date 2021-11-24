@@ -84,8 +84,7 @@ public class MainViewController implements Initializable, ViewController, Databa
               event -> {
                 // Show pointer cursor and tooltip when hovering over rows that have items
                 // We have to it on hover because we can't set the pointer style properly at
-                // startup,
-                // and instead must do it dynamically at runtime because JavaFX
+                // startup, and instead must do it dynamically at runtime because JavaFX
                 // HACK: If someone from the future is trying to style rows and wonders why their
                 // styles keep resetting, this is why
                 if (row.getItem() != null) {

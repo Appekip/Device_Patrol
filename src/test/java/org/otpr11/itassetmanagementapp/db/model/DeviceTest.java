@@ -23,7 +23,6 @@ class DeviceTest {
     openMocks(this);
     val mockConfiguration = new Configuration();
     mockConfiguration.setLaptopConfiguration(mockLaptopConfiguration);
-    System.out.println(mockConfiguration);
     deviceUnderTest =
         new Device(
             "id",
@@ -43,7 +42,7 @@ class DeviceTest {
   @Test
   void testToString() {
     assertEquals(
-        "Device(id=id, nickname=nickname, manufacturer=manufacturer, modelID=modelID, modelName=modelName, modelYear=modelYear, macAddress=macAddress, user=mockUser, configuration=Configuration(id=0, desktopConfiguration=null, laptopConfiguration=mockLaptopConfiguration, deviceType=LAPTOP), location=mockLocation, status=mockStatus)",
+        "Device(id=id, nickname=nickname, manufacturer=manufacturer, modelID=modelID, modelName=modelName, modelYear=modelYear, macAddress=macAddress, user=mockUser, configuration=Configuration(id=0, desktopConfiguration=null, laptopConfiguration=mockLaptopConfiguration, deviceType=LAPTOP), location=mockLocation, status=mockStatus, operatingSystems=[OperatingSystem(id=0, name=name, version=version, buildNumber=buildNumber)])",
         deviceUnderTest.toString());
   }
 }
