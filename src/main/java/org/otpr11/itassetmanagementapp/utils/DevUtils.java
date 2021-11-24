@@ -74,11 +74,5 @@ public abstract class DevUtils {
               osList);
       dao.devices.save(device);
     }
-
-    dao.configurations.delete(desktopCfg1);
-    dao.users.delete(user);
-    dao.locations.delete(loc);
-    dao.operatingSystems.delete(os1);
-    dao.operatingSystems.delete(os2);
   }
 }
