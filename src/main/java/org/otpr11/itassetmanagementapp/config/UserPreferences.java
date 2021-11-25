@@ -5,8 +5,10 @@ import java.util.prefs.Preferences;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+@Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class UserPreferences {
   private static final String NODE_NAME = "org.otpr11.itassetmanagementapp.config";
@@ -16,6 +18,7 @@ public abstract class UserPreferences {
     if (Boolean.parseBoolean(Config.getConfig().get("FORCE_USERPREF_RESET"))) {
       try {
         preferences.clear();
+        log.warn("User preferences forcibly reset.");
       } catch (BackingStoreException e) {
         AlertUtils.showExceptionAlert("Could not reset user preferences.", e);
       }
