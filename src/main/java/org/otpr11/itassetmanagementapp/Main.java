@@ -33,7 +33,6 @@ public class Main extends Application {
     }
 
     launch();
-
   }
 
   @Override
@@ -132,6 +131,7 @@ public class Main extends Application {
 
       if (sceneDef.isPopup()) {
         stage.initModality(Modality.APPLICATION_MODAL);
+        stage.initOwner(primaryStage);
       }
 
       initStage(stage, sceneDef);
