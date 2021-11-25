@@ -7,6 +7,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -63,6 +64,7 @@ public class Main extends Application {
     primaryStage.setWidth(width);
     primaryStage.setHeight(height);
     primaryStage.setMaximized(isMaximized);
+
 
     // Save window position on program shutdown
     Runtime.getRuntime()
