@@ -58,11 +58,11 @@
                 <MenuItem mnemonicParsing="false" onAction="#handleAboutClick" text="About" />
               </items>
             </Menu>
-                  <Menu fx:id="languageBtn" mnemonicParsing="false" text="Language">
+                  <Menu mnemonicParsing="false" text="Language">
                      <items>
-                        <MenuItem fx:id="engSelect" mnemonicParsing="false" onAction="#handleAboutClick" text="English" />
-                        <MenuItem fx:id="finSelect" mnemonicParsing="false" onAction="#handleAboutClick" text="Finnish" />
-                        <MenuItem fx:id="sweSelect" mnemonicParsing="false" onAction="#handleAboutClick" text="Swedish" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleEngClick" text="English" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleFinClick" text="Finnish" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleSweClick" text="Swedish" />
                      </items>
                   </Menu>
           </menus>

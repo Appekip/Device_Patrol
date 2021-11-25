@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
@@ -46,6 +47,7 @@ public class MainViewController implements Initializable, ViewController, Databa
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -308,4 +310,16 @@ public class MainViewController implements Initializable, ViewController, Databa
 
   @Override
   public void afterInitialize() {}
+
+  public void handleEngClick(ActionEvent actionEvent) {
+
+  }
+
+  public void handleFinClick(ActionEvent actionEvent) {
+
+  }
+
+  public void handleSweClick(ActionEvent actionEvent) {
+
+  }
 }
