@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp;
 import static org.otpr11.itassetmanagementapp.config.UserPreferences.getSettingName;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,12 +18,14 @@ import org.otpr11.itassetmanagementapp.config.UserPreferences;
 import org.otpr11.itassetmanagementapp.config.UserPreferences.Settings;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.DevUtils;
 import org.otpr11.itassetmanagementapp.utils.LogUtils;
 
 @Log4j2
 public class Main extends Application {
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private Stage primaryStage;
 
   public static void main(String[] args) {
@@ -107,7 +110,7 @@ public class Main extends Application {
    */
   private void initStage(Stage stage, Scenes sceneDef) {
     // Set stage title
-    stage.setTitle(sceneDef.getStageTitle());
+    stage.setTitle(locale.getString("%s_stage_title".formatted(sceneDef.toString().toLowerCase())));
   }
 
   /**

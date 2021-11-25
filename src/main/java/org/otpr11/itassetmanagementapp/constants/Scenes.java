@@ -5,8 +5,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum Scenes {
-  MAIN("scenes/MainView.fxml", "IT Asset Manager", true, false),
-  DEVICE_EDITOR("scenes/DeviceEditor.fxml", "Manage device", false, true),
+  // TODO: Remove the stage title property
+  MAIN("scenes/MainView.fxml", "TO BE REPLACED", true, false),
+  DEVICE_EDITOR("scenes/DeviceEditor.fxml", "TO BE REPLACED", false, true),
   HW_CFG_EDITOR(
       "scenes/HardwareConfigurationEditor.fxml", "Manage hardware configuration", false, true),
   OS_EDITOR("scenes/OperatingSystemEditor.fxml", "Manage operating system", false, true),
