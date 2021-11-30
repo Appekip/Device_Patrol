@@ -190,6 +190,7 @@ public class DeviceEditorController implements Initializable, ViewController {
           "No operating system selected",
           "No operating system has been selected for this device.");
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
+      // FIXME: This might allow overwriting, need to check it in a more sophisticated manner
       AlertUtils.showAlert(
           AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
     } else {
