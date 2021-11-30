@@ -4,6 +4,7 @@ import static org.otpr11.itassetmanagementapp.utils.JFXUtils.getChoiceIndex;
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
 import java.net.URL;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,13 +82,13 @@ public class DeviceEditorController implements Initializable, ViewController {
       statusSelector,
       userSelector,
       locationSelector,
-      configSelector;
+      configSelector,
+      modelYearSelector;
   @FXML
   private TextField deviceIDField,
       manufacturerField,
       modelIDField,
       modelNameField,
-      modelYearField,
       nicknameField,
       macAddressField;
   @FXML
@@ -104,7 +106,6 @@ public class DeviceEditorController implements Initializable, ViewController {
     createTextFieldValidator(manufacturerField, "manufacturer", manufacturerField.textProperty());
     createTextFieldValidator(modelIDField, "modelID", modelIDField.textProperty());
     createTextFieldValidator(modelNameField, "modelName", modelNameField.textProperty());
-    createTextFieldValidator(modelYearField, "modelYear", modelYearField.textProperty());
     createTextFieldValidator(nicknameField, "nickname", nicknameField.textProperty());
     createTextFieldValidator(macAddressField, "macAddress", macAddressField.textProperty());
 
@@ -156,6 +157,7 @@ public class DeviceEditorController implements Initializable, ViewController {
                   }
                 });
 
+    modelYearSelector.setValue(Integer.toString(Year.now().getValue()));
     configSelector.setValue(SELECTOR_DEFAULT_TILE);
     userSelector.setValue(SELECTOR_DEFAULT_TILE);
     locationSelector.setValue(SELECTOR_DEFAULT_TILE);
@@ -166,6 +168,10 @@ public class DeviceEditorController implements Initializable, ViewController {
     addLocationButton.setOnAction(event -> main.showLocationEditor(null));
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
+
+    for (int year = Year.now().getValue(); year > 1969; year--){
+        modelYearSelector.getItems().add(Integer.toString(year));
+    }
   }
 
   private void initDropdown(ChoiceBox<String> dropdown, List<String> items, String initialValue) {
@@ -198,7 +204,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       device.setManufacturer(manufacturerField.getText());
       device.setModelID(modelIDField.getText());
       device.setModelName(modelNameField.getText());
-      device.setModelYear(modelYearField.getText());
+      device.setModelYear(modelYearSelector.getValue());
       device.setMacAddress(macAddressField.getText());
       device.setNickname(nicknameField.getText());
 
@@ -317,7 +323,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       manufacturerField.setText(device.getManufacturer());
       modelNameField.setText(device.getModelName());
       modelIDField.setText(device.getModelID());
-      modelYearField.setText(device.getModelYear());
+      modelYearSelector.setValue(device.getModelYear());
       macAddressField.setText(device.getMacAddress());
 
       if (device.getConfiguration() != null) {
