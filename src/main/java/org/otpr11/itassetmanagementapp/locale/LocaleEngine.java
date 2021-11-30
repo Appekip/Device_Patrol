@@ -3,7 +3,9 @@ package org.otpr11.itassetmanagementapp.locale;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.prefs.Preferences;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
@@ -11,6 +13,7 @@ import org.otpr11.itassetmanagementapp.config.UserPreferences;
 import org.otpr11.itassetmanagementapp.config.UserPreferences.Settings;
 
 @Log4j2
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class LocaleEngine {
   private static final String PREFERRED_LOCALE_SETTING = Settings.PREFERRED_LOCALE.toString();
   private static final Preferences settings = UserPreferences.get();

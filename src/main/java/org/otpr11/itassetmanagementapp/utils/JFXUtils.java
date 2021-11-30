@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp.utils;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 import lombok.val;
 
 /** Generic JavaFX utilities. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class JFXUtils {
   /**
    * Shortcut to get the selection index of a {@link ChoiceBox}.
