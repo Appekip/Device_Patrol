@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -36,6 +37,7 @@ import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
@@ -252,6 +254,7 @@ public class MainViewController implements Initializable, ViewController, Databa
   }
 
   private void updateItems(List<Device> devices) {
+
     devices.sort(Comparator.comparing(Device::getId));
     deviceTable.setItems(FXCollections.observableArrayList(devices));
   }
@@ -308,18 +311,18 @@ public class MainViewController implements Initializable, ViewController, Databa
     }
   }
 
-  @Override
-  public void afterInitialize() {}
-
   public void handleEngClick(ActionEvent actionEvent) {
-
+    LocaleEngine.setUserLocale(Locale.ENGLISH);
   }
 
   public void handleFinClick(ActionEvent actionEvent) {
-
+    LocaleEngine.setUserLocale(Locale.forLanguageTag("fi-FI"));
   }
 
   public void handleSweClick(ActionEvent actionEvent) {
-
+    LocaleEngine.setUserLocale(Locale.forLanguageTag("sv-SV"));
   }
+
+  @Override
+  public void afterInitialize() {}
 }

@@ -8,7 +8,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -18,6 +17,7 @@ import org.otpr11.itassetmanagementapp.config.Config;
 import org.otpr11.itassetmanagementapp.config.UserPreferences;
 import org.otpr11.itassetmanagementapp.config.UserPreferences.Settings;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -25,7 +25,7 @@ import org.otpr11.itassetmanagementapp.utils.DevUtils;
 import org.otpr11.itassetmanagementapp.utils.LogUtils;
 
 @Log4j2
-public class Main extends Application {
+public class Main extends Application implements LocaleChangeListener {
   private final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private Stage primaryStage;
 
@@ -37,11 +37,12 @@ public class Main extends Application {
     }
 
     launch();
-
   }
 
   @Override
   public void start(Stage primary) {
+    LocaleEngine.addListener(this);
+
     primaryStage = primary;
 
     // Remember window positions across program reboots
@@ -67,7 +68,6 @@ public class Main extends Application {
     primaryStage.setWidth(width);
     primaryStage.setHeight(height);
     primaryStage.setMaximized(isMaximized);
-
 
     // Save window position on program shutdown
     Runtime.getRuntime()
@@ -160,5 +160,10 @@ public class Main extends Application {
       log.error("Could not open view {}:", sceneResourcePath, e);
       AlertUtils.showExceptionAlert("Could not open view %s.".formatted(sceneResourcePath), e);
     }
+  }
+
+  @Override
+  public void onLocaleChange() {
+    primaryStage.setTitle(locale.getString("main_stage_title"));
   }
 }
