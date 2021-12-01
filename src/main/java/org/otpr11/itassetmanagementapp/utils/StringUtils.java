@@ -3,6 +3,8 @@ package org.otpr11.itassetmanagementapp.utils;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.model.Configuration;
@@ -13,6 +15,7 @@ import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 /**
  * Generic string utilities.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class StringUtils {
   /** Creates a complete string representation of an exception stack trace. */
   public static String getFullExceptionStack(@NotNull Exception e) {

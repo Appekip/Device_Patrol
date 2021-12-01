@@ -31,10 +31,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 
 /** Generic alert utilities. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class AlertUtils {
 
   /**

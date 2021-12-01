@@ -1,6 +1,8 @@
 package org.otpr11.itassetmanagementapp.utils;
 
 import java.util.ArrayList;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -13,6 +15,7 @@ import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
 
 /** Generic development utilities. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class DevUtils {
   private static final GlobalDAO dao = GlobalDAO.getInstance();
 

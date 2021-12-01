@@ -2,11 +2,14 @@ package org.otpr11.itassetmanagementapp.ui.utils;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
 /** Formatter to turn nested data types in table cells into their correct string representations. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class CellDataFormatter {
   public static SimpleStringProperty formatHWConfig(CellDataFeatures<Device, String> data) {
     val cfg = data.getValue().getConfiguration();
