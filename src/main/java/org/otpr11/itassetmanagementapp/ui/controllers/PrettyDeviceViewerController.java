@@ -9,13 +9,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils.TextProperties;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class PrettyDeviceViewerController {
   private static final int TITLE_TEXT_SIZE = 22;
   private static final int SUBTITLE_TEXT_SIZE = 16;
