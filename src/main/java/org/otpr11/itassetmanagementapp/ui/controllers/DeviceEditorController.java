@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -153,6 +154,25 @@ public class DeviceEditorController implements Initializable, ViewController {
                   }
                 });
 
+    // Listen for status being set to VACANT, and remove user if selected
+    statusSelector
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            (options, oldValue, newValue) -> {
+              if (newValue.equals(DeviceStatus.VACANT.toString())) {
+                val result =
+                    AlertUtils.showAlert(
+                        AlertType.CONFIRMATION,
+                        "Set status to VACANT and remove user?",
+                        "Setting device status to VACANT will remove its current user. Are you sure you want to proceed?");
+
+                if (result.getButtonData() == ButtonData.OK_DONE) {
+                  userSelector.getSelectionModel().selectFirst();
+                }
+              }
+            });
+
     for (int year = Year.now().getValue(); year >= 1970; year--) {
       modelYearSelector.getItems().add(year);
     }
@@ -179,15 +199,15 @@ public class DeviceEditorController implements Initializable, ViewController {
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void initDropdown(ComboBox dropdown, List items, boolean isNullable) {
     if (isNullable) {
-      dropdown.getItems().add(SELECTOR_DEFAULT_TITLE);
+      items.add(0, SELECTOR_DEFAULT_TITLE);
     }
 
-    dropdown.getItems().addAll(items);
+    dropdown.getItems().setAll(items);
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void initDropdown(ComboBox dropdown, List items, String initialValue) {
-    dropdown.getItems().addAll(items);
+    dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
@@ -216,6 +236,15 @@ public class DeviceEditorController implements Initializable, ViewController {
         osSelectorTitle.setText("⚠️ " + osSelectorTitle.getText());
         osSelectorTitle.setFill(Color.RED);
       }
+    } else if (statusSelector
+            .getSelectionModel()
+            .getSelectedItem()
+            .equals(DeviceStatus.IN_USE.toString())
+        && getChoiceIndex(userSelector) <= 0) {
+      AlertUtils.showAlert(
+          AlertType.ERROR,
+          "Status set to IN_USE, but device has no user",
+          "A device cannot be set to status IN_USE without a user being selected.");
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
       AlertUtils.showAlert(
           AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
