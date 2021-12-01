@@ -26,7 +26,6 @@ import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
  * , should they wish to actually receive events. This behaviour is subject to change in the future,
  * as there are plans to turn {@link DatabaseEventListener} into an annotation instead.
  */
-// TODO: Turn listener registration into a custom annotation instead?
 @Log4j2
 public class DatabaseEventPropagator {
   private static final Dotenv config = Config.getConfig();

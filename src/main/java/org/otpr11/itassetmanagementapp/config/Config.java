@@ -2,6 +2,8 @@ package org.otpr11.itassetmanagementapp.config;
 
 import io.github.cdimascio.dotenv.Dotenv;
 import java.util.Arrays;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
@@ -15,6 +17,7 @@ import org.otpr11.itassetmanagementapp.Main;
  */
 // TODO: Currently no validation on that values declared in .env.example have been declared in .env
 @Log4j2
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class Config {
   private static Dotenv config;
 

@@ -61,7 +61,7 @@
         <BorderPane layoutX="10.0" layoutY="110.0" prefHeight="200.0" prefWidth="200.0"
           GridPane.columnIndex="1" GridPane.rowIndex="3">
           <center>
-            <TextField fx:id="modelYearField" BorderPane.alignment="CENTER">
+            <TextField fx:id="modelYearSelector" BorderPane.alignment="CENTER">
               <BorderPane.margin>
                 <Insets left="10.0" right="10.0"/>
               </BorderPane.margin>

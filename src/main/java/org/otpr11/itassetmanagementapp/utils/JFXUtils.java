@@ -1,8 +1,10 @@
 package org.otpr11.itassetmanagementapp.utils;
 
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.Setter;
 import lombok.val;
 
 /** Generic JavaFX utilities. */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class JFXUtils {
   /**
    * Shortcut to get the selection index of a {@link ChoiceBox}.
@@ -22,6 +25,16 @@ public abstract class JFXUtils {
   }
 
   /**
+   * Shortcut to get the selection index of a {@link ComboBox}.
+   *
+   * @param comboBox {@link ComboBox}
+   * @return Selection index.
+   */
+  public static Integer getChoiceIndex(@SuppressWarnings("rawtypes") ComboBox comboBox) {
+    return comboBox.getSelectionModel().getSelectedIndex();
+  }
+
+  /**
    * Shortcut to pre-select an item from a {@link ChoiceBox}.
    *
    * @param choiceBox {@link ChoiceBox}
@@ -30,6 +43,17 @@ public abstract class JFXUtils {
   public static void select(@SuppressWarnings("rawtypes") ChoiceBox choiceBox, Object toSelect) {
     //noinspection unchecked
     choiceBox.getSelectionModel().select(toSelect);
+  }
+
+  /**
+   * Shortcut to pre-select an item from a {@link ComboBox}.
+   *
+   * @param comboBox {@link ComboBox}
+   * @param toSelect Item to select.
+   */
+  public static void select(@SuppressWarnings("rawtypes") ComboBox comboBox, Object toSelect) {
+    //noinspection unchecked
+    comboBox.getSelectionModel().select(toSelect);
   }
 
   /**

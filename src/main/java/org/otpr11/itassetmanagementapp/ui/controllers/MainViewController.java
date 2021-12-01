@@ -74,7 +74,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    val moreInfoTooltip = new Tooltip("Double-click show information about device");
+    val moreInfoTooltip = new Tooltip("Double-click to show information about device");
 
     deviceTable.setRowFactory(
         tableView -> {
@@ -251,6 +251,7 @@ public class MainViewController implements Initializable, ViewController, Databa
 
   private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
+    deviceTable.getItems().clear();
     deviceTable.setItems(FXCollections.observableArrayList(devices));
   }
 
@@ -278,18 +279,7 @@ public class MainViewController implements Initializable, ViewController, Databa
       case POST_UPDATE -> {
         if (entity instanceof Device device) {
           val devices = dao.devices.getAll();
-          Integer updatedIndex = null;
-
-          for (int i = 0; i < devices.size(); i++) {
-            if (devices.get(i).getId().equals(((Device) entity).getId())) {
-              updatedIndex = i;
-            }
-          }
-
-          if (updatedIndex == null) {
-            throw new IllegalStateException("Non-existent device %s updated");
-          }
-
+          val updatedIndex = devices.indexOf(device);
           devices.set(updatedIndex, device);
           updateItems(devices);
         }
