@@ -15,6 +15,7 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
@@ -50,6 +51,10 @@ public class MainViewController implements Initializable, ViewController, Databa
   private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
 
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+
+
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -68,10 +73,27 @@ public class MainViewController implements Initializable, ViewController, Databa
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, Device> actionColumn;
   @FXML private BorderPane deviceViewPane;
+  @FXML private Menu menuNew;
+  @FXML private Menu menuFile;
+  @FXML private Menu menuHelp;
+  @FXML private MenuItem menuItemAbout;
+  @FXML private MenuItem menuItemDevice;
+  @FXML private MenuItem menuItemHW;
+  @FXML private MenuItem menuItemOS;
+  @FXML private MenuItem menuItemUser;
+  @FXML private MenuItem menuItemLocation;
+  @FXML private MenuItem langEng;
+  @FXML private MenuItem langFin;
+  @FXML private MenuItem langSwe;
+  @FXML private Menu lang;
+
+
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
+
+
 
     PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
 
@@ -155,6 +177,36 @@ public class MainViewController implements Initializable, ViewController, Databa
               }
             });
     updateItems(dao.devices.getAll());
+
+    idColumn.setText(locale.getString("id"));
+    nicknameColumn.setText(locale.getString("nickname"));
+    modelNameColumn.setText(locale.getString("modelname"));
+    modelIDColumn.setText(locale.getString("modelid"));
+    modelYearColumn.setText(locale.getString("modelyear"));
+    deviceTypeColumn.setText(locale.getString("devicetype"));
+    hwConfigurationColumn.setText(locale.getString("hwconf"));
+    osColumn.setText(locale.getString("os"));
+    userColumn.setText(locale.getString("user"));
+    locationColumn.setText(locale.getString("location"));
+    actionColumn.setText(locale.getString("action"));
+    statusColumn.setText(locale.getString("status"));
+
+    menuFile.setText(locale.getString("file"));
+    menuNew.setText(locale.getString("new"));
+    menuItemDevice.setText(locale.getString("device"));
+    menuItemHW.setText(locale.getString("hwconf"));
+    menuItemOS.setText(locale.getString("os"));
+    menuItemUser.setText(locale.getString("user"));
+    menuItemLocation.setText(locale.getString("location"));
+
+    menuHelp.setText(locale.getString("help"));
+    menuItemAbout.setText(locale.getString("about"));
+
+    lang.setText(locale.getString("lang"));
+    langEng.setText(locale.getString("en"));
+    langFin.setText(locale.getString("fin"));
+    langSwe.setText(locale.getString("sw"));
+
   }
 
   @FXML

@@ -40,29 +40,29 @@
       <top>
         <MenuBar BorderPane.alignment="CENTER">
           <menus>
-            <Menu mnemonicParsing="false" text="File">
+            <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
               <items>
-                <Menu mnemonicParsing="false" text="New">
+                <Menu fx:id="menuNew" mnemonicParsing="false" text="New">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewDeviceClick" text="Device..." />
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewHWConfigurationClick" text="Hardware configuration..." />
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewOSClick" text="Operating system..." />
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewUserClick" text="User..." />
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewLocationClick" text="Location..." />
+                    <MenuItem fx:id="menuItemDevice" mnemonicParsing="false" onAction="#handleNewDeviceClick" text="Device..." />
+                    <MenuItem fx:id="menuItemHW" mnemonicParsing="false" onAction="#handleNewHWConfigurationClick" text="Hardware configuration..." />
+                    <MenuItem fx:id="menuItemOS" mnemonicParsing="false" onAction="#handleNewOSClick" text="Operating system..." />
+                    <MenuItem fx:id="menuItemUser" mnemonicParsing="false" onAction="#handleNewUserClick" text="User..." />
+                    <MenuItem fx:id="menuItemLocation" mnemonicParsing="false" onAction="#handleNewLocationClick" text="Location..." />
                   </items>
                 </Menu>
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#handleAboutClick" text="About" />
+                <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#handleAboutClick" text="About" />
               </items>
             </Menu>
-                  <Menu mnemonicParsing="false" text="Language">
+                  <Menu fx:id="lang" mnemonicParsing="false" text="Language">
                      <items>
-                        <MenuItem mnemonicParsing="false" onAction="#handleEngClick" text="English" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleFinClick" text="Finnish" />
-                        <MenuItem mnemonicParsing="false" onAction="#handleSweClick" text="Swedish" />
+                        <MenuItem fx:id="langEng" mnemonicParsing="false" onAction="#handleEngClick" text="English" />
+                        <MenuItem fx:id="langFin" mnemonicParsing="false" onAction="#handleFinClick" text="Finnish" />
+                        <MenuItem fx:id="langSwe" mnemonicParsing="false" onAction="#handleSweClick" text="Swedish" />
                      </items>
                   </Menu>
           </menus>
