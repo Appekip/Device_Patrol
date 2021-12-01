@@ -74,7 +74,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    val moreInfoTooltip = new Tooltip("Double-click show information about device");
+    val moreInfoTooltip = new Tooltip("Double-click to show information about device");
 
     deviceTable.setRowFactory(
         tableView -> {
