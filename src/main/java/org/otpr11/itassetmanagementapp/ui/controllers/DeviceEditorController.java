@@ -19,6 +19,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +37,7 @@ import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
@@ -47,6 +49,7 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  */
 @Log4j2
 public class DeviceEditorController implements Initializable, ViewController {
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
   private static final String SELECTOR_DEFAULT_TILE = "Select...";
@@ -68,6 +71,22 @@ public class DeviceEditorController implements Initializable, ViewController {
       dao.operatingSystems.getAll().stream()
           .map(OperatingSystem::toPrettyString)
           .collect(Collectors.toList());
+  public Text deviceType;
+  public Text basicText;
+  public Text deviceIdText;
+  public Text nicknameText;
+  public Text manufacturerText;
+  public Text modelText;
+  public Text modelIdText;
+  public Text macText;
+  public Text hwText;
+  public Text osText;
+  public Text metaText;
+  public Text userText;
+  public Text locaText;
+  public Text status;
+
+
   private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
 
   @Setter private Main main;
@@ -97,6 +116,8 @@ public class DeviceEditorController implements Initializable, ViewController {
       okButton,
       cancelButton;
 
+
+
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // Init freeform text field validators
@@ -114,6 +135,24 @@ public class DeviceEditorController implements Initializable, ViewController {
     initDropdown(userSelector, users, users.size() == 0 ? null : users.get(0));
     initDropdown(locationSelector, locations, locations.size() == 0 ? null : locations.get(0));
     initDropdown(configSelector, configs, configs.size() == 0 ? null : configs.get(0));
+
+    //Set texts to selected language
+    deviceType.setText(locale.getString("devicetype"));
+    basicText.setText(locale.getString("basicInfo"));
+    deviceIdText.setText(locale.getString("deviceid"));
+    nicknameText.setText(locale.getString("nickname"));
+    manufacturerText.setText(locale.getString("manufacturer"));
+    modelText.setText(locale.getString("modelname"));
+    modelIdText.setText(locale.getString("modelid"));
+    macText.setText(locale.getString("mac"));
+    hwText.setText(locale.getString("hwconf"));
+    osText.setText(locale.getString("os"));
+    metaText.setText(locale.getString("meta"));
+    userText.setText(locale.getString("user"));
+    locaText.setText(locale.getString("location"));
+    status.setText(locale.getString("status"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("ok"));
 
     // Update HW configs when device type changes
     deviceTypeSelector.setOnAction(
@@ -343,7 +382,7 @@ public class DeviceEditorController implements Initializable, ViewController {
     } else {
       IS_EDIT_MODE = false;
       log.trace("Registering new device.");
-      stage.setTitle("Create device");
+      stage.setTitle(locale.getString("device_editor_stage_title"));
     }
   }
 }
