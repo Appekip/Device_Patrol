@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
@@ -39,9 +40,8 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
-/** Main application view controller class. */
 @Log4j2
-public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
+public class ManagementViewController implements Initializable, ViewController, DatabaseEventListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
@@ -49,34 +49,29 @@ public class MainViewController implements Initializable, ViewController, Databa
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
-  @FXML private TableView<Device> deviceTable;
-  @FXML private TableColumn<Device, String> idColumn;
-  @FXML private TableColumn<Device, String> nicknameColumn;
-  @FXML private TableColumn<Device, String> manufacturerColumn;
-  @FXML private TableColumn<Device, String> modelNameColumn;
-  @FXML private TableColumn<Device, String> modelIDColumn;
-  @FXML private TableColumn<Device, String> modelYearColumn;
-  @FXML private TableColumn<Device, String> deviceTypeColumn;
-  @FXML private TableColumn<Device, String> hwConfigurationColumn;
-  @FXML private TableColumn<Device, String> userColumn;
-  @FXML private TableColumn<Device, Device> statusColumn;
-  @FXML private TableColumn<Device, String> locationColumn;
+  @FXML
+  private TableView<Device> managementTable;
+  @FXML private TableColumn<Device, String> configColumn;
   @FXML private TableColumn<Device, String> osColumn;
-  @FXML private TableColumn<Device, Device> actionColumn;
-  @FXML private BorderPane deviceViewPane;
+  @FXML private TableColumn<Device, String> userColumn;
+  @FXML private TableColumn<Device, String> locationColumn;
+  //@FXML private TableColumn<Device, Device> actionColumn;
+  @FXML private TableColumn<Device, Device> deleteColumn;
+  @FXML private TableColumn<Device, Device> editColum;
+  @FXML private BorderPane managementViewPane;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
 
-    PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
+    PrettyDeviceViewerController.init(managementViewPane, prettyDevicePane);
 
-    hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
+    configColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    val moreInfoTooltip = new Tooltip("Double-click to show information about device");
+    val moreInfoTooltip = new Tooltip("Double-click show information about device");
 
-    deviceTable.setRowFactory(
+    managementTable.setRowFactory(
         tableView -> {
           TableRow<Device> row = new TableRow<>();
 
@@ -105,20 +100,14 @@ public class MainViewController implements Initializable, ViewController, Databa
           return row;
         });
 
-    idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-    nicknameColumn.setCellValueFactory(new PropertyValueFactory<>("nickname"));
-    manufacturerColumn.setCellValueFactory(new PropertyValueFactory<>("manufacturer"));
-    modelNameColumn.setCellValueFactory(new PropertyValueFactory<>("modelName"));
-    modelIDColumn.setCellValueFactory(new PropertyValueFactory<>("modelID"));
-    modelYearColumn.setCellValueFactory(new PropertyValueFactory<>("modelYear"));
-    deviceTypeColumn.setCellValueFactory(CellDataFormatter::formatDeviceType);
-    hwConfigurationColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
+    configColumn.setCellValueFactory(new PropertyValueFactory<>("config"));
+    configColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
-    statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    statusColumn.setCellFactory(
+    deleteColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    deleteColumn.setCellFactory(
         param ->
             new TableCell<>() {
               @Override
@@ -130,24 +119,7 @@ public class MainViewController implements Initializable, ViewController, Databa
                   return;
                 }
 
-                setGraphic(createStatusDropdown(device.getId()));
-              }
-            });
-
-    actionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    actionColumn.setCellFactory(
-        param ->
-            new TableCell<>() {
-              @Override
-              protected void updateItem(Device device, boolean b) {
-                super.updateItem(device, b);
-
-                if (device == null) {
-                  setGraphic(null);
-                  return;
-                }
-
-                setGraphic(createDeviceActionButton(device.getId()));
+                setGraphic(deleteButton(device.getId()));
               }
             });
     updateItems(dao.devices.getAll());
@@ -205,6 +177,22 @@ public class MainViewController implements Initializable, ViewController, Databa
     main.showDeviceEditor(deviceID);
   }
 
+  private void handleEditHWConfig(String configurationID) {
+    main.showHWConfigEditor(configurationID);
+  }
+
+  private void handleEditOS(String deviceID) {
+    main.showOSEditor(deviceID);
+  }
+
+  private void handleEditUser(String deviceID) {
+    main.showUserEditor(deviceID);
+  }
+
+  private void handleEditLocation(String deviceID) {
+    main.showLocationEditor(deviceID);
+  }
+
   private void handleDeleteClick(String deviceID) {
     val actionResult =
         AlertUtils.showAlert(
@@ -217,20 +205,35 @@ public class MainViewController implements Initializable, ViewController, Databa
     }
   }
 
-  private SplitMenuButton createDeviceActionButton(String deviceID) {
+  private SplitMenuButton deleteButton(String deviceID) {
     val button = new SplitMenuButton();
-    button.setText("Edit");
-    button.setOnAction(event -> handleEditClick(deviceID));
+    //button.setText("Edit");
+    //button.setOnAction(event -> handleEditClick(deviceID));
     // Don't show pointer cursor or tooltip for this element
     button.setCursor(Cursor.DEFAULT);
     button.setTooltip(null);
 
     val items = button.getItems();
 
-    val viewItem = new MenuItem();
-    viewItem.setText("View");
-    viewItem.setOnAction(event -> handleViewClick(deviceID, false));
-    items.add(viewItem);
+    val hwConfigItem = new MenuItem();
+    hwConfigItem.setText("Hardware configuration");
+    hwConfigItem.setOnAction(event -> handleEditHWConfig(deviceID));
+    items.add(hwConfigItem);
+
+    val osItem = new MenuItem();
+    osItem.setText("Operating system");
+    osItem.setOnAction(event -> handleEditOS(deviceID));
+    items.add(osItem);
+
+    val userItem = new MenuItem();
+    userItem.setText("User");
+    userItem.setOnAction(event -> handleEditUser(deviceID));
+    items.add(userItem);
+
+    val locationItem = new MenuItem();
+    locationItem.setText("Location");
+    locationItem.setOnAction(event -> handleEditLocation(deviceID));
+    items.add(locationItem);
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
@@ -256,8 +259,7 @@ public class MainViewController implements Initializable, ViewController, Databa
 
   private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
-    deviceTable.getItems().clear();
-    deviceTable.setItems(FXCollections.observableArrayList(devices));
+    managementTable.setItems(FXCollections.observableArrayList(devices));
   }
 
   private void updateDeviceStatus(String deviceID, Status status) {
@@ -284,7 +286,18 @@ public class MainViewController implements Initializable, ViewController, Databa
       case POST_UPDATE -> {
         if (entity instanceof Device device) {
           val devices = dao.devices.getAll();
-          val updatedIndex = devices.indexOf(device);
+          Integer updatedIndex = null;
+
+          for (int i = 0; i < devices.size(); i++) {
+            if (devices.get(i).getId().equals(((Device) entity).getId())) {
+              updatedIndex = i;
+            }
+          }
+
+          if (updatedIndex == null) {
+            throw new IllegalStateException("Non-existent device %s updated");
+          }
+
           devices.set(updatedIndex, device);
           updateItems(devices);
         }
