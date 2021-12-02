@@ -96,6 +96,10 @@ public class Main extends Application {
     setScene(Scenes.LOCATION_EDITOR, sceneChangeData);
   }
 
+  public void showManagementView(Object sceneChangeData) {
+    setScene(Scenes.MANAGEMENT_VIEW,sceneChangeData);
+  }
+
   /**
    * Internal callback for initialising a stage based on application configuration.
    *

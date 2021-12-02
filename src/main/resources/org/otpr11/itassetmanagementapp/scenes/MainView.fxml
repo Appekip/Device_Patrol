@@ -71,6 +71,12 @@
                       text="Location..."/>
                   </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Manage">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleManageClick"
+                      text="Existing..."/>
+                  </items>
+                </Menu>
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
