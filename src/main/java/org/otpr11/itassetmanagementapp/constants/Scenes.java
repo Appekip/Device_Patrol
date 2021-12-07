@@ -11,7 +11,8 @@ public enum Scenes {
       "scenes/HardwareConfigurationEditor.fxml", "Manage hardware configuration", false, true),
   OS_EDITOR("scenes/OperatingSystemEditor.fxml", "Manage operating system", false, true),
   LOCATION_EDITOR("scenes/LocationEditor.fxml", "Manage location", false, true),
-  USER_EDITOR("scenes/UserEditor.fxml", "Manage user", false, true);
+  USER_EDITOR("scenes/UserEditor.fxml", "Manage user", false, true),
+  MANAGEMENT_VIEW("scenes/ManagementView.fxml", "Manage existing", false, true);
 
   @Getter private final String resourcePath;
   @Getter private final String stageTitle;
