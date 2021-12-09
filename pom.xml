@@ -223,6 +223,12 @@
       <groupId>de.saxsys</groupId>
       <version>1.8.0</version>
     </dependency>
+    <dependency>
+      <artifactId>openjfx-monocle</artifactId>
+      <groupId>org.testfx</groupId>
+      <scope>test</scope> <!-- jdk-9+181 for Java 9, jdk-11+26 for Java 11 -->
+      <version>8u76-b04</version>
+    </dependency>
   </dependencies>
   <groupId>org.otp-r11</groupId>
   <modelVersion>4.0.0</modelVersion>
