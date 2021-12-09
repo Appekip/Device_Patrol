@@ -49,8 +49,12 @@ public class ManagementViewController implements Initializable, ViewController, 
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
-  @FXML
-  private TableView<Device> managementTable;
+
+  /**
+   * FXML for the attributes and boxes of the management view
+    */
+
+  @FXML private TableView<Device> managementTable;
   @FXML private TableColumn<Device, String> configColumn;
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, String> userColumn;
@@ -60,6 +64,9 @@ public class ManagementViewController implements Initializable, ViewController, 
   @FXML private TableColumn<Device, Device> editColum;
   @FXML private BorderPane managementViewPane;
 
+  /**
+   * Initializing the start of the management view
+   */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
@@ -125,6 +132,9 @@ public class ManagementViewController implements Initializable, ViewController, 
     updateItems(dao.devices.getAll());
   }
 
+  /**
+   * Click handlers
+   */
   @FXML
   private void handleNewDeviceClick() {
     main.showDeviceEditor(null);
@@ -205,6 +215,9 @@ public class ManagementViewController implements Initializable, ViewController, 
     }
   }
 
+  /**
+   * Menu button split and functionality
+   */
   private SplitMenuButton deleteButton(String deviceID) {
     val button = new SplitMenuButton();
     //button.setText("Edit");
@@ -257,6 +270,9 @@ public class ManagementViewController implements Initializable, ViewController, 
     return dropdown;
   }
 
+  /**
+   * Update items and device statuses
+   */
   private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
     managementTable.setItems(FXCollections.observableArrayList(devices));
@@ -268,6 +284,9 @@ public class ManagementViewController implements Initializable, ViewController, 
     dao.devices.save(device);
   }
 
+  /**
+   * Updating items to database
+   */
   @Override
   public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
     switch (event) {
