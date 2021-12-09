@@ -20,8 +20,6 @@ cache:
 build-and-test:
   stage: build
   script:
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
     - mvn $MAVEN_CLI_OPTS verify
 
 pages:
