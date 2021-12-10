@@ -10,6 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -22,6 +23,7 @@ import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
@@ -33,12 +35,19 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
+  public Text newOsText;
+  public Text basicInf;
+  public Text buildNmbr;
+  public Text name;
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
   @FXML private TextField nameField, buildNumberField, versionField;
   @FXML private Button okButton, cancelButton;
   @FXML private CheckComboBox<String> osSelector;
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+
+
 
   @Override
   public void afterInitialize() {}
@@ -48,6 +57,11 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
     createTextFieldValidator(nameField, "name", nameField.textProperty());
     createTextFieldValidator(buildNumberField, "buildNumber", buildNumberField.textProperty());
     createTextFieldValidator(versionField, "version", versionField.textProperty());
+
+    newOsText.setText(locale.getString("os"));
+    basicInf.setText(locale.getString("basicInfo"));
+    buildNmbr.setText(locale.getString("buildn"));
+    name.setText(locale.getString("name"));
 
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);

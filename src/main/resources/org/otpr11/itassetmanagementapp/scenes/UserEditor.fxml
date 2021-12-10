@@ -9,31 +9,31 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="356.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.UserEditorController">
   <children>
-    <Label text="First Name">
+    <Label fx:id="FName" text="First Name">
       <padding>
         <Insets left="20.0" right="20.0" top="10.0" />
       </padding>
     </Label>
     <TextField fx:id="firstNameField" />
-    <Label text="Last Name">
+    <Label fx:id="LName" text="Last Name">
       <padding>
         <Insets left="20.0" right="20.0" top="10.0" />
       </padding>
     </Label>
     <TextField fx:id="lastNameField" />
-    <Label text="Phone number">
+    <Label fx:id="phoneN" text="Phone number">
       <padding>
         <Insets left="20.0" right="20.0" top="10.0" />
       </padding>
     </Label>
     <TextField fx:id="phoneNumberField" />
-    <Label text="Email">
+    <Label fx:id="email" text="Email">
       <padding>
         <Insets left="20.0" right="20.0" top="10.0" />
       </padding>
     </Label>
     <TextField fx:id="emailField" />
-      <Label text="Employee Id">
+      <Label fx:id="id" text="Employee Id">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>

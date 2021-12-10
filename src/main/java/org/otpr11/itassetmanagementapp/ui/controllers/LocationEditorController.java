@@ -18,9 +18,16 @@ import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 public class LocationEditorController implements Initializable, ViewController {
+
+  public Label zip;
+  public Label nick;
+  public Label address;
+  public Label id;
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -39,6 +46,7 @@ public class LocationEditorController implements Initializable, ViewController {
       zipCodeField,
       nicknameField;
 
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -46,6 +54,11 @@ public class LocationEditorController implements Initializable, ViewController {
     createTextFieldValidator(addressField, "address", addressField.textProperty());
     createTextFieldValidator(zipCodeField, "zipcode", zipCodeField.textProperty());
     createTextFieldValidator(nicknameField, "nickname", nicknameField.textProperty());
+
+    zip.setText(locale.getString("zip"));
+    nick.setText(locale.getString("nick"));
+    address.setText(locale.getString("add"));
+    id.setText(locale.getString("id"));
 
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);

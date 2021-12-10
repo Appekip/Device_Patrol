@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
@@ -18,9 +19,17 @@ import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 public class UserEditorController implements Initializable, ViewController {
+
+  public Label FName;
+  public Label LName;
+  public Label phoneN;
+  public Label email;
+  public Label id;
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -28,6 +37,8 @@ public class UserEditorController implements Initializable, ViewController {
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final User user = new User();
   private final Validator validator = new Validator();
+
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @FXML
   private TextField firstNameField,
@@ -47,6 +58,12 @@ public class UserEditorController implements Initializable, ViewController {
     createTextFieldValidator(phoneNumberField, "phonenumber", phoneNumberField.textProperty());
     createTextFieldValidator(emailField, "email", emailField.textProperty());
     createTextFieldValidator(employeeIdField, "employeeid", employeeIdField.textProperty());
+
+    FName.setText(locale.getString("fname"));
+    LName.setText(locale.getString("lname"));
+    phoneN.setText(locale.getString("phone"));
+    email.setText(locale.getString("email"));
+    id.setText(locale.getString("id"));
 
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);

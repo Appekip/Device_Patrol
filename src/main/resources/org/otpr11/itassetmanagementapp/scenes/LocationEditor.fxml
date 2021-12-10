@@ -9,25 +9,25 @@
 
 <VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="316.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.LocationEditorController">
    <children>
-      <Label text="Zip Code">
+      <Label fx:id="zip" text="Zip Code">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>
       </Label>
       <TextField fx:id="zipCodeField" />
-      <Label text="Address">
+      <Label fx:id="address" text="Address">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>
       </Label>
       <TextField fx:id="addressField" />
-      <Label text="Nickname">
+      <Label fx:id="nick" text="Nickname">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>
       </Label>
       <TextField fx:id="nicknameField" />
-      <Label text="Id">
+      <Label fx:id="id" text="Id">
          <padding>
             <Insets left="20.0" right="20.0" top="10.0" />
          </padding>

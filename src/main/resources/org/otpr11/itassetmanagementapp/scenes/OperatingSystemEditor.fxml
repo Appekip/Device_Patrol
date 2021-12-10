@@ -16,7 +16,7 @@
   <top>
     <BorderPane BorderPane.alignment="CENTER">
       <top>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Create new Operating System" BorderPane.alignment="CENTER">
+        <Text fx:id="newOsText" strokeType="OUTSIDE" strokeWidth="0.0" text="Create new Operating System" BorderPane.alignment="CENTER">
           <font>
             <Font size="16.0" />
           </font>
@@ -35,7 +35,7 @@
       <children>
         <BorderPane>
           <center>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Basic information" BorderPane.alignment="CENTER">
+            <Text fx:id="basicInf" strokeType="OUTSIDE" strokeWidth="0.0" text="Basic information" BorderPane.alignment="CENTER">
               <font>
                 <Font size="16.0" />
               </font>
@@ -66,7 +66,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Name" BorderPane.alignment="CENTER" />
+                <Text fx:id="name" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
@@ -94,7 +94,7 @@
                 </TextField>
               </center>
               <top>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Build Number" BorderPane.alignment="CENTER" />
+                  <Text fx:id="buildNmbr" strokeType="OUTSIDE" strokeWidth="0.0" text="Build Number" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
