@@ -17,7 +17,7 @@
   <top>
     <BorderPane BorderPane.alignment="CENTER">
       <top>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hardware configuration" BorderPane.alignment="CENTER">
+        <Text fx:id="hwText" strokeType="OUTSIDE" strokeWidth="0.0" text="Hardware configuration" BorderPane.alignment="CENTER">
           <font>
             <Font size="16.0" />
           </font>
@@ -56,7 +56,7 @@
                 <ChoiceBox fx:id="deviceTypeField" prefWidth="150"/>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Device type" BorderPane.alignment="CENTER" />
+                <Text fx:id="deviceTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Device type" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
@@ -68,7 +68,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="CPU" BorderPane.alignment="CENTER" />
+                <Text fx:id="cpuText" strokeType="OUTSIDE" strokeWidth="0.0" text="CPU" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
@@ -80,7 +80,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Disk Size" BorderPane.alignment="CENTER" />
+                <Text fx:id="diskText" strokeType="OUTSIDE" strokeWidth="0.0" text="Disk Size" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
@@ -104,7 +104,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="GPU" BorderPane.alignment="CENTER" />
+                <Text fx:id="gpuText" strokeType="OUTSIDE" strokeWidth="0.0" text="GPU" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
@@ -116,7 +116,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Memory" BorderPane.alignment="CENTER" />
+                <Text fx:id="ramText" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
           </children>

@@ -27,6 +27,7 @@ import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
@@ -42,6 +43,13 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
 
+  public Text hwText;
+  public Text deviceTypeText;
+  public Text cpuText;
+  public Text diskText;
+  public Text gpuText;
+  public Text ramText;
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
@@ -53,6 +61,8 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   @FXML private Text screenSizeText;
 
   @FXML private Button okButton, cancelButton;
+
+  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -77,6 +87,13 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
             screenSizeText.setVisible(true);
           }
         });
+
+    hwText.setText(locale.getString("hwconf"));
+    deviceTypeText.setText(locale.getString("deviceType"));
+    cpuText.setText(locale.getString("cpu"));
+    diskText.setText(locale.getString("disk"));
+    gpuText.setText(locale.getString("gpu"));
+    ramText.setText(locale.getString("ram"));
 
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);

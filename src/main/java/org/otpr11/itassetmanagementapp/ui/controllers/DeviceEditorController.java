@@ -59,6 +59,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   private final Device device = new Device();
   private final Validator validator = new Validator();
 
+
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
   private final List<String> deviceStatuses =
