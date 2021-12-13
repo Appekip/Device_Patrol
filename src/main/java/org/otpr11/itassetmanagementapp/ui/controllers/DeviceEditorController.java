@@ -4,6 +4,7 @@ import static org.otpr11.itassetmanagementapp.utils.JFXUtils.getChoiceIndex;
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
 import java.net.URL;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,8 +18,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
@@ -52,14 +56,11 @@ public class DeviceEditorController implements Initializable, ViewController {
   private final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
-  private static final String SELECTOR_DEFAULT_TILE = "Select...";
+  private static final String SELECTOR_DEFAULT_TITLE = "Select...";
   private static boolean IS_EDIT_MODE;
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final Device device = new Device();
   private final Validator validator = new Validator();
-
-
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
   private final List<String> deviceStatuses =
@@ -94,19 +95,18 @@ public class DeviceEditorController implements Initializable, ViewController {
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
+  /**
+   * FXML for the attributes and boxes of the device view
+    */
+
+
   @FXML private CheckComboBox<String> osSelector;
-  @FXML
-  private ChoiceBox<String> deviceTypeSelector,
-      statusSelector,
-      userSelector,
-      locationSelector,
-      configSelector;
+  @FXML private ChoiceBox<String> deviceTypeSelector;
   @FXML
   private TextField deviceIDField,
       manufacturerField,
       modelIDField,
       modelNameField,
-      modelYearField,
       nicknameField,
       macAddressField;
   @FXML
@@ -116,26 +116,36 @@ public class DeviceEditorController implements Initializable, ViewController {
       addLocationButton,
       okButton,
       cancelButton;
+  @FXML private ComboBox<String> configSelector, statusSelector, userSelector, locationSelector;
+  @FXML private ComboBox<Integer> modelYearSelector;
+  @FXML private Text configSelectorTitle, osSelectorTitle;
 
+  /**
+   * Text field validations for text fields
+   * Initializing the start of the device editor view
+    */
 
 
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // Init freeform text field validators
+
+
     createTextFieldValidator(deviceIDField, "deviceID", deviceIDField.textProperty());
     createTextFieldValidator(manufacturerField, "manufacturer", manufacturerField.textProperty());
     createTextFieldValidator(modelIDField, "modelID", modelIDField.textProperty());
     createTextFieldValidator(modelNameField, "modelName", modelNameField.textProperty());
-    createTextFieldValidator(modelYearField, "modelYear", modelYearField.textProperty());
     createTextFieldValidator(nicknameField, "nickname", nicknameField.textProperty());
     createTextFieldValidator(macAddressField, "macAddress", macAddressField.textProperty());
 
     // Init dropdowns
+
+
     initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
     initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
-    initDropdown(userSelector, users, users.size() == 0 ? null : users.get(0));
-    initDropdown(locationSelector, locations, locations.size() == 0 ? null : locations.get(0));
-    initDropdown(configSelector, configs, configs.size() == 0 ? null : configs.get(0));
+    initDropdown(userSelector, users, true);
+    initDropdown(locationSelector, locations, true);
+    initDropdown(configSelector, configs, false);
 
     //Set texts to selected language
     deviceType.setText(locale.getString("devicetype"));
@@ -156,6 +166,7 @@ public class DeviceEditorController implements Initializable, ViewController {
     okButton.setText(locale.getString("ok"));
 
     // Update HW configs when device type changes
+
     deviceTypeSelector.setOnAction(
         event -> {
           val type = DeviceType.valueOf(deviceTypeSelector.getSelectionModel().getSelectedItem());
@@ -164,13 +175,14 @@ public class DeviceEditorController implements Initializable, ViewController {
 
     // Init OS selector
     // Needed for reassignment in lambda
+
     var ref =
         new Object() {
           String lastChange = "";
         };
 
     osSelector.getItems().addAll(operatingSystems);
-    osSelector.setTitle(SELECTOR_DEFAULT_TILE);
+    osSelector.setTitle(SELECTOR_DEFAULT_TITLE);
     osSelector
         .getCheckModel()
         .getCheckedItems()
@@ -190,15 +202,46 @@ public class DeviceEditorController implements Initializable, ViewController {
                       if (changeList.size() != 0) {
                         osSelector.setTitle(String.join(", ", changeList));
                       } else {
-                        osSelector.setTitle(SELECTOR_DEFAULT_TILE);
+                        osSelector.setTitle(SELECTOR_DEFAULT_TITLE);
                       }
                     }
                   }
                 });
 
-    configSelector.setValue(SELECTOR_DEFAULT_TILE);
-    userSelector.setValue(SELECTOR_DEFAULT_TILE);
-    locationSelector.setValue(SELECTOR_DEFAULT_TILE);
+    // Listen for status being set to VACANT, and remove user if selected
+
+    statusSelector
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            (options, oldValue, newValue) -> {
+              if (newValue.equals(DeviceStatus.VACANT.toString())) {
+                val result =
+                    AlertUtils.showAlert(
+                        AlertType.CONFIRMATION,
+                        "Set status to VACANT and remove user?",
+                        "Setting device status to VACANT will remove its current user. Are you sure you want to proceed?");
+
+                if (result.getButtonData() == ButtonData.OK_DONE) {
+                  userSelector.getSelectionModel().selectFirst();
+                }
+              }
+            });
+
+    // Making the list of selectable manufacturer years into the dropdown view starting from current year.
+
+    for (int year = Year.now().getValue(); year >= 1970; year--) {
+      modelYearSelector.getItems().add(year);
+    }
+
+    // Setting default values for fields
+
+    select(modelYearSelector, Year.now().getValue());
+    configSelector.setValue(SELECTOR_DEFAULT_TITLE);
+    userSelector.setValue(SELECTOR_DEFAULT_TITLE);
+    locationSelector.setValue(SELECTOR_DEFAULT_TITLE);
+
+    // Actions for adding buttons
 
     addHWConfigButton.setOnAction(event -> main.showHWConfigEditor(null));
     addOSButton.setOnAction(event -> main.showOSEditor(null));
@@ -208,38 +251,77 @@ public class DeviceEditorController implements Initializable, ViewController {
     cancelButton.setOnAction(this::onCancel);
   }
 
-  private void initDropdown(ChoiceBox<String> dropdown, List<String> items, String initialValue) {
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private void initDropdown(ChoiceBox dropdown, List items, String initialValue) {
+    dropdown.getItems().setAll(items);
+    dropdown.setValue(initialValue);
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private void initDropdown(ComboBox dropdown, List items, boolean isNullable) {
+    if (isNullable) {
+      items.add(0, SELECTOR_DEFAULT_TITLE);
+    }
+
+    dropdown.getItems().setAll(items);
+  }
+
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  private void initDropdown(ComboBox dropdown, List items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
   private void onSave(ActionEvent event) {
-    if (validator.containsWarnings() || validator.containsErrors()) {
+    // Reset old colorings
+    configSelectorTitle.setFill(null);
+    osSelectorTitle.setFill(null);
+
+    val noConfig = configSelector.getSelectionModel().getSelectedIndex() == -1;
+    val noOS = osSelector.getCheckModel().getCheckedItems().size() == 0;
+
+    if (validator.containsWarnings() || validator.containsErrors() || noConfig || noOS) {
+      AlertUtils.showAlert(
+          AlertType.ERROR, "Invalid input", "One or more required values are missing or invalid.");
+
+      if (noConfig) {
+        // FIXME: Replace with localised version, this won't reset now, but it doesn't matter as we
+        // need to get it from locale anyway
+        configSelectorTitle.setText("⚠️ " + configSelectorTitle.getText());
+        configSelectorTitle.setFill(Color.RED);
+      }
+
+      if (noOS) {
+        // FIXME: Replace with localised version, this won't reset now, but it doesn't matter as we
+        // need to get it from locale anyway
+        osSelectorTitle.setText("⚠️ " + osSelectorTitle.getText());
+        osSelectorTitle.setFill(Color.RED);
+      }
+    } else if (statusSelector
+            .getSelectionModel()
+            .getSelectedItem()
+            .equals(DeviceStatus.IN_USE.toString())
+        && getChoiceIndex(userSelector) <= 0) {
       AlertUtils.showAlert(
           AlertType.ERROR,
-          "Invalid input",
-          "One or more required field values are missing or invalid.");
-    } else if (configSelector.getSelectionModel().getSelectedIndex() == -1) {
-      AlertUtils.showAlert(
-          AlertType.ERROR,
-          "No hardware configuration selected",
-          "No hardware configuration has been selected for this device.");
-    } else if (osSelector.getCheckModel().getCheckedItems().size() == 0) {
-      AlertUtils.showAlert(
-          AlertType.ERROR,
-          "No operating system selected",
-          "No operating system has been selected for this device.");
+          "Status set to IN_USE, but device has no user",
+          "A device cannot be set to status IN_USE without a user being selected.");
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
       // FIXME: This might allow overwriting, need to check it in a more sophisticated manner
       AlertUtils.showAlert(
           AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
+    } else if (IS_EDIT_MODE && !deviceIDField.getText().equals(device.getId())) {
+      AlertUtils.showAlert(
+          AlertType.ERROR,
+          "Attempted device overwrite detected",
+          "A device with the ID you're changing this device's ID to already exists.");
     } else {
       // Set basic properties
       device.setId(deviceIDField.getText());
       device.setManufacturer(manufacturerField.getText());
       device.setModelID(modelIDField.getText());
       device.setModelName(modelNameField.getText());
-      device.setModelYear(modelYearField.getText());
+      device.setModelYear(modelYearSelector.getSelectionModel().getSelectedItem().toString());
       device.setMacAddress(macAddressField.getText());
       device.setNickname(nicknameField.getText());
 
@@ -264,14 +346,16 @@ public class DeviceEditorController implements Initializable, ViewController {
       device.setOperatingSystems(osList);
 
       // If user is selected (optional)
-      if (getChoiceIndex(userSelector) != -1) {
-        val user = dao.users.getAll().get(getChoiceIndex(userSelector));
+      if (getChoiceIndex(userSelector) > 0) {
+        // Since this field is nullable, our indices get pushed 1 index forwards
+        val user = dao.users.getAll().get(getChoiceIndex(userSelector) - 1);
         device.setUser(user);
       }
 
       // If location is selected (optional)
-      if (getChoiceIndex(locationSelector) != -1) {
-        val location = dao.locations.getAll().get(getChoiceIndex(locationSelector));
+      if (getChoiceIndex(locationSelector) > 0) {
+        // Since this field is nullable, our indices get pushed 1 index forwards
+        val location = dao.locations.getAll().get(getChoiceIndex(locationSelector) - 1);
         device.setLocation(location);
       }
 
@@ -287,6 +371,10 @@ public class DeviceEditorController implements Initializable, ViewController {
       }
     }
   }
+
+  /**
+   * Functional cancel button
+    */
 
   private void onCancel(ActionEvent event) {
     stage.close();
@@ -310,6 +398,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   }
 
   // TODO: More sophisticated validation for MAC addresses, number fields, etc.
+  // Text field validation.
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
@@ -345,7 +434,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       stage.setTitle("Manage device %s".formatted(sceneChangeData));
 
       // Determine device to edit
-      val device = dao.devices.get((String) sceneChangeData);
+      device = dao.devices.get((String) sceneChangeData);
 
       // Fill in data for this device
       val cfg = device.getConfiguration();
@@ -358,7 +447,7 @@ public class DeviceEditorController implements Initializable, ViewController {
       manufacturerField.setText(device.getManufacturer());
       modelNameField.setText(device.getModelName());
       modelIDField.setText(device.getModelID());
-      modelYearField.setText(device.getModelYear());
+      select(modelYearSelector, Integer.parseInt(device.getModelYear()));
       macAddressField.setText(device.getMacAddress());
 
       if (device.getConfiguration() != null) {

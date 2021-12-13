@@ -51,6 +51,12 @@
                     <MenuItem fx:id="menuItemLocation" mnemonicParsing="false" onAction="#handleNewLocationClick" text="Location..." />
                   </items>
                 </Menu>
+                <Menu mnemonicParsing="false" text="Manage">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleManageClick"
+                      text="Existing..."/>
+                  </items>
+                </Menu>
               </items>
             </Menu>
             <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
