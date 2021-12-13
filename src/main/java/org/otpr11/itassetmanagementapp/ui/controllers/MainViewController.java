@@ -49,6 +49,11 @@ public class MainViewController implements Initializable, ViewController, Databa
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
+
+  /**
+   * FXML for the attributes of the main view.
+    */
+
   @FXML private TableView<Device> deviceTable;
   @FXML private TableColumn<Device, String> idColumn;
   @FXML private TableColumn<Device, String> nicknameColumn;
@@ -64,6 +69,10 @@ public class MainViewController implements Initializable, ViewController, Databa
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, Device> actionColumn;
   @FXML private BorderPane deviceViewPane;
+
+  /**
+   * Initializing the start of the main view
+    */
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -153,6 +162,9 @@ public class MainViewController implements Initializable, ViewController, Databa
     updateItems(dao.devices.getAll());
   }
 
+  /**
+  Clickhandlers to show editors
+   */
   @FXML
   private void handleNewDeviceClick() {
     main.showDeviceEditor(null);
@@ -217,6 +229,9 @@ public class MainViewController implements Initializable, ViewController, Databa
     }
   }
 
+  /**
+  * Menu button splitting and functionality
+   */
   private SplitMenuButton createDeviceActionButton(String deviceID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
@@ -240,6 +255,9 @@ public class MainViewController implements Initializable, ViewController, Databa
     return button;
   }
 
+  /**
+   * Status dropdown
+   */
   private ChoiceBox<String> createStatusDropdown(String deviceID) {
     val dropdown = new ChoiceBox<String>();
     JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
@@ -254,6 +272,9 @@ public class MainViewController implements Initializable, ViewController, Databa
     return dropdown;
   }
 
+  /**
+   * Updating items and device statuses
+   */
   private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
     deviceTable.getItems().clear();
@@ -266,6 +287,9 @@ public class MainViewController implements Initializable, ViewController, Databa
     dao.devices.save(device);
   }
 
+  /**
+   * Updating items to database
+   */
   @Override
   public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
     switch (event) {

@@ -29,6 +29,9 @@ public class UserEditorController implements Initializable, ViewController {
   private final User user = new User();
   private final Validator validator = new Validator();
 
+  /**
+   * FXML for the attributes and buttons of the user view
+   */
   @FXML
   private TextField firstNameField,
   lastNameField,
@@ -40,6 +43,9 @@ public class UserEditorController implements Initializable, ViewController {
   private Button okButton,
       cancelButton;
 
+  /**
+   * Initializing the start of the user view
+   */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     createTextFieldValidator(firstNameField, "firstname", firstNameField.textProperty());
@@ -52,6 +58,9 @@ public class UserEditorController implements Initializable, ViewController {
     cancelButton.setOnAction(this::onCancel);
   }
 
+  /**
+   * Save button event
+   */
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
@@ -72,10 +81,17 @@ public class UserEditorController implements Initializable, ViewController {
 
     }
   }
+
+  /**
+   * Cancel button event
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
 
+  /**
+   * Text field validation
+   */
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
