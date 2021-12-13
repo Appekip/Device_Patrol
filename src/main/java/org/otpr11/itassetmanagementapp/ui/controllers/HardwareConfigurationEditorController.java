@@ -41,10 +41,9 @@ public class HardwareConfigurationEditorController
   private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
   private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
-
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
   // Text field validation and dropdown Initializing the start of the hardware configuration view
   @Setter private Main main;
   @Setter private Stage stage;
@@ -156,6 +155,7 @@ public class HardwareConfigurationEditorController
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     title.setText(locale.getString("hardware_configuration"));
     deviceTypeText.setText(locale.getString("device_type"));
     cpuText.setText(locale.getString("cpu"));

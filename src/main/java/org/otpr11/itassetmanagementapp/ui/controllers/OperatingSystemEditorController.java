@@ -30,7 +30,7 @@ public class OperatingSystemEditorController
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -89,6 +89,7 @@ public class OperatingSystemEditorController
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     newOsText.setText(locale.getString("operating_system"));
     nameText.setText(locale.getString("name"));
     versionText.setText(locale.getString("version"));

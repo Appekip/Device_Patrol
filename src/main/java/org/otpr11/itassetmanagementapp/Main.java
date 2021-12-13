@@ -26,7 +26,7 @@ import org.otpr11.itassetmanagementapp.utils.LogUtils;
 
 @Log4j2
 public class Main extends Application implements LocaleChangeListener {
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
   private Stage primaryStage;
 
   public static void main(String[] args) {
@@ -167,6 +167,7 @@ public class Main extends Application implements LocaleChangeListener {
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     primaryStage.setTitle(locale.getString("main_stage_title"));
   }
 }

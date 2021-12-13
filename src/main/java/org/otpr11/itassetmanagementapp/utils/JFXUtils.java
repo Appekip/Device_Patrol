@@ -1,11 +1,10 @@
 package org.otpr11.itassetmanagementapp.utils;
 
-import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import lombok.AccessLevel;
@@ -20,7 +19,6 @@ import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 /** Generic JavaFX utilities. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class JFXUtils {
-  private static final ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   /**
    * Shortcut to get the selection index of a {@link ChoiceBox}.
@@ -109,6 +107,7 @@ public abstract class JFXUtils {
         .dependsOn(key, prop)
         .withMethod(
             ctx -> {
+              val locale = LocaleEngine.getResourceBundle();
               val warn = locale.getString("required_field");
               val error = locale.getString("please_provide_value");
               String value = ctx.get(key);

@@ -79,7 +79,12 @@ public class DesktopConfiguration extends DTO implements PrettyStringifiable {
 
   public String toPrettyString() {
     return "%s, %s, %s RAM, %s %s"
-        .formatted(cpu, gpu, memory, diskSize, LocaleEngine.getResourceBundle().getString("disk"));
+        .formatted(
+            cpu,
+            gpu,
+            memory,
+            diskSize,
+            LocaleEngine.getResourceBundle().getString("disk").toLowerCase());
   }
 
   @PreRemove

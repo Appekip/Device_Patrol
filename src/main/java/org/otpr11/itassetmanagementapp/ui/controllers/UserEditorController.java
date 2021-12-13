@@ -27,7 +27,7 @@ public class UserEditorController implements Initializable, ViewController, Loca
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final User user = new User();
   private final Validator validator = new Validator();
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -89,6 +89,7 @@ public class UserEditorController implements Initializable, ViewController, Loca
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     firstName.setText(locale.getString("first_name"));
     lastName.setText(locale.getString("last_name"));
     phoneNumber.setText(locale.getString("phone"));

@@ -53,9 +53,9 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  */
 @Log4j2
 public class DeviceEditorController implements Initializable, ViewController, LocaleChangeListener {
-  private static final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
+  private static ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final String SELECTOR_DEFAULT_TITLE = locale.getString("selector_default_title");
   private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
@@ -431,7 +431,7 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
   @Override
   public void onLocaleChange() {
-    // Set texts to selected language
+    locale = LocaleEngine.getResourceBundle();
     deviceTypeText.setText(locale.getString("device_type"));
     basicInfoText.setText(locale.getString("basic_information"));
     deviceIDText.setText(locale.getString("device_id"));

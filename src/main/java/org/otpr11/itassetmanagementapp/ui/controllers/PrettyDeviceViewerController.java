@@ -29,9 +29,9 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
   private static final TextProperties TITLE_STYLE = new TextProperties(TITLE_TEXT_SIZE, "bolder");
   private static final TextProperties SUBTITLE_STYLE = new TextProperties(SUBTITLE_TEXT_SIZE);
   private static final TextProperties BODY_STYLE = new TextProperties(BODY_TEXT_SIZE);
-  private static final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final GlobalDAO dao = GlobalDAO.getInstance();
   private static final GridPane deviceInfoGrid = new GridPane();
+  private static ResourceBundle locale = LocaleEngine.getResourceBundle();
   @Getter private static boolean isOpen = false;
   @Getter @Setter private static String currentDeviceID = null;
   private static BorderPane mainViewPane = null;
@@ -42,6 +42,7 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
    * Borders and grid
    */
   public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
+    locale = LocaleEngine.getResourceBundle();
     mainViewPane = _mainViewPane;
     prettyDevicePane = _prettyDevicePane;
 
@@ -146,7 +147,7 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
           addRow(createText("%s: %s".formatted(locale.getString("gpu"), cfg.getGpu()), BODY_STYLE));
           addRow(createText("%s: %s".formatted(locale.getString("ram"), cfg.getMemory()), BODY_STYLE));
           addRow(createText("%s: %s".formatted(locale.getString("disk"), cfg.getDiskSize()), BODY_STYLE));
-          addRow(createText("%s: %s\"".formatted(locale.getString("display_size"), cfg.getScreenSize()), BODY_STYLE));
+          addRow(createText("%s: %s\"".formatted(locale.getString("screen_size"), cfg.getScreenSize()), BODY_STYLE));
         }
         default -> throw new IllegalStateException(
             "Support for device type %s not yet implemented"

@@ -28,7 +28,7 @@ public class LocationEditorController
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final Location location = new Location();
   private final Validator validator = new Validator();
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -84,6 +84,7 @@ public class LocationEditorController
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     zipText.setText(locale.getString("zip_code"));
     nickText.setText(locale.getString("nickname"));
     addressText.setText(locale.getString("address"));

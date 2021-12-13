@@ -95,7 +95,7 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
             gpu,
             memory,
             diskSize,
-            LocaleEngine.getResourceBundle().getString("disk"));
+            LocaleEngine.getResourceBundle().getString("disk").toLowerCase());
   }
 
   @PreRemove

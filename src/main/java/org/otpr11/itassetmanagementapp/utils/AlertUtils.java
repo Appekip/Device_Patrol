@@ -24,7 +24,6 @@
 
 package org.otpr11.itassetmanagementapp.utils;
 
-import java.util.ResourceBundle;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
@@ -41,7 +40,6 @@ import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 /** Generic alert utilities. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class AlertUtils {
-  private static final ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   /**
    * Shows an {@link Alert} and waits for the user to click OK.
@@ -68,6 +66,7 @@ public abstract class AlertUtils {
    * @param e The {@link Exception} that caused the alert.
    */
   public static void showExceptionAlert(@NotNull String message, @NotNull Exception e) {
+    val locale = LocaleEngine.getResourceBundle();
     createExceptionAlert(locale.getString("error"), message, e).showAndWait();
   }
 
@@ -98,6 +97,7 @@ public abstract class AlertUtils {
     alert.setHeaderText(null);
     alert.setContentText(message);
 
+    val locale = LocaleEngine.getResourceBundle();
     val label = new Label(locale.getString("exception_stack_trace"));
 
     val textArea = new TextArea(StringUtils.getFullExceptionStack(e));

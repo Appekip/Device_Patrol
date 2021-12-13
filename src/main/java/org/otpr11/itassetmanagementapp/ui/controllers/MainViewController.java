@@ -52,7 +52,7 @@ public class MainViewController
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -347,6 +347,7 @@ public class MainViewController
 
   @Override
   public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
     idColumn.setText(locale.getString("id"));
     nicknameColumn.setText(locale.getString("nickname"));
     modelNameColumn.setText(locale.getString("model_name"));
@@ -357,9 +358,8 @@ public class MainViewController
     osColumn.setText(locale.getString("operating_system"));
     userColumn.setText(locale.getString("user"));
     locationColumn.setText(locale.getString("location"));
-    actionColumn.setText(locale.getString("edit"));
+    actionColumn.setText(locale.getString("action"));
     statusColumn.setText(locale.getString("status"));
-
     menuFile.setText(locale.getString("file"));
     menuNew.setText(locale.getString("new"));
     menuItemDevice.setText(locale.getString("device"));
