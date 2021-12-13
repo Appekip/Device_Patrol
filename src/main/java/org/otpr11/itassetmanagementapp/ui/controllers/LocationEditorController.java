@@ -35,10 +35,7 @@ public class LocationEditorController
   @Setter private Object sceneChangeData;
 
   // FXML for the attributes and boxes of the location view
-  @FXML private Label zip;
-  @FXML private Label nick;
-  @FXML private Label address;
-  @FXML private Label id;
+  @FXML private Label zipText, nickText, addressText, idText;
   @FXML private Button okButton, cancelButton;
   @FXML private TextField idField, addressField, zipCodeField, nicknameField;
 
@@ -87,9 +84,9 @@ public class LocationEditorController
 
   @Override
   public void onLocaleChange() {
-    zip.setText(locale.getString("zip_code"));
-    nick.setText(locale.getString("nickname"));
-    address.setText(locale.getString("address"));
-    id.setText(locale.getString("id"));
+    zipText.setText(locale.getString("zip_code"));
+    nickText.setText(locale.getString("nickname"));
+    addressText.setText(locale.getString("address"));
+    idText.setText(locale.getString("id"));
   }
 }

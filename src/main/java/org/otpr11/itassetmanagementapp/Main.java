@@ -103,7 +103,7 @@ public class Main extends Application implements LocaleChangeListener {
   }
 
   public void showManagementView(Object sceneChangeData) {
-    setScene(Scenes.MANAGEMENT_VIEW,sceneChangeData);
+    setScene(Scenes.MANAGEMENT_VIEW, sceneChangeData);
   }
 
   /**

@@ -80,23 +80,22 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   @Setter private Object sceneChangeData;
 
   // FXML for the attributes and boxes of the device view
-  @FXML private Text deviceType;
-  @FXML private Text basicText;
-  @FXML private Text deviceIDText;
-  @FXML private Text nicknameText;
-  @FXML private Text manufacturerText;
-  @FXML private Text modelNameText;
-  @FXML private Text modelIDText;
-  @FXML private Text modelYearText;
-  @FXML private Text macText;
-  @FXML private Text configSelectorTitle;
-  @FXML private Text osSelectorTitle;
-  @FXML private Text metaText;
-  @FXML private Text userText;
-  @FXML private Text locationText;
-  @FXML private Text status;
-  @FXML private CheckComboBox<String> osSelector;
-  @FXML private ChoiceBox<String> deviceTypeSelector;
+  @FXML
+  private Text deviceTypeText,
+      basicInfoText,
+      deviceIDText,
+      nicknameText,
+      manufacturerText,
+      modelNameText,
+      modelIDText,
+      modelYearText,
+      macAddressText,
+      configSelectorText,
+      osSelectorText,
+      metaText,
+      userText,
+      locationText,
+      statusText;
   @FXML
   private TextField deviceIDField,
       manufacturerField,
@@ -113,6 +112,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
       cancelButton;
   @FXML private ComboBox<String> configSelector, statusSelector, userSelector, locationSelector;
   @FXML private ComboBox<Integer> modelYearSelector;
+  @FXML private CheckComboBox<String> osSelector;
+  @FXML private ChoiceBox<String> deviceTypeSelector;
 
   public DeviceEditorController() {}
 
@@ -197,8 +198,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
                 val result =
                     AlertUtils.showAlert(
                         AlertType.CONFIRMATION,
-                        "Set status to VACANT and remove user?",
-                        "Setting device status to VACANT will remove its current user. Are you sure you want to proceed?");
+                        locale.getString("status_vacant_confirmation"),
+                        locale.getString("status_vacant_confirmation_detail"));
 
                 if (result.getButtonData() == ButtonData.OK_DONE) {
                   userSelector.getSelectionModel().selectFirst();
@@ -255,50 +256,46 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
   private void onSave(ActionEvent event) {
     // Reset old colorings
-    configSelectorTitle.setFill(null);
-    osSelectorTitle.setFill(null);
+    configSelectorText.setFill(null);
+    osSelectorText.setFill(null);
 
     val noConfig = configSelector.getSelectionModel().getSelectedIndex() == -1;
     val noOS = osSelector.getCheckModel().getCheckedItems().size() == 0;
 
     if (validator.containsWarnings() || validator.containsErrors() || noConfig || noOS) {
-      // FIXME: Unlocalised
       AlertUtils.showAlert(
-          AlertType.ERROR, "Invalid input", "One or more required values are missing or invalid.");
+          AlertType.ERROR,
+          locale.getString("invalid_input"),
+          locale.getString("invalid_input_detail"));
 
       if (noConfig) {
-        // FIXME: Replace with localised version, this won't reset now, but it doesn't matter as we
-        // need to get it from locale anyway
-        configSelectorTitle.setText("⚠️ " + configSelectorTitle.getText());
-        configSelectorTitle.setFill(Color.RED);
+        configSelectorText.setText("⚠️ " + locale.getString("hardware_configuration"));
+        configSelectorText.setFill(Color.RED);
       }
 
       if (noOS) {
-        // FIXME: Replace with localised version, this won't reset now, but it doesn't matter as we
-        // need to get it from locale anyway
-        osSelectorTitle.setText("⚠️ " + osSelectorTitle.getText());
-        osSelectorTitle.setFill(Color.RED);
+        osSelectorText.setText("⚠️ " + locale.getString("operating_system"));
+        osSelectorText.setFill(Color.RED);
       }
     } else if (statusSelector
             .getSelectionModel()
             .getSelectedItem()
             .equals(DeviceStatus.IN_USE.toString())
         && getChoiceIndex(userSelector) <= 0) {
-      // FIXME: Unlocalised
       AlertUtils.showAlert(
           AlertType.ERROR,
-          "Status set to IN_USE, but device has no user",
-          "A device cannot be set to status IN_USE without a user being selected.");
+          locale.getString("status_in_use_no_user"),
+          locale.getString("status_in_use_no_user_detail"));
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
-      // FIXME: Unlocalised
-      AlertUtils.showAlert(
-          AlertType.ERROR, "Duplicate ID detected", "A device with this ID already exists.");
-    } else if (IS_EDIT_MODE && !deviceIDField.getText().equals(device.getId())) {
-      // FIXME: Unlocalised
       AlertUtils.showAlert(
           AlertType.ERROR,
-          "Attempted device overwrite detected",
-          "A device with the ID you're changing this device's ID to already exists.");
+          locale.getString("duplicate_id"),
+          locale.getString("duplicate_id_detail"));
+    } else if (IS_EDIT_MODE && !deviceIDField.getText().equals(device.getId())) {
+      AlertUtils.showAlert(
+          AlertType.ERROR,
+          locale.getString("id_overwrite"),
+          locale.getString("id_overwrite_detail"));
     } else {
       // Set basic properties
       device.setId(deviceIDField.getText());
@@ -435,21 +432,21 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   @Override
   public void onLocaleChange() {
     // Set texts to selected language
-    deviceType.setText(locale.getString("device_type"));
-    basicText.setText(locale.getString("basic_information"));
+    deviceTypeText.setText(locale.getString("device_type"));
+    basicInfoText.setText(locale.getString("basic_information"));
     deviceIDText.setText(locale.getString("device_id"));
     nicknameText.setText(locale.getString("nickname"));
     manufacturerText.setText(locale.getString("manufacturer"));
     modelNameText.setText(locale.getString("model_name"));
     modelYearText.setText(locale.getString("model_year"));
     modelIDText.setText(locale.getString("model_id"));
-    macText.setText(locale.getString("mac_address"));
-    configSelectorTitle.setText(locale.getString("hardware_configuration"));
-    osSelectorTitle.setText(locale.getString("operating_system"));
+    macAddressText.setText(locale.getString("mac_address"));
+    configSelectorText.setText(locale.getString("hardware_configuration"));
+    osSelectorText.setText(locale.getString("operating_system"));
     metaText.setText(locale.getString("metadata"));
     userText.setText(locale.getString("user"));
     locationText.setText(locale.getString("location"));
-    status.setText(locale.getString("status"));
+    statusText.setText(locale.getString("status"));
     cancelButton.setText(locale.getString("cancel"));
     okButton.setText(locale.getString("save"));
   }

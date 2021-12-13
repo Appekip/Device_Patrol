@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -37,9 +38,10 @@ public class OperatingSystemEditorController
 
   // FXML for the attributes and boxes of the operating system view
   @FXML private Text newOsText;
-  @FXML private Text basicInf;
-  @FXML private Text buildNmbr;
-  @FXML private Text name;
+  @FXML private Label nameText;
+  @FXML private Label versionText;
+  @FXML private Label buildNumberText;
+
   @FXML private TextField nameField, buildNumberField, versionField;
   @FXML private Button okButton, cancelButton;
 
@@ -88,8 +90,8 @@ public class OperatingSystemEditorController
   @Override
   public void onLocaleChange() {
     newOsText.setText(locale.getString("operating_system"));
-    basicInf.setText(locale.getString("basic_information"));
-    buildNmbr.setText(locale.getString("build_number"));
-    name.setText(locale.getString("name"));
+    nameText.setText(locale.getString("name"));
+    versionText.setText(locale.getString("version"));
+    buildNumberText.setText(locale.getString("build_number"));
   }
 }

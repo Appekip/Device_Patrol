@@ -46,8 +46,8 @@ import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 /** Main application view controller class. */
 @Log4j2
-public class MainViewController implements Initializable, ViewController, DatabaseEventListener,
-    LocaleChangeListener {
+public class MainViewController
+    implements Initializable, ViewController, DatabaseEventListener, LocaleChangeListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final List<Status> statuses = dao.statuses.getAll();
@@ -59,38 +59,33 @@ public class MainViewController implements Initializable, ViewController, Databa
   @Setter private Object sceneChangeData;
 
   // FXML for the attributes of the main view.
+  @FXML
+  private TableColumn<Device, String> idColumn,
+      nicknameColumn,
+      manufacturerColumn,
+      modelNameColumn,
+      modelIDColumn,
+      modelYearColumn,
+      deviceTypeColumn,
+      hwConfigurationColumn,
+      userColumn,
+      locationColumn,
+      osColumn;
+  @FXML
+  private MenuItem menuItemAbout,
+      menuItemDevice,
+      menuItemHW,
+      menuItemOS,
+      menuItemUser,
+      menuItemLocation;
   @FXML private TableView<Device> deviceTable;
-  @FXML private TableColumn<Device, String> idColumn;
-  @FXML private TableColumn<Device, String> nicknameColumn;
-  @FXML private TableColumn<Device, String> manufacturerColumn;
-  @FXML private TableColumn<Device, String> modelNameColumn;
-  @FXML private TableColumn<Device, String> modelIDColumn;
-  @FXML private TableColumn<Device, String> modelYearColumn;
-  @FXML private TableColumn<Device, String> deviceTypeColumn;
-  @FXML private TableColumn<Device, String> hwConfigurationColumn;
-  @FXML private TableColumn<Device, String> userColumn;
-  @FXML private TableColumn<Device, Device> statusColumn;
-  @FXML private TableColumn<Device, String> locationColumn;
-  @FXML private TableColumn<Device, String> osColumn;
-  @FXML private TableColumn<Device, Device> actionColumn;
+  @FXML private TableColumn<Device, Device> statusColumn, actionColumn;
   @FXML private BorderPane deviceViewPane;
-  @FXML private Menu menuNew;
-  @FXML private Menu menuFile;
-  @FXML private Menu menuHelp;
-  @FXML private MenuItem menuItemAbout;
-  @FXML private MenuItem menuItemDevice;
-  @FXML private MenuItem menuItemHW;
-  @FXML private MenuItem menuItemOS;
-  @FXML private MenuItem menuItemUser;
-  @FXML private MenuItem menuItemLocation;
-  @FXML private MenuItem langEng;
-  @FXML private MenuItem langFin;
-  @FXML private MenuItem langSwe;
-  @FXML private Menu lang;
+  @FXML private Menu menuNew, menuFile, menuHelp, menuLang;
+  @FXML private MenuItem langEng, langFin, langSwe;
 
-  /**
-   * Initializing the start of the main view
-   */
+
+  /** Initializing the start of the main view */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     LocaleEngine.addListener(this);
@@ -181,9 +176,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     onLocaleChange();
   }
 
-  /**
-  Clickhandlers to show editors
-   */
+  /** Clickhandlers to show editors */
   @FXML
   private void handleNewDeviceClick() {
     main.showDeviceEditor(null);
@@ -248,9 +241,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     }
   }
 
-  /**
-  * Menu button splitting and functionality
-   */
+  /** Menu button splitting and functionality */
   private SplitMenuButton createDeviceActionButton(String deviceID) {
     val button = new SplitMenuButton();
     button.setText(locale.getString("edit"));
@@ -274,9 +265,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     return button;
   }
 
-  /**
-   * Status dropdown
-   */
+  /** Status dropdown */
   private ChoiceBox<String> createStatusDropdown(String deviceID) {
     val dropdown = new ChoiceBox<String>();
     JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
@@ -291,9 +280,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     return dropdown;
   }
 
-  /**
-   * Updating items and device statuses
-   */
+  /** Updating items and device statuses */
   private void updateItems(List<Device> devices) {
 
     devices.sort(Comparator.comparing(Device::getId));
@@ -307,9 +294,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     dao.devices.save(device);
   }
 
-  /**
-   * Updating items to database
-   */
+  /** Updating items to database */
   @Override
   public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
     switch (event) {
@@ -386,7 +371,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     menuHelp.setText(locale.getString("help"));
     menuItemAbout.setText(locale.getString("about"));
 
-    lang.setText(locale.getString("lang"));
+    menuLang.setText(locale.getString("lang"));
     langEng.setText(locale.getString("lang_en"));
     langFin.setText(locale.getString("lang_fi"));
     langSwe.setText(locale.getString("lang_sv"));

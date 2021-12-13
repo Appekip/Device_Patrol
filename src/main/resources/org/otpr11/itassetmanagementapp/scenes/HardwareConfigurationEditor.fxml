@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -12,135 +14,142 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="287.0" prefWidth="496.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.HardwareConfigurationEditorController">
-  <top>
-    <BorderPane BorderPane.alignment="CENTER">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefWidth="600.0"
+  xmlns="http://javafx.com/javafx/16"
+  fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.HardwareConfigurationEditorController">
+  <children>
+    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+      AnchorPane.topAnchor="0.0" layoutX="10.0" layoutY="10.0">
+      <bottom>
+        <HBox BorderPane.alignment="CENTER" alignment="BOTTOM_RIGHT" spacing="10.0">
+          <BorderPane.margin>
+            <Insets top="50.0"/>
+          </BorderPane.margin>
+          <children>
+            <Button cancelButton="true" mnemonicParsing="false" text="Cancel" fx:id="cancelButton">
+              <padding>
+                <Insets bottom="4.0" left="10.0" right="10.0" top="4.0"/>
+              </padding>
+            </Button>
+            <Button defaultButton="true" mnemonicParsing="false" text="Save" fx:id="okButton">
+              <padding>
+                <Insets bottom="4.0" left="20.0" right="20.0" top="4.0"/>
+              </padding>
+            </Button>
+          </children>
+          <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+          </padding>
+        </HBox>
+      </bottom>
+      <center>
+        <VBox BorderPane.alignment="CENTER" alignment="CENTER">
+          <children>
+            <GridPane vgap="20.0">
+              <VBox.margin>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="20.0"/>
+              </VBox.margin>
+              <children>
+                <BorderPane GridPane.columnIndex="1">
+                  <center>
+                    <ChoiceBox prefWidth="150" fx:id="deviceTypeField"/>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Device type" fx:id="deviceTypeText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.rowIndex="1">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="cpuField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="CPU"
+                      fx:id="cpuText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="diskSizeField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="Disk size"
+                      fx:id="diskText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="0" GridPane.rowIndex="2">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="screenSizeField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Screen size" fx:id="screenSizeText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="gpuField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="GPU"
+                      fx:id="gpuText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="memoryField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory"
+                      fx:id="ramText"/>
+                  </top>
+                </BorderPane>
+              </children>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+              </rowConstraints>
+            </GridPane>
+          </children>
+        </VBox>
+      </center>
       <top>
-        <Text fx:id="hwText" strokeType="OUTSIDE" strokeWidth="0.0" text="Hardware configuration" BorderPane.alignment="CENTER">
+        <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0" text="Hardware configuration"
+          fx:id="title">
+          <BorderPane.margin>
+            <Insets top="10.0"/>
+          </BorderPane.margin>
           <font>
-            <Font size="16.0" />
+            <Font size="16.0"/>
           </font>
         </Text>
       </top>
-      <BorderPane.margin>
-        <Insets bottom="20.0" />
-      </BorderPane.margin>
     </BorderPane>
-  </top>
-  <padding>
-    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-  </padding>
-  <center>
-    <VBox BorderPane.alignment="CENTER">
-      <children>
-        <BorderPane>
-          <VBox.margin>
-            <Insets bottom="20.0" />
-          </VBox.margin>
-        </BorderPane>
-        <GridPane vgap="20.0">
-          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          </rowConstraints>
-          <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
-              <center>
-                <ChoiceBox fx:id="deviceTypeField" prefWidth="150" />
-              </center>
-              <top>
-                <Text fx:id="deviceTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Device type" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0">
-              <center>
-                <TextField fx:id="cpuField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text fx:id="cpuText" strokeType="OUTSIDE" strokeWidth="0.0" text="CPU" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="0">
-              <center>
-                <TextField fx:id="diskSizeField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text fx:id="diskText" strokeType="OUTSIDE" strokeWidth="0.0" text="Disk size" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
-              <center>
-                <TextField fx:id="screenSizeField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text fx:id="screenSizeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Screen size" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-              <center>
-                <TextField fx:id="gpuField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text fx:id="gpuText" strokeType="OUTSIDE" strokeWidth="0.0" text="GPU" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-              <center>
-                <TextField fx:id="memoryField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text fx:id="ramText" strokeType="OUTSIDE" strokeWidth="0.0" text="Memory" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-          </children>
-        </GridPane>
-      </children>
-    </VBox>
-  </center>
-  <bottom>
-    <HBox alignment="BOTTOM_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
-      <children>
-        <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel">
-          <padding>
-            <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
-          </padding>
-        </Button>
-        <Button fx:id="okButton" defaultButton="true" mnemonicParsing="false" text="Save">
-          <padding>
-            <Insets bottom="4.0" left="20.0" right="20.0" top="4.0" />
-          </padding>
-        </Button>
-      </children>
-      <BorderPane.margin>
-        <Insets top="50.0" />
-      </BorderPane.margin>
-    </HBox>
-  </bottom>
-</BorderPane>
+  </children>
+</AnchorPane>

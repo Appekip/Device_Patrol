@@ -51,15 +51,9 @@ public class HardwareConfigurationEditorController
   @Setter private Object sceneChangeData;
 
   //  FXML for the attributes and boxes of the hardware view
-  @FXML private Text hwText;
-  @FXML private Text deviceTypeText;
-  @FXML private Text cpuText;
-  @FXML private Text diskText;
-  @FXML private Text gpuText;
-  @FXML private Text ramText;
+  @FXML private Text title, deviceTypeText, cpuText, gpuText, ramText, diskText, screenSizeText;
   @FXML private ChoiceBox<String> deviceTypeField;
   @FXML private TextField cpuField, diskSizeField, screenSizeField, gpuField, memoryField;
-  @FXML private Text screenSizeText;
   @FXML private Button okButton, cancelButton;
 
   @Override
@@ -89,7 +83,7 @@ public class HardwareConfigurationEditorController
           }
         });
 
-    hwText.setText(locale.getString("hardware_configuration"));
+    title.setText(locale.getString("hardware_configuration"));
     deviceTypeText.setText(locale.getString("device_type"));
     cpuText.setText(locale.getString("cpu"));
     diskText.setText(locale.getString("disk"));
@@ -162,7 +156,7 @@ public class HardwareConfigurationEditorController
 
   @Override
   public void onLocaleChange() {
-    hwText.setText(locale.getString("hardware_configuration"));
+    title.setText(locale.getString("hardware_configuration"));
     deviceTypeText.setText(locale.getString("device_type"));
     cpuText.setText(locale.getString("cpu"));
     diskText.setText(locale.getString("disk"));
