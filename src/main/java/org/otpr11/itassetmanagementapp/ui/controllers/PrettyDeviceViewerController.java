@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
+import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
@@ -38,9 +39,7 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
   private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
 
-  /**
-   * Borders and grid
-   */
+  /** Borders and grid */
   public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
     locale = LocaleEngine.getResourceBundle();
     mainViewPane = _mainViewPane;
@@ -66,9 +65,7 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     prettyDevicePane.setRight(anchorPane);
   }
 
-  /**
-   * Showing device
-   */
+  /** Showing device */
   public static void show(String deviceID) {
     isOpen = true;
     update(deviceID);
@@ -78,17 +75,13 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     }
   }
 
-  /**
-   * Hiding device
-   */
+  /** Hiding device */
   public static void hide() {
     isOpen = false;
     mainViewPane.setLeft(null);
   }
 
-  /**
-   * Updating device
-   */
+  /** Updating device */
   private static void update(String deviceID) {
     val device = dao.devices.get(deviceID);
 
@@ -98,7 +91,10 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
 
     // Device title
     addRow(
-        createText("%s %s (%s)".formatted(locale.getString("device"), device.getId(), device.getNickname()), TITLE_STYLE));
+        createText(
+            "%s %s (%s)"
+                .formatted(locale.getString("device"), device.getId(), device.getNickname()),
+            TITLE_STYLE));
 
     // Device description
     val configuration = device.getConfiguration();
@@ -110,7 +106,9 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
                     device.getModelYear(),
                     device.getManufacturer(),
                     device.getModelName(),
-                    configuration != null ? configuration.getDeviceType().toString().toLowerCase() : locale.getString("unknown_device_type"),
+                    configuration != null
+                        ? DeviceType.getLocalised(configuration.getDeviceType()).toLowerCase()
+                        : locale.getString("unknown_device_type"),
                     device.getModelID()),
             SUBTITLE_STYLE));
 
@@ -118,14 +116,19 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     addRow(
         createText(
             "Status: %s"
-                .formatted(DeviceStatus.fromString(device.getStatus().toString()).getPrettyName()),
+                .formatted(
+                    DeviceStatus.getLocalisedPretty(
+                        DeviceStatus.fromString(device.getStatus().toString()))),
             SUBTITLE_STYLE));
 
     addSpacer();
 
     // HW config
     addRow(createText("%s:".formatted(locale.getString("hardware_details")), SUBTITLE_STYLE));
-    addRow(createText("%s: %s".formatted(locale.getString("mac_address"), device.getMacAddress()), BODY_STYLE));
+    addRow(
+        createText(
+            "%s: %s".formatted(locale.getString("mac_address"), device.getMacAddress()),
+            BODY_STYLE));
 
     if (configuration != null) {
       switch (configuration.getDeviceType()) {
@@ -166,10 +169,11 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
 
       osString = str.toString();
     } else {
-      osString = "N/A";
+      osString = locale.getString("not_applicable");
     }
 
-    addRow(createText("%s: %s".formatted(locale.getString("operating_system"), osString), BODY_STYLE));
+    addRow(
+        createText("%s: %s".formatted(locale.getString("operating_system"), osString), BODY_STYLE));
     addSpacer();
 
     // User info
@@ -179,17 +183,29 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
       addRow(
           createText(
               "%s: %s %s (%s)"
-                  .formatted(locale.getString("in_use_by"), user.getFirstName(), user.getLastName(), user.getId()),
+                  .formatted(
+                      locale.getString("in_use_by"),
+                      user.getFirstName(),
+                      user.getLastName(),
+                      user.getId()),
               SUBTITLE_STYLE));
       // TODO: Click to copy on these?
-      addRow(createText("%s: %s".formatted(locale.getString("email"), user.getEmail()), BODY_STYLE));
-      addRow(createText("%s: %s".formatted(locale.getString("phone"), user.getPhone()), BODY_STYLE));
+      addRow(
+          createText("%s: %s".formatted(locale.getString("email"), user.getEmail()), BODY_STYLE));
+      addRow(
+          createText("%s: %s".formatted(locale.getString("phone"), user.getPhone()), BODY_STYLE));
     } else {
-      addRow(createText("%s: N/A".formatted(locale.getString("in_use_by")), BODY_STYLE));
+      addRow(
+          createText(
+              "%s: %s".formatted(locale.getString("in_use_by"), locale.getString("not_applicable")),
+              BODY_STYLE));
     }
 
     val location = device.getLocation();
-    val locString = location != null ? "%s (%s)".formatted(location.getId(), location.getNickname()) : "N/A";
+    val locString =
+        location != null
+            ? "%s (%s)".formatted(location.getId(), location.getNickname())
+            : locale.getString("not_applicable");
 
     addRow(createText("%s: %s".formatted(locale.getString("located_at"), locString), BODY_STYLE));
 
@@ -197,15 +213,16 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
       // TODO: Click to copy on this?
       addRow(
           createText(
-              "%s: %s %s".formatted(locale.getString("address"), location.getAddress(), location.getZipCode()), BODY_STYLE));
+              "%s: %s %s"
+                  .formatted(
+                      locale.getString("address"), location.getAddress(), location.getZipCode()),
+              BODY_STYLE));
     }
 
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
 
-  /**
-   * Adding rows and spaces
-   */
+  /** Adding rows and spaces */
   private static void addRow(HBox row) {
     lastRowIndex++;
     deviceInfoGrid.add(row, 0, lastRowIndex);

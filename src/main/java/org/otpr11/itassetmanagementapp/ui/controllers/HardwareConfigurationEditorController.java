@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,7 +41,7 @@ public class HardwareConfigurationEditorController
   private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
-      Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
+      Arrays.stream(DeviceType.values()).map(DeviceType::toString).toList();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
   // Text field validation and dropdown Initializing the start of the hardware configuration view
   @Setter private Main main;
@@ -70,7 +69,7 @@ public class HardwareConfigurationEditorController
 
     deviceTypeField.setOnAction(
         event -> {
-          val type = DeviceType.valueOf(deviceTypeField.getSelectionModel().getSelectedItem());
+          val type = DeviceType.fromString(deviceTypeField.getSelectionModel().getSelectedItem());
           if (type == DeviceType.DESKTOP) {
             screenSizeField.setEditable(false);
             screenSizeField.setVisible(false);

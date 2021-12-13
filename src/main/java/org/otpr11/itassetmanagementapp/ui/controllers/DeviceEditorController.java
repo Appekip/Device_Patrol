@@ -62,9 +62,15 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   private final Validator validator = new Validator();
 
   private final List<String> deviceTypes =
-      Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
+      Arrays.stream(DeviceType.values())
+          .map(DeviceType::toString)
+          .map(type -> DeviceType.getLocalised(DeviceType.fromString(type)))
+          .toList();
   private final List<String> deviceStatuses =
-      dao.statuses.getAll().stream().map(Status::toString).collect(Collectors.toList());
+      dao.statuses.getAll().stream()
+          .map(Status::toString)
+          .map(status -> DeviceStatus.getLocalised(DeviceStatus.fromString(status)))
+          .toList();
   private final List<String> users =
       dao.users.getAll().stream().map(User::getId).collect(Collectors.toList());
   private final List<String> locations =
@@ -72,7 +78,7 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   private final List<String> operatingSystems =
       dao.operatingSystems.getAll().stream().map(OperatingSystem::toPrettyString).toList();
 
-  private Device device;
+  private Device device = new Device();
   private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
 
   @Setter private Main main;
@@ -134,8 +140,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
     // Init dropdowns
 
-    initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
-    initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
+    initDropdown(statusSelector, deviceStatuses, DeviceStatus.getLocalised(DEFAULT_DEVICE_STATUS));
+    initDropdown(deviceTypeSelector, deviceTypes, DeviceType.getLocalised(DEFAULT_DEVICE_TYPE));
     initDropdown(userSelector, users, true);
     initDropdown(locationSelector, locations, true);
     initDropdown(configSelector, configs, false);
@@ -144,7 +150,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
     deviceTypeSelector.setOnAction(
         event -> {
-          val type = DeviceType.valueOf(deviceTypeSelector.getSelectionModel().getSelectedItem());
+          val type =
+              DeviceType.fromString(deviceTypeSelector.getSelectionModel().getSelectedItem());
           updateAvailableHWConfigs(type);
         });
 
@@ -194,12 +201,16 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
         .selectedItemProperty()
         .addListener(
             (options, oldValue, newValue) -> {
-              if (newValue.equals(DeviceStatus.VACANT.toString())) {
+              if (newValue.equals(DeviceStatus.getLocalised(DeviceStatus.VACANT))) {
                 val result =
                     AlertUtils.showAlert(
                         AlertType.CONFIRMATION,
-                        locale.getString("status_vacant_confirmation"),
-                        locale.getString("status_vacant_confirmation_detail"));
+                        locale
+                            .getString("status_vacant_confirmation")
+                            .formatted(DeviceStatus.getLocalised(DeviceStatus.VACANT)),
+                        locale
+                            .getString("status_vacant_confirmation_detail")
+                            .formatted(DeviceStatus.getLocalised(DeviceStatus.VACANT)));
 
                 if (result.getButtonData() == ButtonData.OK_DONE) {
                   userSelector.getSelectionModel().selectFirst();
@@ -271,21 +282,31 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
       if (noConfig) {
         configSelectorText.setText("⚠️ " + locale.getString("hardware_configuration"));
         configSelectorText.setFill(Color.RED);
+      } else {
+        configSelectorText.setText(locale.getString("hardware_configuration"));
+        configSelectorText.setFill(Color.BLACK);
       }
 
       if (noOS) {
         osSelectorText.setText("⚠️ " + locale.getString("operating_system"));
         osSelectorText.setFill(Color.RED);
+      } else {
+        osSelectorText.setText(locale.getString("operating_system"));
+        osSelectorText.setFill(Color.BLACK);
       }
     } else if (statusSelector
             .getSelectionModel()
             .getSelectedItem()
-            .equals(DeviceStatus.IN_USE.toString())
+            .equals(DeviceStatus.getLocalised(DeviceStatus.IN_USE))
         && getChoiceIndex(userSelector) <= 0) {
       AlertUtils.showAlert(
           AlertType.ERROR,
-          locale.getString("status_in_use_no_user"),
-          locale.getString("status_in_use_no_user_detail"));
+          locale
+              .getString("status_in_use_no_user")
+              .formatted(DeviceStatus.getLocalised(DeviceStatus.IN_USE)),
+          locale
+              .getString("status_in_use_no_user_detail")
+              .formatted(DeviceStatus.getLocalised(DeviceStatus.IN_USE)));
     } else if (!IS_EDIT_MODE && dao.devices.get(deviceIDField.getText()) != null) {
       AlertUtils.showAlert(
           AlertType.ERROR,
@@ -308,7 +329,7 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
       // Determine selected hardware configuration
       val hwConfig =
-          getRelevantHWConfigs(DeviceType.valueOf(deviceTypeSelector.getValue()))
+          getRelevantHWConfigs(DeviceType.fromString(deviceTypeSelector.getValue()))
               .get(getChoiceIndex(configSelector));
 
       // Determine selected operating systems
@@ -331,6 +352,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
         // Since this field is nullable, our indices get pushed 1 index forwards
         val user = dao.users.getAll().get(getChoiceIndex(userSelector) - 1);
         device.setUser(user);
+      } else if (IS_EDIT_MODE) {
+        device.setUser(null);
       }
 
       // If location is selected (optional)
@@ -338,6 +361,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
         // Since this field is nullable, our indices get pushed 1 index forwards
         val location = dao.locations.getAll().get(getChoiceIndex(locationSelector) - 1);
         device.setLocation(location);
+      } else if (IS_EDIT_MODE) {
+        device.setLocation(null);
       }
 
       device.setStatus(status);
@@ -365,15 +390,13 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   }
 
   private List<String> formatRelevantHWConfigs(DeviceType deviceType) {
-    return getRelevantHWConfigs(deviceType).stream()
-        .map(StringUtils::getPrettyHWConfig)
-        .collect(Collectors.toList());
+    return getRelevantHWConfigs(deviceType).stream().map(StringUtils::getPrettyHWConfig).toList();
   }
 
   private List<Configuration> getRelevantHWConfigs(DeviceType deviceType) {
     return dao.configurations.getAll().stream()
         .filter(cfg -> cfg.getDeviceType() == deviceType)
-        .collect(Collectors.toList());
+        .toList();
   }
 
   @Override
@@ -391,7 +414,7 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
       val cfg = device.getConfiguration();
       select(
           deviceTypeSelector,
-          cfg != null ? cfg.getDeviceType().toString() : DeviceType.LAPTOP.toString());
+          DeviceType.getLocalised(cfg != null ? cfg.getDeviceType() : DEFAULT_DEVICE_TYPE));
 
       deviceIDField.setText(device.getId());
       nicknameField.setText(device.getNickname());
@@ -419,7 +442,9 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
         select(locationSelector, device.getLocation().getId());
       }
 
-      select(statusSelector, device.getStatus().toString());
+      select(
+          statusSelector,
+          DeviceStatus.getLocalised(DeviceStatus.fromString(device.getStatus().toString())));
     } else {
       IS_EDIT_MODE = false;
       log.trace("Registering new device.");

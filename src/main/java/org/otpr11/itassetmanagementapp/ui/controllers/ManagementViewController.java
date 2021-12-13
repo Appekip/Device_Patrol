@@ -4,14 +4,12 @@ import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
@@ -297,7 +295,7 @@ public class ManagementViewController implements Initializable, ViewController, 
           val filtered =
               dao.devices.getAll().stream()
                   .filter(d -> !d.getId().equals(device.getId()))
-                  .collect(Collectors.toList());
+                  .toList();
 
           updateItems(filtered);
         }

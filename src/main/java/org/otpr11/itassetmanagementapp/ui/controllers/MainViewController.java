@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -31,6 +30,7 @@ import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DatabaseEvent;
+import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -50,9 +50,9 @@ public class MainViewController
     implements Initializable, ViewController, DatabaseEventListener, LocaleChangeListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private List<String> statuses; // Will be populated eventually
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -83,7 +83,6 @@ public class MainViewController
   @FXML private BorderPane deviceViewPane;
   @FXML private Menu menuNew, menuFile, menuHelp, menuLang;
   @FXML private MenuItem langEng, langFin, langSwe;
-
 
   /** Initializing the start of the main view */
   @Override
@@ -138,22 +137,7 @@ public class MainViewController
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
-    statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    statusColumn.setCellFactory(
-        param ->
-            new TableCell<>() {
-              @Override
-              protected void updateItem(Device device, boolean b) {
-                super.updateItem(device, b);
-
-                if (device == null) {
-                  setGraphic(null);
-                  return;
-                }
-
-                setGraphic(createStatusDropdown(device.getId()));
-              }
-            });
+    updateStatusDropdowns();
 
     actionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
     actionColumn.setCellFactory(
@@ -268,16 +252,51 @@ public class MainViewController
   /** Status dropdown */
   private ChoiceBox<String> createStatusDropdown(String deviceID) {
     val dropdown = new ChoiceBox<String>();
-    JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
-    statuses.forEach(status -> dropdown.getItems().add(status.toString()));
+    statuses.forEach(status -> dropdown.getItems().add(status));
+
+    // Because the dropdown items are localised, we need to do a reverse lookup first
+    JFXUtils.select(
+        dropdown,
+        DeviceStatus.getLocalised(
+            DeviceStatus.fromString(dao.devices.get(deviceID).getStatus().toString())));
+
     dropdown.setOnAction(
-        event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+        event -> {
+          // As the dropdown items are localised, we need to do a reverse localisation before we
+          // can find the correct one in the DB
+          val delocalised = DeviceStatus.fromString(dropdown.getValue()).toString();
+          updateDeviceStatus(deviceID, dao.statuses.get(delocalised));
+        });
 
     // Don't show pointer cursor or tooltip for this element
     dropdown.setCursor(Cursor.DEFAULT);
     dropdown.setTooltip(null);
 
     return dropdown;
+  }
+
+  private void updateStatusDropdowns() {
+    statuses =
+        dao.statuses.getAll().stream()
+            .map(status -> DeviceStatus.getLocalised(DeviceStatus.fromString(status.toString())))
+            .toList();
+
+    statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    statusColumn.setCellFactory(
+        param ->
+            new TableCell<>() {
+              @Override
+              protected void updateItem(Device device, boolean b) {
+                super.updateItem(device, b);
+
+                if (device == null) {
+                  setGraphic(null);
+                  return;
+                }
+
+                setGraphic(createStatusDropdown(device.getId()));
+              }
+            });
   }
 
   /** Updating items and device statuses */
@@ -305,7 +324,7 @@ public class MainViewController
           val filtered =
               dao.devices.getAll().stream()
                   .filter(d -> !d.getId().equals(device.getId()))
-                  .collect(Collectors.toList());
+                  .toList();
 
           updateItems(filtered);
         }
@@ -348,6 +367,8 @@ public class MainViewController
   @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
+    updateStatusDropdowns();
+
     idColumn.setText(locale.getString("id"));
     nicknameColumn.setText(locale.getString("nickname"));
     modelNameColumn.setText(locale.getString("model_name"));
