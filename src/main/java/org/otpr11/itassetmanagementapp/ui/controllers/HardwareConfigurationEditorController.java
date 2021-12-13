@@ -46,6 +46,10 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
+  /**
+   * FXML for the attributes and boxes of the hardware view
+    */
+
   @FXML private ChoiceBox<String> deviceTypeField;
 
   @FXML private TextField cpuField, diskSizeField, screenSizeField, gpuField, memoryField;
@@ -53,6 +57,11 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   @FXML private Text screenSizeText;
 
   @FXML private Button okButton, cancelButton;
+
+  /**
+   * Text field validation and dropdown
+   * Initializing the start of the hardware configuration view
+    */
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -78,14 +87,24 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
           }
         });
 
+    // Saving and canceling
+
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
   }
+
+  /**
+   * Configuring dropdown
+    */
 
   private void initDropdown(ChoiceBox<String> dropdown, List<String> items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
+
+  /**
+   * Functional saving
+    */
 
   private void onSave(ActionEvent event) {
 
@@ -103,6 +122,10 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     }
   }
 
+  /**
+   * Saving laptop data
+    */
+
   private void saveLaptop() {
     laptopConfiguration.setCpu(cpuField.getText());
     laptopConfiguration.setDiskSize(diskSizeField.getText());
@@ -116,6 +139,10 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     stage.close();
   }
 
+  /**
+   * Saving desktop data
+    */
+
   private void saveDesktop() {
     desktopConfiguration.setCpu(cpuField.getText());
     desktopConfiguration.setDiskSize(diskSizeField.getText());
@@ -128,9 +155,17 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     stage.close();
   }
 
+  /**
+   * Functional cancel button
+    */
+
   private void onCancel(ActionEvent event) {
     stage.close();
   }
+
+  /**
+   * Text field validation
+    */
 
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);

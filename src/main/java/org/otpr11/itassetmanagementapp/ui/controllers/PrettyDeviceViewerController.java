@@ -34,6 +34,9 @@ public abstract class PrettyDeviceViewerController {
   private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
 
+  /**
+   * Borders and grid
+   */
   public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
     mainViewPane = _mainViewPane;
     prettyDevicePane = _prettyDevicePane;
@@ -58,6 +61,9 @@ public abstract class PrettyDeviceViewerController {
     prettyDevicePane.setRight(anchorPane);
   }
 
+  /**
+   * Showing device
+   */
   public static void show(String deviceID) {
     isOpen = true;
     update(deviceID);
@@ -67,11 +73,17 @@ public abstract class PrettyDeviceViewerController {
     }
   }
 
+  /**
+   * Hiding device
+   */
   public static void hide() {
     isOpen = false;
     mainViewPane.setLeft(null);
   }
 
+  /**
+   * Updating device
+   */
   private static void update(String deviceID) {
     val device = dao.devices.get(deviceID);
 
@@ -186,6 +198,9 @@ public abstract class PrettyDeviceViewerController {
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
 
+  /**
+   * Adding rows and spaces
+   */
   private static void addRow(HBox row) {
     lastRowIndex++;
     deviceInfoGrid.add(row, 0, lastRowIndex);

@@ -29,6 +29,10 @@ public class LocationEditorController implements Initializable, ViewController {
   private final Location location = new Location();
   private final Validator validator = new Validator();
 
+  /**
+   * FXML for the attributes and boxes of the location view
+    */
+
   @FXML
   private Button okButton,
       cancelButton;
@@ -40,6 +44,10 @@ public class LocationEditorController implements Initializable, ViewController {
       nicknameField;
 
 
+  /**
+   * Text field validation
+    */
+
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     createTextFieldValidator(idField, "id", idField.textProperty());
@@ -50,6 +58,10 @@ public class LocationEditorController implements Initializable, ViewController {
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
   }
+
+  /**
+   * Save button event
+    */
 
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
@@ -70,9 +82,19 @@ public class LocationEditorController implements Initializable, ViewController {
 
     }
   }
+
+  /**
+   * Cancel button event
+    */
+
   private void onCancel(ActionEvent event) {
     stage.close();
   }
+
+  /**
+   * Text field validation
+   * Initializing the start of the location view
+    */
 
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
