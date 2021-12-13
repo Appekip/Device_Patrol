@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
 /** Formatter to turn nested data types in table cells into their correct string representations. */
@@ -51,6 +52,9 @@ public abstract class CellDataFormatter {
   public static SimpleStringProperty formatDeviceType(CellDataFeatures<Device, String> data) {
     val cfg = data.getValue().getConfiguration();
 
-    return new SimpleStringProperty(cfg != null ? cfg.getDeviceType().toString() : "UNKNOWN");
+    return new SimpleStringProperty(
+        cfg != null
+            ? cfg.getDeviceType().toString()
+            : LocaleEngine.getResourceBundle().getString("unknown_device_type"));
   }
 }

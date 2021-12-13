@@ -21,6 +21,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 
 /**
  * Represents a desktop-specific hardware configuration of a {@link
@@ -77,7 +78,8 @@ public class DesktopConfiguration extends DTO implements PrettyStringifiable {
   }
 
   public String toPrettyString() {
-    return "%s, %s, %s RAM, %s disk".formatted(cpu, gpu, memory, diskSize);
+    return "%s, %s, %s RAM, %s %s"
+        .formatted(cpu, gpu, memory, diskSize, LocaleEngine.getResourceBundle().getString("disk"));
   }
 
   @PreRemove

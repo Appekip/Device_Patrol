@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="287.0" prefWidth="496.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.HardwareConfigurationEditorController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="287.0" prefWidth="496.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.HardwareConfigurationEditorController">
   <top>
     <BorderPane BorderPane.alignment="CENTER">
       <top>
@@ -53,7 +53,7 @@
           <children>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
               <center>
-                <ChoiceBox fx:id="deviceTypeField" prefWidth="150"/>
+                <ChoiceBox fx:id="deviceTypeField" prefWidth="150" />
               </center>
               <top>
                 <Text fx:id="deviceTypeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Device type" BorderPane.alignment="CENTER" />
@@ -80,7 +80,7 @@
                 </TextField>
               </center>
               <top>
-                <Text fx:id="diskText" strokeType="OUTSIDE" strokeWidth="0.0" text="Disk Size" BorderPane.alignment="CENTER" />
+                <Text fx:id="diskText" strokeType="OUTSIDE" strokeWidth="0.0" text="Disk size" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="1">
@@ -92,7 +92,7 @@
                 </TextField>
               </center>
               <top>
-                <Text fx:id="screenSizeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Screen Size" BorderPane.alignment="CENTER" />
+                <Text fx:id="screenSizeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Screen size" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">

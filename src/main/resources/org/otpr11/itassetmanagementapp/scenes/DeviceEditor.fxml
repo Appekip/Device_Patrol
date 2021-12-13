@@ -112,7 +112,7 @@
                 </TextField>
               </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model name" BorderPane.alignment="CENTER" />
+                <Text fx:id="modelNameText" strokeType="OUTSIDE" strokeWidth="0.0" text="Model name" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -124,12 +124,12 @@
                 </TextField>
               </center>
               <top>
-                <Text fx:id="modelIdText" strokeType="OUTSIDE" strokeWidth="0.0" text="Model ID" BorderPane.alignment="CENTER" />
+                <Text fx:id="modelIDText" strokeType="OUTSIDE" strokeWidth="0.0" text="Model ID" BorderPane.alignment="CENTER" />
               </top>
             </BorderPane>
             <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
               <top>
-                <Text fx:id="modelText" strokeType="OUTSIDE" strokeWidth="0.0" text="Model year" BorderPane.alignment="CENTER" />
+                <Text fx:id="modelYearText" strokeType="OUTSIDE" strokeWidth="0.0" text="Model year" BorderPane.alignment="CENTER" />
               </top>
                      <bottom>
                         <ComboBox fx:id="modelYearSelector" prefWidth="500.0" BorderPane.alignment="CENTER" />

@@ -6,61 +6,66 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="356.0" prefWidth="265.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.UserEditorController">
+<VBox xmlns:fx="http://javafx.com/fxml/1" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity"
+  minHeight="-Infinity" minWidth="-Infinity" prefHeight="356.0" prefWidth="265.0"
+  xmlns="http://javafx.com/javafx/17"
+  fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.UserEditorController">
   <children>
-    <Label fx:id="FName" text="First Name">
-      <padding>
-        <Insets left="20.0" right="20.0" top="10.0" />
-      </padding>
-    </Label>
-    <TextField fx:id="firstNameField" />
-    <Label fx:id="LName" text="Last Name">
-      <padding>
-        <Insets left="20.0" right="20.0" top="10.0" />
-      </padding>
-    </Label>
-    <TextField fx:id="lastNameField" />
-    <Label fx:id="phoneN" text="Phone number">
-      <padding>
-        <Insets left="20.0" right="20.0" top="10.0" />
-      </padding>
-    </Label>
-    <TextField fx:id="phoneNumberField" />
-    <Label fx:id="email" text="Email">
-      <padding>
-        <Insets left="20.0" right="20.0" top="10.0" />
-      </padding>
-    </Label>
-    <TextField fx:id="emailField" />
-      <Label fx:id="id" text="Employee Id">
-         <padding>
-            <Insets left="20.0" right="20.0" top="10.0" />
-         </padding>
-      </Label>
-      <TextField fx:id="employeeIdField" />
     <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+      <VBox.margin>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+      </VBox.margin>
       <children>
-        <Button fx:id="cancelButton" alignment="TOP_LEFT" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="Cancel">
+        <Button alignment="TOP_LEFT" maxHeight="25.0" maxWidth="52.0" minHeight="25.0"
+          minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0"
+          text="Cancel" fx:id="cancelButton">
           <HBox.margin>
-            <Insets right="10.0" />
+            <Insets right="10.0"/>
           </HBox.margin>
         </Button>
-        <Button fx:id="okButton" maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="OK">
+        <Button maxHeight="25.0" maxWidth="52.0" minHeight="25.0" minWidth="52.0" mnemonicParsing="false"
+          prefHeight="25.0" prefWidth="52.0" text="OK" fx:id="okButton">
           <HBox.margin>
-            <Insets left="10.0" />
+            <Insets left="10.0"/>
           </HBox.margin>
         </Button>
       </children>
       <padding>
-        <Insets bottom="30.0" left="30.0" right="30.0" top="10.0" />
+        <Insets bottom="30.0" left="30.0" right="30.0" top="10.0"/>
       </padding>
-      <VBox.margin>
-        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-      </VBox.margin>
     </HBox>
+    <Label text="First Name" fx:id="firstName">
+      <padding>
+        <Insets left="20.0" right="20.0" top="10.0"/>
+      </padding>
+    </Label>
+    <Label text="Last Name" fx:id="lastName">
+      <padding>
+        <Insets left="20.0" right="20.0" top="10.0"/>
+      </padding>
+    </Label>
+    <Label text="Phone number" fx:id="phoneNumber">
+      <padding>
+        <Insets left="20.0" right="20.0" top="10.0"/>
+      </padding>
+    </Label>
+    <Label text="Email" fx:id="email">
+      <padding>
+        <Insets left="20.0" right="20.0" top="10.0"/>
+      </padding>
+    </Label>
+    <Label text="Employee Id" fx:id="id">
+      <padding>
+        <Insets left="20.0" right="20.0" top="10.0"/>
+      </padding>
+    </Label>
+    <TextField fx:id="firstNameField"/>
+    <TextField fx:id="lastNameField"/>
+    <TextField fx:id="phoneNumberField"/>
+    <TextField fx:id="emailField"/>
+    <TextField fx:id="employeeIdField"/>
   </children>
   <padding>
-    <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
+    <Insets bottom="20.0" left="40.0" right="40.0" top="20.0"/>
   </padding>
 </VBox>

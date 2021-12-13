@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.getChoiceIndex;
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
@@ -9,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,6 +39,7 @@ import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -52,15 +52,15 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  * whether a device is being created or edited.
  */
 @Log4j2
-public class DeviceEditorController implements Initializable, ViewController {
-  private final ResourceBundle locale = LocaleEngine.getResourceBundle();
+public class DeviceEditorController implements Initializable, ViewController, LocaleChangeListener {
+  private static final ResourceBundle locale = LocaleEngine.getResourceBundle();
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
-  private static final String SELECTOR_DEFAULT_TITLE = "Select...";
+  private static final String SELECTOR_DEFAULT_TITLE = locale.getString("selector_default_title");
   private static boolean IS_EDIT_MODE;
-
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final Validator validator = new Validator();
+
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
   private final List<String> deviceStatuses =
@@ -70,36 +70,31 @@ public class DeviceEditorController implements Initializable, ViewController {
   private final List<String> locations =
       dao.locations.getAll().stream().map(Location::getId).collect(Collectors.toList());
   private final List<String> operatingSystems =
-      dao.operatingSystems.getAll().stream()
-          .map(OperatingSystem::toPrettyString)
-          .collect(Collectors.toList());
-  public Text deviceType;
-  public Text basicText;
-  public Text deviceIdText;
-  public Text nicknameText;
-  public Text manufacturerText;
-  public Text modelText;
-  public Text modelIdText;
-  public Text macText;
-  public Text hwText;
-  public Text osText;
-  public Text metaText;
-  public Text userText;
-  public Text locaText;
-  public Text status;
+      dao.operatingSystems.getAll().stream().map(OperatingSystem::toPrettyString).toList();
 
-
+  private Device device;
   private List<String> configs = formatRelevantHWConfigs(DEFAULT_DEVICE_TYPE);
 
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  /**
-   * FXML for the attributes and boxes of the device view
-    */
-
-
+  // FXML for the attributes and boxes of the device view
+  @FXML private Text deviceType;
+  @FXML private Text basicText;
+  @FXML private Text deviceIdText;
+  @FXML private Text nicknameText;
+  @FXML private Text manufacturerText;
+  @FXML private Text modelNameText;
+  @FXML private Text modelIDText;
+  @FXML private Text modelYearText;
+  @FXML private Text macText;
+  @FXML private Text hwText;
+  @FXML private Text osText;
+  @FXML private Text metaText;
+  @FXML private Text userText;
+  @FXML private Text locaText;
+  @FXML private Text status;
   @FXML private CheckComboBox<String> osSelector;
   @FXML private ChoiceBox<String> deviceTypeSelector;
   @FXML
@@ -120,50 +115,30 @@ public class DeviceEditorController implements Initializable, ViewController {
   @FXML private ComboBox<Integer> modelYearSelector;
   @FXML private Text configSelectorTitle, osSelectorTitle;
 
-  /**
-   * Text field validations for text fields
-   * Initializing the start of the device editor view
-    */
+  public DeviceEditorController() {}
 
-
+  /** Text field validations for text fields Initializing the start of the device editor view */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    LocaleEngine.addListener(this);
+
     // Init freeform text field validators
-
-
-    createTextFieldValidator(deviceIDField, "deviceID", deviceIDField.textProperty());
-    createTextFieldValidator(manufacturerField, "manufacturer", manufacturerField.textProperty());
-    createTextFieldValidator(modelIDField, "modelID", modelIDField.textProperty());
-    createTextFieldValidator(modelNameField, "modelName", modelNameField.textProperty());
-    createTextFieldValidator(nicknameField, "nickname", nicknameField.textProperty());
-    createTextFieldValidator(macAddressField, "macAddress", macAddressField.textProperty());
+    createTextFieldValidator(validator, deviceIDField, "deviceID", deviceIDField.textProperty());
+    createTextFieldValidator(
+        validator, manufacturerField, "manufacturer", manufacturerField.textProperty());
+    createTextFieldValidator(validator, modelIDField, "modelID", modelIDField.textProperty());
+    createTextFieldValidator(validator, modelNameField, "modelName", modelNameField.textProperty());
+    createTextFieldValidator(validator, nicknameField, "nickname", nicknameField.textProperty());
+    createTextFieldValidator(
+        validator, macAddressField, "macAddress", macAddressField.textProperty());
 
     // Init dropdowns
-
 
     initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
     initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
     initDropdown(userSelector, users, true);
     initDropdown(locationSelector, locations, true);
     initDropdown(configSelector, configs, false);
-
-    //Set texts to selected language
-    deviceType.setText(locale.getString("devicetype"));
-    basicText.setText(locale.getString("basicInfo"));
-    deviceIdText.setText(locale.getString("deviceid"));
-    nicknameText.setText(locale.getString("nickname"));
-    manufacturerText.setText(locale.getString("manufacturer"));
-    modelText.setText(locale.getString("modelname"));
-    modelIdText.setText(locale.getString("modelid"));
-    macText.setText(locale.getString("mac"));
-    hwText.setText(locale.getString("hwconf"));
-    osText.setText(locale.getString("os"));
-    metaText.setText(locale.getString("meta"));
-    userText.setText(locale.getString("user"));
-    locaText.setText(locale.getString("location"));
-    status.setText(locale.getString("status"));
-    cancelButton.setText(locale.getString("cancel"));
-    okButton.setText(locale.getString("ok"));
 
     // Update HW configs when device type changes
 
@@ -209,6 +184,10 @@ public class DeviceEditorController implements Initializable, ViewController {
                 });
 
     // Listen for status being set to VACANT, and remove user if selected
+    // FIXME: These could be moved to onLocaleChange() eventually, but that's not necessary for now
+    configSelector.setValue(SELECTOR_DEFAULT_TITLE);
+    userSelector.setValue(SELECTOR_DEFAULT_TITLE);
+    locationSelector.setValue(SELECTOR_DEFAULT_TITLE);
 
     statusSelector
         .getSelectionModel()
@@ -228,7 +207,8 @@ public class DeviceEditorController implements Initializable, ViewController {
               }
             });
 
-    // Making the list of selectable manufacturer years into the dropdown view starting from current year.
+    // Making the list of selectable manufacturer years into the dropdown view starting from current
+    // year.
 
     for (int year = Year.now().getValue(); year >= 1970; year--) {
       modelYearSelector.getItems().add(year);
@@ -249,6 +229,8 @@ public class DeviceEditorController implements Initializable, ViewController {
     addLocationButton.setOnAction(event -> main.showLocationEditor(null));
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
+
+    onLocaleChange();
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -365,17 +347,15 @@ public class DeviceEditorController implements Initializable, ViewController {
       val success = dao.devices.save(device);
 
       if (!success) {
-        AlertUtils.showAlert(AlertType.ERROR, "Error", "Could not save device.");
+        AlertUtils.showAlert(
+            AlertType.ERROR, locale.getString("error"), locale.getString("could_not_save_device"));
       } else {
         stage.close();
       }
     }
   }
 
-  /**
-   * Functional cancel button
-    */
-
+  /** Functional cancel button */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
@@ -397,33 +377,6 @@ public class DeviceEditorController implements Initializable, ViewController {
         .collect(Collectors.toList());
   }
 
-  // TODO: More sophisticated validation for MAC addresses, number fields, etc.
-  // Text field validation.
-  private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
-    val edited = new AtomicBoolean(false);
-
-    validator
-        .createCheck()
-        .dependsOn(key, prop)
-        .withMethod(
-            ctx -> {
-              val warn = "Required field.";
-              val error = "Please provide a value.";
-              String value = ctx.get(key);
-
-              if (value == null || value.trim().equals("")) {
-                if (!edited.get()) { // Not yet edited, show only warning
-                  ctx.warn(warn);
-                  edited.set(true);
-                } else { // Already edited, show error now
-                  ctx.error(error);
-                }
-              }
-            })
-        .decorates(field)
-        .immediate();
-  }
-
   @Override
   public void afterInitialize() {
     if (sceneChangeData != null
@@ -431,7 +384,6 @@ public class DeviceEditorController implements Initializable, ViewController {
         && dao.devices.get((String) sceneChangeData) != null) {
       IS_EDIT_MODE = true;
       log.trace("Editing existing device {}.", sceneChangeData);
-      stage.setTitle("Manage device %s".formatted(sceneChangeData));
 
       // Determine device to edit
       device = dao.devices.get((String) sceneChangeData);
@@ -472,7 +424,31 @@ public class DeviceEditorController implements Initializable, ViewController {
     } else {
       IS_EDIT_MODE = false;
       log.trace("Registering new device.");
-      stage.setTitle(locale.getString("device_editor_stage_title"));
     }
+  }
+
+  @Override
+  public void onLocaleChange() {
+    val stageTitle = locale.getString("device_editor_stage_title");
+    // stage.setTitle(IS_EDIT_MODE ? "%s %s".formatted(stageTitle, sceneChangeData) : stageTitle);
+
+    // Set texts to selected language
+    deviceType.setText(locale.getString("device_type"));
+    basicText.setText(locale.getString("basic_information"));
+    deviceIdText.setText(locale.getString("device_id"));
+    nicknameText.setText(locale.getString("nickname"));
+    manufacturerText.setText(locale.getString("manufacturer"));
+    modelNameText.setText(locale.getString("model_name"));
+    modelYearText.setText(locale.getString("model_year"));
+    modelIDText.setText(locale.getString("model_id"));
+    macText.setText(locale.getString("mac_address"));
+    hwText.setText(locale.getString("hardware_configuration"));
+    osText.setText(locale.getString("operating_system"));
+    metaText.setText(locale.getString("metadata"));
+    userText.setText(locale.getString("user"));
+    locaText.setText(locale.getString("location"));
+    status.setText(locale.getString("status"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
   }
 }
