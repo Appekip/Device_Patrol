@@ -51,7 +51,7 @@ import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 public class GlobalDAO {
 
   /** Provides the entrypoint to the DAO. */
-  @Getter private static final GlobalDAO instance = new GlobalDAO();
+  @Getter private static GlobalDAO instance = new GlobalDAO();
 
   /** Exposes CRUD operations for the device database. */
   public final DeviceDAO devices = new DeviceDAO(this);
@@ -77,7 +77,7 @@ public class GlobalDAO {
   /** Exposes CRUD operations for the status database. */
   public final StatusDAO statuses = new StatusDAO(this);
 
-  private SessionFactory sessionFactory;
+  private static SessionFactory sessionFactory;
 
   private GlobalDAO() {
     try {
@@ -89,28 +89,32 @@ public class GlobalDAO {
         Logger.getLogger("org.hibernate").setLevel(Level.OFF);
       }
 
+      val shouldInitDB = Boolean.parseBoolean(config.get("FORCE_DB_RECREATE"));
+
       // Initialise Hibernate
       val hibernateConfig =
           new Configuration().configure(Main.class.getResource("config/hibernate.cfg.xml"));
 
-      // (Re-)create database if desired
-      val shouldInitDB = Boolean.parseBoolean(config.get("FORCE_DB_RECREATE"));
+      if (!Boolean.parseBoolean(config.get("IS_TESTING_MODE"))) { // Do prod database init
+        // (Re-)create database if desired
 
-      log.debug(
-          shouldInitDB ? "Will create database tables." : "Will use existing database tables.");
-      hibernateConfig.setProperty("hibernate.hbm2ddl.auto", shouldInitDB ? "create" : "validate");
+        log.debug(
+            shouldInitDB ? "Will create database tables." : "Will use existing database tables.");
+        hibernateConfig.setProperty("hibernate.hbm2ddl.auto", shouldInitDB ? "create" : "validate");
 
-      // Define connection details
-      val connectionUrl =
-          "jdbc:postgresql://%s:%s/%s"
-              .formatted(
-                  config.get("POSTGRES_HOST"),
-                  config.get("POSTGRES_PORT"),
-                  config.get("POSTGRES_DATABASE"));
+        // Define connection details
+        val connectionUrl =
+            "jdbc:postgresql://%s:%s/%s"
+                .formatted(
+                    config.get("POSTGRES_HOST"),
+                    config.get("POSTGRES_PORT"),
+                    config.get("POSTGRES_DATABASE"));
 
-      hibernateConfig.setProperty("hibernate.connection.url", connectionUrl);
-      hibernateConfig.setProperty("hibernate.connection.username", config.get("POSTGRES_USER"));
-      hibernateConfig.setProperty("hibernate.connection.password", config.get("POSTGRES_PASSWORD"));
+        hibernateConfig.setProperty("hibernate.connection.url", connectionUrl);
+        hibernateConfig.setProperty("hibernate.connection.username", config.get("POSTGRES_USER"));
+        hibernateConfig.setProperty(
+            "hibernate.connection.password", config.get("POSTGRES_PASSWORD"));
+      }
 
       log.debug("Building session factory...");
       sessionFactory = hibernateConfig.buildSessionFactory();
@@ -247,6 +251,18 @@ public class GlobalDAO {
       log.fatal("Error while creating statuses:", e);
       System.exit(1); // We need these in the database for correct operation
     }
+  }
+
+  public static GlobalDAO getInstance(boolean forceRestart) {
+    if (forceRestart) {
+      if (sessionFactory != null) {
+        sessionFactory.close();
+      }
+
+      instance = new GlobalDAO();
+    }
+
+    return instance;
   }
 
   @SuppressWarnings("deprecation")

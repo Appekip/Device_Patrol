@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -76,6 +77,26 @@ public class User extends DTO {
     this.lastName = lastName;
     this.phone = phone;
     this.email = email;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    User user = (User) o;
+    return Objects.equal(firstName, user.firstName)
+        && Objects.equal(lastName, user.lastName)
+        && Objects.equal(phone, user.phone)
+        && Objects.equal(email, user.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(devices, firstName, lastName, phone, email);
   }
 
   @PreRemove

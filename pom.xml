@@ -233,6 +233,11 @@
       <scope>test</scope>
       <version>jdk-12.0.1+2</version>
     </dependency>
+    <dependency>
+      <artifactId>h2</artifactId>
+      <groupId>com.h2database</groupId>
+      <version>2.0.202</version>
+    </dependency>
   </dependencies>
   <groupId>org.otp-r11</groupId>
   <modelVersion>4.0.0</modelVersion>

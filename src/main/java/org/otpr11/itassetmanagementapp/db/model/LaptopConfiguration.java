@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -36,7 +37,7 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
   @Id
   @Getter
   @Column(nullable = false)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
   @Getter
@@ -98,10 +99,34 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
             LocaleEngine.getResourceBundle().getString("disk").toLowerCase());
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    LaptopConfiguration that = (LaptopConfiguration) o;
+    return screenSize == that.screenSize
+        && Objects.equal(cpu, that.cpu)
+        && Objects.equal(gpu, that.gpu)
+        && Objects.equal(memory, that.memory)
+        && Objects.equal(diskSize, that.diskSize)
+        && Objects.equal(configuration, that.configuration);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(cpu, gpu, memory, diskSize, screenSize, configuration);
+  }
+
   @PreRemove
   private void preRemove() {
-    val dao = GlobalDAO.getInstance();
-    configuration.setLaptopConfiguration(null);
-    dao.configurations.save(configuration);
+    if (configuration != null) {
+      val dao = GlobalDAO.getInstance();
+      configuration.setLaptopConfiguration(null);
+      dao.configurations.save(configuration);
+    }
   }
 }

@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -72,6 +73,25 @@ public class OperatingSystem extends DTO implements PrettyStringifiable {
 
   public String toPrettyString() {
     return "%s %s (%s)".formatted(name, version, buildNumber);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    OperatingSystem that = (OperatingSystem) o;
+    return Objects.equal(name, that.name)
+        && Objects.equal(version, that.version)
+        && Objects.equal(buildNumber, that.buildNumber);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(name, version, buildNumber);
   }
 
   @PreRemove
