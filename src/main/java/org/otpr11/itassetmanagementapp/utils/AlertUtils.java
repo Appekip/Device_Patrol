@@ -101,6 +101,7 @@ public abstract class AlertUtils {
     val label = new Label(locale.getString("exception_stack_trace"));
 
     val textArea = new TextArea(StringUtils.getFullExceptionStack(e));
+    textArea.setId("error");
     textArea.setEditable(false);
     textArea.setWrapText(true);
 

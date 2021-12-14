@@ -10,11 +10,12 @@ import org.otpr11.itassetmanagementapp.config.Config;
 /** Generic logging utilities. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class LogUtils {
+  public static final String LOGGER_NAME = "org.otpr11";
 
   /** Pre-configures the global log4j logger. */
   public static void configureLogger() {
     val config = Config.getConfig();
     val level = Level.valueOf(config.get("LOG_LEVEL".toUpperCase()));
-    Configurator.setLevel("org.otpr11", level);
+    Configurator.setLevel(LOGGER_NAME, level);
   }
 }

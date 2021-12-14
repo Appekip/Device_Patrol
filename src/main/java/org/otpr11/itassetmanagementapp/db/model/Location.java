@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -68,6 +69,25 @@ public class Location extends DTO {
     this.nickname = nickname;
     this.address = address;
     this.zipCode = zipCode;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Location location = (Location) o;
+    return Objects.equal(nickname, location.nickname)
+        && Objects.equal(address, location.address)
+        && Objects.equal(zipCode, location.zipCode);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 
   @PreRemove
