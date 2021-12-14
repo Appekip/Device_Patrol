@@ -76,6 +76,11 @@ public class DeviceEditorController implements Initializable, ViewController {
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
+  /**
+   * FXML for the attributes and boxes of the device view
+    */
+
+
   @FXML private CheckComboBox<String> osSelector;
   @FXML private ChoiceBox<String> deviceTypeSelector;
   @FXML
@@ -96,9 +101,17 @@ public class DeviceEditorController implements Initializable, ViewController {
   @FXML private ComboBox<Integer> modelYearSelector;
   @FXML private Text configSelectorTitle, osSelectorTitle;
 
+  /**
+   * Text field validations for text fields
+   * Initializing the start of the device editor view
+    */
+
+
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     // Init freeform text field validators
+
+
     createTextFieldValidator(deviceIDField, "deviceID", deviceIDField.textProperty());
     createTextFieldValidator(manufacturerField, "manufacturer", manufacturerField.textProperty());
     createTextFieldValidator(modelIDField, "modelID", modelIDField.textProperty());
@@ -107,6 +120,8 @@ public class DeviceEditorController implements Initializable, ViewController {
     createTextFieldValidator(macAddressField, "macAddress", macAddressField.textProperty());
 
     // Init dropdowns
+
+
     initDropdown(statusSelector, deviceStatuses, DEFAULT_DEVICE_STATUS.toString());
     initDropdown(deviceTypeSelector, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
     initDropdown(userSelector, users, true);
@@ -114,6 +129,7 @@ public class DeviceEditorController implements Initializable, ViewController {
     initDropdown(configSelector, configs, false);
 
     // Update HW configs when device type changes
+
     deviceTypeSelector.setOnAction(
         event -> {
           val type = DeviceType.valueOf(deviceTypeSelector.getSelectionModel().getSelectedItem());
@@ -122,6 +138,7 @@ public class DeviceEditorController implements Initializable, ViewController {
 
     // Init OS selector
     // Needed for reassignment in lambda
+
     var ref =
         new Object() {
           String lastChange = "";
@@ -155,6 +172,7 @@ public class DeviceEditorController implements Initializable, ViewController {
                 });
 
     // Listen for status being set to VACANT, and remove user if selected
+
     statusSelector
         .getSelectionModel()
         .selectedItemProperty()
@@ -173,14 +191,20 @@ public class DeviceEditorController implements Initializable, ViewController {
               }
             });
 
+    // Making the list of selectable manufacturer years into the dropdown view starting from current year.
+
     for (int year = Year.now().getValue(); year >= 1970; year--) {
       modelYearSelector.getItems().add(year);
     }
+
+    // Setting default values for fields
 
     select(modelYearSelector, Year.now().getValue());
     configSelector.setValue(SELECTOR_DEFAULT_TITLE);
     userSelector.setValue(SELECTOR_DEFAULT_TITLE);
     locationSelector.setValue(SELECTOR_DEFAULT_TITLE);
+
+    // Actions for adding buttons
 
     addHWConfigButton.setOnAction(event -> main.showHWConfigEditor(null));
     addOSButton.setOnAction(event -> main.showOSEditor(null));
@@ -310,6 +334,10 @@ public class DeviceEditorController implements Initializable, ViewController {
     }
   }
 
+  /**
+   * Functional cancel button
+    */
+
   private void onCancel(ActionEvent event) {
     stage.close();
   }
@@ -332,6 +360,7 @@ public class DeviceEditorController implements Initializable, ViewController {
   }
 
   // TODO: More sophisticated validation for MAC addresses, number fields, etc.
+  // Text field validation.
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 

@@ -1,8 +1,12 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
+
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,23 +16,32 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
+import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
+@Log4j2
 public class UserEditorController implements Initializable, ViewController {
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
-
+  private static boolean IS_EDIT_MODE;
+  //private Device device = new Device();
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final User user = new User();
+  private User user = new User();
   private final Validator validator = new Validator();
 
+  /**
+   * FXML for the attributes and buttons of the user view
+   */
   @FXML
   private TextField firstNameField,
   lastNameField,
@@ -40,6 +53,9 @@ public class UserEditorController implements Initializable, ViewController {
   private Button okButton,
       cancelButton;
 
+  /**
+   * Initializing the start of the user view
+   */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     createTextFieldValidator(firstNameField, "firstname", firstNameField.textProperty());
@@ -52,6 +68,9 @@ public class UserEditorController implements Initializable, ViewController {
     cancelButton.setOnAction(this::onCancel);
   }
 
+  /**
+   * Save button event
+   */
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
@@ -72,10 +91,17 @@ public class UserEditorController implements Initializable, ViewController {
 
     }
   }
+
+  /**
+   * Cancel button event
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
 
+  /**
+   * Text field validation
+   */
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
@@ -105,5 +131,29 @@ public class UserEditorController implements Initializable, ViewController {
 
 
   @Override
-  public void afterInitialize() {}
+  public void afterInitialize() {
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.users.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing user {}.", sceneChangeData);
+      stage.setTitle("Manage user %s".formatted(sceneChangeData));
+
+      // Determine user to edit
+      user = dao.users.get((String) sceneChangeData);
+
+      // Fill in data for this user
+
+      firstNameField.setText(user.getFirstName());
+      lastNameField.setText(user.getLastName());
+      phoneNumberField.setText(user.getPhone());
+      emailField.setText(user.getEmail());
+      employeeIdField.setText(user.getId());
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new user.");
+      stage.setTitle("Create user");
+    }
+  }
 }
