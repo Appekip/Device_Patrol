@@ -23,8 +23,7 @@ import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
  *
  * <p>Please note: Due to limitations of Java, merely implementing the interface does not guarantee
  * event delivery; classes still have to call <code>DatabaseEventPropagator.addListener(this)</code>
- * , should they wish to actually receive events. This behaviour is subject to change in the future,
- * as there are plans to turn {@link DatabaseEventListener} into an annotation instead.
+ * , should they wish to actually receive events.
  */
 @Log4j2
 public class DatabaseEventPropagator {

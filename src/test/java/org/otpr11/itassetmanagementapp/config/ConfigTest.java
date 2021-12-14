@@ -9,6 +9,6 @@ class ConfigTest {
   @Test
   void testVariableLoading() {
     val config = Config.getConfig();
-    assertEquals("TEST_VALUE", config.get("TEST_VARIABLE"));
+    assertEquals("true", config.get("IS_TESTING_MODE"));
   }
 }

@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
@@ -177,14 +176,21 @@ public class Device extends DTO {
     if (this == o) {
       return true;
     }
-
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-
-    val device = (Device) o;
-
-    return Objects.equal(id, device.id);
+    Device device = (Device) o;
+    return Objects.equal(nickname, device.nickname)
+        && Objects.equal(manufacturer, device.manufacturer)
+        && Objects.equal(modelID, device.modelID)
+        && Objects.equal(modelName, device.modelName)
+        && Objects.equal(modelYear, device.modelYear)
+        && Objects.equal(macAddress, device.macAddress)
+        && Objects.equal(user, device.user)
+        && Objects.equal(configuration, device.configuration)
+        && Objects.equal(location, device.location)
+        && Objects.equal(status, device.status)
+        && Objects.equal(operatingSystems, device.operatingSystems);
   }
 
   @Override

@@ -35,6 +35,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 
 /** Generic alert utilities. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -65,7 +66,8 @@ public abstract class AlertUtils {
    * @param e The {@link Exception} that caused the alert.
    */
   public static void showExceptionAlert(@NotNull String message, @NotNull Exception e) {
-    createExceptionAlert("Error", message, e).showAndWait();
+    val locale = LocaleEngine.getResourceBundle();
+    createExceptionAlert(locale.getString("error"), message, e).showAndWait();
   }
 
   /**
@@ -95,9 +97,11 @@ public abstract class AlertUtils {
     alert.setHeaderText(null);
     alert.setContentText(message);
 
-    val label = new Label("The exception stack trace was:");
+    val locale = LocaleEngine.getResourceBundle();
+    val label = new Label(locale.getString("exception_stack_trace"));
 
     val textArea = new TextArea(StringUtils.getFullExceptionStack(e));
+    textArea.setId("error");
     textArea.setEditable(false);
     textArea.setWrapText(true);
 

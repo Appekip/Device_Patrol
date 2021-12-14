@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp;
 import static org.otpr11.itassetmanagementapp.config.UserPreferences.getSettingName;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,13 +17,16 @@ import org.otpr11.itassetmanagementapp.config.Config;
 import org.otpr11.itassetmanagementapp.config.UserPreferences;
 import org.otpr11.itassetmanagementapp.config.UserPreferences.Settings;
 import org.otpr11.itassetmanagementapp.constants.Scenes;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.DevUtils;
 import org.otpr11.itassetmanagementapp.utils.LogUtils;
 
 @Log4j2
-public class Main extends Application {
+public class Main extends Application implements LocaleChangeListener {
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
   private Stage primaryStage;
 
   public static void main(String[] args) {
@@ -37,6 +41,8 @@ public class Main extends Application {
 
   @Override
   public void start(Stage primary) {
+    LocaleEngine.addListener(this);
+
     primaryStage = primary;
 
     // Remember window positions across program reboots
@@ -60,6 +66,10 @@ public class Main extends Application {
     primaryStage.setWidth(width);
     primaryStage.setHeight(height);
     primaryStage.setMaximized(isMaximized);
+
+    // Force window on top of current one (This doesn't behave correctly on Mac for some reason)
+    primaryStage.setAlwaysOnTop(true);
+    primaryStage.setAlwaysOnTop(false);
 
     // Save window position on program shutdown
     Runtime.getRuntime()
@@ -97,7 +107,7 @@ public class Main extends Application {
   }
 
   public void showManagementView(Object sceneChangeData) {
-    setScene(Scenes.MANAGEMENT_VIEW,sceneChangeData);
+    setScene(Scenes.MANAGEMENT_VIEW, sceneChangeData);
   }
 
   /**
@@ -108,7 +118,7 @@ public class Main extends Application {
    */
   private void initStage(Stage stage, Scenes sceneDef) {
     // Set stage title
-    stage.setTitle(sceneDef.getStageTitle());
+    stage.setTitle(locale.getString("%s_stage_title".formatted(sceneDef.toString().toLowerCase())));
   }
 
   /**
@@ -157,5 +167,11 @@ public class Main extends Application {
       log.error("Could not open view {}:", sceneResourcePath, e);
       AlertUtils.showExceptionAlert("Could not open view %s.".formatted(sceneResourcePath), e);
     }
+  }
+
+  @Override
+  public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
+    primaryStage.setTitle(locale.getString("main_stage_title"));
   }
 }

@@ -3,16 +3,18 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
@@ -28,62 +30,71 @@ import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.constants.DatabaseEvent;
+import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 /** Main application view controller class. */
 @Log4j2
-public class MainViewController implements Initializable, ViewController, DatabaseEventListener {
+public class MainViewController
+    implements Initializable, ViewController, DatabaseEventListener, LocaleChangeListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final List<Status> statuses = dao.statuses.getAll();
   private final BorderPane prettyDevicePane = new BorderPane();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
+  private List<String> statuses; // Will be populated eventually
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  /**
-   * FXML for the attributes of the main view.
-    */
-
+  // FXML for the attributes of the main view.
+  @FXML
+  private TableColumn<Device, String> idColumn,
+      nicknameColumn,
+      manufacturerColumn,
+      modelNameColumn,
+      modelIDColumn,
+      modelYearColumn,
+      deviceTypeColumn,
+      hwConfigurationColumn,
+      userColumn,
+      locationColumn,
+      osColumn;
+  @FXML
+  private MenuItem menuItemAbout,
+      menuItemDevice,
+      menuItemHW,
+      menuItemOS,
+      menuItemUser,
+      menuItemLocation;
   @FXML private TableView<Device> deviceTable;
-  @FXML private TableColumn<Device, String> idColumn;
-  @FXML private TableColumn<Device, String> nicknameColumn;
-  @FXML private TableColumn<Device, String> manufacturerColumn;
-  @FXML private TableColumn<Device, String> modelNameColumn;
-  @FXML private TableColumn<Device, String> modelIDColumn;
-  @FXML private TableColumn<Device, String> modelYearColumn;
-  @FXML private TableColumn<Device, String> deviceTypeColumn;
-  @FXML private TableColumn<Device, String> hwConfigurationColumn;
-  @FXML private TableColumn<Device, String> userColumn;
-  @FXML private TableColumn<Device, Device> statusColumn;
-  @FXML private TableColumn<Device, String> locationColumn;
-  @FXML private TableColumn<Device, String> osColumn;
-  @FXML private TableColumn<Device, Device> actionColumn;
+  @FXML private TableColumn<Device, Device> statusColumn, actionColumn;
   @FXML private BorderPane deviceViewPane;
+  @FXML private Menu menuNew, menuFile, menuHelp, menuLang;
+  @FXML private MenuItem langEng, langFin, langSwe;
 
-  /**
-   * Initializing the start of the main view
-    */
-
+  /** Initializing the start of the main view */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
+    LocaleEngine.addListener(this);
     DatabaseEventPropagator.addListener(this);
-
     PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
 
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    val moreInfoTooltip = new Tooltip("Double-click to show information about device");
+    val moreInfoTooltip = new Tooltip(locale.getString("show_device_info_tooltip"));
 
     deviceTable.setRowFactory(
         tableView -> {
@@ -126,22 +137,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
-    statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    statusColumn.setCellFactory(
-        param ->
-            new TableCell<>() {
-              @Override
-              protected void updateItem(Device device, boolean b) {
-                super.updateItem(device, b);
-
-                if (device == null) {
-                  setGraphic(null);
-                  return;
-                }
-
-                setGraphic(createStatusDropdown(device.getId()));
-              }
-            });
+    updateStatusDropdowns();
 
     actionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
     actionColumn.setCellFactory(
@@ -160,11 +156,11 @@ public class MainViewController implements Initializable, ViewController, Databa
               }
             });
     updateItems(dao.devices.getAll());
+
+    onLocaleChange();
   }
 
-  /**
-  Clickhandlers to show editors
-   */
+  /** Clickhandlers to show editors */
   @FXML
   private void handleNewDeviceClick() {
     main.showDeviceEditor(null);
@@ -221,20 +217,18 @@ public class MainViewController implements Initializable, ViewController, Databa
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
-            "Are you sure?",
-            "Are you sure you want to delete device %s?".formatted(deviceID));
+            locale.getString("are_you_sure"),
+            "%s %s?".formatted(locale.getString("device_delete_confirmation"), deviceID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
       dao.devices.delete(dao.devices.get(deviceID));
     }
   }
 
-  /**
-  * Menu button splitting and functionality
-   */
+  /** Menu button splitting and functionality */
   private SplitMenuButton createDeviceActionButton(String deviceID) {
     val button = new SplitMenuButton();
-    button.setText("Edit");
+    button.setText(locale.getString("edit"));
     button.setOnAction(event -> handleEditClick(deviceID));
     // Don't show pointer cursor or tooltip for this element
     button.setCursor(Cursor.DEFAULT);
@@ -243,27 +237,36 @@ public class MainViewController implements Initializable, ViewController, Databa
     val items = button.getItems();
 
     val viewItem = new MenuItem();
-    viewItem.setText("View");
+    viewItem.setText(locale.getString("view"));
     viewItem.setOnAction(event -> handleViewClick(deviceID, false));
     items.add(viewItem);
 
     val deleteItem = new MenuItem();
-    deleteItem.setText("Delete");
+    deleteItem.setText(locale.getString("delete"));
     deleteItem.setOnAction(event -> handleDeleteClick(deviceID));
     items.add(deleteItem);
 
     return button;
   }
 
-  /**
-   * Status dropdown
-   */
+  /** Status dropdown */
   private ChoiceBox<String> createStatusDropdown(String deviceID) {
     val dropdown = new ChoiceBox<String>();
-    JFXUtils.select(dropdown, dao.devices.get(deviceID).getStatus());
-    statuses.forEach(status -> dropdown.getItems().add(status.toString()));
+    statuses.forEach(status -> dropdown.getItems().add(status));
+
+    // Because the dropdown items are localised, we need to do a reverse lookup first
+    JFXUtils.select(
+        dropdown,
+        DeviceStatus.getLocalised(
+            DeviceStatus.fromString(dao.devices.get(deviceID).getStatus().toString())));
+
     dropdown.setOnAction(
-        event -> updateDeviceStatus(deviceID, dao.statuses.get(dropdown.getValue())));
+        event -> {
+          // As the dropdown items are localised, we need to do a reverse localisation before we
+          // can find the correct one in the DB
+          val delocalised = DeviceStatus.fromString(dropdown.getValue()).toString();
+          updateDeviceStatus(deviceID, dao.statuses.get(delocalised));
+        });
 
     // Don't show pointer cursor or tooltip for this element
     dropdown.setCursor(Cursor.DEFAULT);
@@ -272,10 +275,33 @@ public class MainViewController implements Initializable, ViewController, Databa
     return dropdown;
   }
 
-  /**
-   * Updating items and device statuses
-   */
+  private void updateStatusDropdowns() {
+    statuses =
+        dao.statuses.getAll().stream()
+            .map(status -> DeviceStatus.getLocalised(DeviceStatus.fromString(status.toString())))
+            .toList();
+
+    statusColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    statusColumn.setCellFactory(
+        param ->
+            new TableCell<>() {
+              @Override
+              protected void updateItem(Device device, boolean b) {
+                super.updateItem(device, b);
+
+                if (device == null) {
+                  setGraphic(null);
+                  return;
+                }
+
+                setGraphic(createStatusDropdown(device.getId()));
+              }
+            });
+  }
+
+  /** Updating items and device statuses */
   private void updateItems(List<Device> devices) {
+
     devices.sort(Comparator.comparing(Device::getId));
     deviceTable.getItems().clear();
     deviceTable.setItems(FXCollections.observableArrayList(devices));
@@ -287,9 +313,7 @@ public class MainViewController implements Initializable, ViewController, Databa
     dao.devices.save(device);
   }
 
-  /**
-   * Updating items to database
-   */
+  /** Updating items to database */
   @Override
   public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
     switch (event) {
@@ -300,7 +324,7 @@ public class MainViewController implements Initializable, ViewController, Databa
           val filtered =
               dao.devices.getAll().stream()
                   .filter(d -> !d.getId().equals(device.getId()))
-                  .collect(Collectors.toList());
+                  .toList();
 
           updateItems(filtered);
         }
@@ -325,6 +349,54 @@ public class MainViewController implements Initializable, ViewController, Databa
     }
   }
 
+  public void handleEngClick(ActionEvent actionEvent) {
+    LocaleEngine.setUserLocale(Locale.ENGLISH);
+  }
+
+  public void handleFinClick(ActionEvent actionEvent) {
+    LocaleEngine.setUserLocale(Locale.forLanguageTag("fi-FI"));
+  }
+
+  public void handleSweClick(ActionEvent actionEvent) {
+    LocaleEngine.setUserLocale(Locale.forLanguageTag("sv-SV"));
+  }
+
   @Override
   public void afterInitialize() {}
+
+  @Override
+  public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
+    updateStatusDropdowns();
+
+    idColumn.setText(locale.getString("id"));
+    nicknameColumn.setText(locale.getString("nickname"));
+    modelNameColumn.setText(locale.getString("model_name"));
+    modelIDColumn.setText(locale.getString("model_id"));
+    modelYearColumn.setText(locale.getString("model_year"));
+    deviceTypeColumn.setText(locale.getString("device_type"));
+    hwConfigurationColumn.setText(locale.getString("hardware_configuration"));
+    osColumn.setText(locale.getString("operating_system"));
+    userColumn.setText(locale.getString("user"));
+    locationColumn.setText(locale.getString("location"));
+    actionColumn.setText(locale.getString("action"));
+    statusColumn.setText(locale.getString("status"));
+    menuFile.setText(locale.getString("file"));
+    menuNew.setText(locale.getString("new"));
+    menuItemDevice.setText(locale.getString("device"));
+    menuItemHW.setText(locale.getString("hardware_configuration"));
+    menuItemOS.setText(locale.getString("operating_system"));
+    menuItemUser.setText(locale.getString("user"));
+    menuItemLocation.setText(locale.getString("location"));
+
+    menuHelp.setText(locale.getString("help"));
+    menuItemAbout.setText(locale.getString("about"));
+
+    menuLang.setText(locale.getString("lang"));
+    langEng.setText(locale.getString("lang_en"));
+    langFin.setText(locale.getString("lang_fi"));
+    langSwe.setText(locale.getString("lang_sv"));
+
+    PrettyDeviceViewerController.init(deviceViewPane, prettyDevicePane);
+  }
 }

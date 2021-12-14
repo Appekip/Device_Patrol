@@ -1,5 +1,6 @@
 package org.otpr11.itassetmanagementapp.db.model;
 
+import com.google.common.base.Objects;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -46,7 +47,7 @@ public class Configuration extends DTO {
   @Id
   @Getter
   @Column(nullable = false)
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
   @Getter
@@ -103,6 +104,25 @@ public class Configuration extends DTO {
   public void setLaptopConfiguration(LaptopConfiguration cfg) {
     this.laptopConfiguration = cfg;
     this.deviceType = DeviceType.LAPTOP;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Configuration that = (Configuration) o;
+    return (Objects.equal(desktopConfiguration, that.desktopConfiguration)
+            || Objects.equal(laptopConfiguration, that.laptopConfiguration))
+        && deviceType == that.deviceType;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(id);
   }
 
   @PreRemove

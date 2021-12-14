@@ -14,263 +14,299 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 <?import org.controlsfx.control.CheckComboBox?>
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.DeviceEditorController">
-  <top>
-    <BorderPane BorderPane.alignment="CENTER">
-      <top>
-        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Device type" BorderPane.alignment="CENTER">
-          <font>
-            <Font size="16.0" />
-          </font>
-        </Text>
-      </top>
-      <center>
-        <ChoiceBox fx:id="deviceTypeSelector" prefWidth="150.0" BorderPane.alignment="CENTER">
-          <BorderPane.margin>
-            <Insets top="10.0" />
-          </BorderPane.margin>
-        </ChoiceBox>
-      </center>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity"
+  minHeight="-Infinity"
+  minWidth="-Infinity" xmlns="http://javafx.com/javafx/16"
+  fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.DeviceEditorController">
+  <bottom>
+    <HBox BorderPane.alignment="CENTER" alignment="BOTTOM_RIGHT" spacing="10.0">
       <BorderPane.margin>
-        <Insets bottom="20.0" />
+        <Insets top="50.0"/>
       </BorderPane.margin>
-    </BorderPane>
-  </top>
-  <padding>
-    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-  </padding>
+      <children>
+        <Button cancelButton="true" mnemonicParsing="false" text="Cancel" fx:id="cancelButton">
+          <padding>
+            <Insets bottom="4.0" left="10.0" right="10.0" top="4.0"/>
+          </padding>
+        </Button>
+        <Button defaultButton="true" mnemonicParsing="false" text="Save" fx:id="okButton">
+          <padding>
+            <Insets bottom="4.0" left="20.0" right="20.0" top="4.0"/>
+          </padding>
+        </Button>
+      </children>
+    </HBox>
+  </bottom>
   <center>
     <VBox BorderPane.alignment="CENTER">
       <children>
         <BorderPane>
-          <center>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Basic information" BorderPane.alignment="CENTER">
-              <font>
-                <Font size="16.0" />
-              </font>
-            </Text>
-          </center>
           <VBox.margin>
-            <Insets bottom="20.0" />
+            <Insets bottom="20.0"/>
           </VBox.margin>
-        </BorderPane>
-        <GridPane vgap="20.0">
-          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          </rowConstraints>
-          <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0">
-              <center>
-                <TextField fx:id="deviceIDField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Device ID" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-                  <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-                     <center>
-                        <TextField fx:id="nicknameField" BorderPane.alignment="CENTER">
-                           <BorderPane.margin>
-                              <Insets left="10.0" right="10.0" />
-                           </BorderPane.margin>
-                        </TextField>
-                     </center>
-                     <top>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nickname" BorderPane.alignment="CENTER" />
-                     </top>
-                  </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
-              <center>
-                <TextField fx:id="manufacturerField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Manufacturer" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-              <center>
-                <TextField fx:id="modelNameField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model name" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-              <center>
-                <TextField fx:id="modelIDField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model ID" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Model year" BorderPane.alignment="CENTER" />
-              </top>
-                     <bottom>
-                        <ComboBox fx:id="modelYearSelector" prefWidth="500.0" BorderPane.alignment="CENTER" />
-                     </bottom>
-            </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-              <center>
-                <TextField fx:id="macAddressField" BorderPane.alignment="CENTER">
-                  <BorderPane.margin>
-                    <Insets left="10.0" right="10.0" />
-                  </BorderPane.margin>
-                </TextField>
-              </center>
-              <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="MAC address" BorderPane.alignment="CENTER" />
-              </top>
-            </BorderPane>
-          </children>
-        </GridPane>
-        <BorderPane>
           <center>
-            <Text fx:id="configSelectorTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Hardware configuration" BorderPane.alignment="CENTER">
-              <font>
-                <Font size="16.0" />
-              </font>
-            </Text>
+            <GridPane BorderPane.alignment="CENTER" vgap="20.0">
+              <children>
+                <BorderPane prefHeight="200.0" prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="deviceIDField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Device ID" fx:id="deviceIDText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="1" prefHeight="200.0" prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="nicknameField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Nickname" fx:id="nicknameText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="2" prefHeight="200.0" prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="manufacturerField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Manufacturer" fx:id="manufacturerText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.rowIndex="1" prefHeight="200.0" prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="modelNameField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Model name" fx:id="modelNameText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="1" GridPane.rowIndex="1" prefHeight="200.0"
+                  prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="modelIDField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Model ID"
+                      fx:id="modelIDText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="2" GridPane.rowIndex="1" prefHeight="200.0"
+                  prefWidth="200.0">
+                  <bottom>
+                    <ComboBox BorderPane.alignment="CENTER" prefWidth="500.0"
+                      fx:id="modelYearSelector"/>
+                  </bottom>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="Model year" fx:id="modelYearText"/>
+                  </top>
+                </BorderPane>
+                <BorderPane GridPane.columnIndex="1" GridPane.rowIndex="2" prefHeight="200.0"
+                  prefWidth="200.0">
+                  <center>
+                    <TextField BorderPane.alignment="CENTER" fx:id="macAddressField">
+                      <BorderPane.margin>
+                        <Insets left="10.0" right="10.0"/>
+                      </BorderPane.margin>
+                    </TextField>
+                  </center>
+                  <top>
+                    <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                      text="MAC address"
+                      fx:id="macAddressText"/>
+                  </top>
+                </BorderPane>
+              </children>
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+              </rowConstraints>
+            </GridPane>
           </center>
-          <VBox.margin>
-            <Insets bottom="15.0" top="20.0" />
-          </VBox.margin>
-        </BorderPane>
-            <HBox spacing="5.0">
-               <children>
-                  <Button fx:id="addHWConfigButton" mnemonicParsing="false" text="+" />
-                  <ComboBox fx:id="configSelector" prefWidth="500.0" />
-               </children>
-            </HBox>
-        <BorderPane />
-        <BorderPane>
-          <center>
-            <Text fx:id="osSelectorTitle" strokeType="OUTSIDE" strokeWidth="0.0" text="Operating systems" BorderPane.alignment="CENTER">
-              <font>
-                <Font size="16.0" />
-              </font>
-            </Text>
-          </center>
-          <VBox.margin>
-            <Insets bottom="15.0" top="20.0" />
-          </VBox.margin>
-        </BorderPane>
-        <BorderPane>
-               <left>
-                  <HBox spacing="5.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Button fx:id="addOSButton" mnemonicParsing="false" text="+" />
-                  <CheckComboBox fx:id="osSelector" maxWidth="-Infinity" prefWidth="500.0" />
-                     </children>
-                  </HBox>
-               </left>
-        </BorderPane>
-        <BorderPane>
-          <center>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Metadata" BorderPane.alignment="CENTER">
-              <font>
-                <Font size="16.0" />
-              </font>
+          <top>
+            <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Basic information" fx:id="basicInfoText">
               <BorderPane.margin>
-                <Insets />
+                <Insets bottom="20.0"/>
               </BorderPane.margin>
+              <font>
+                <Font size="16.0"/>
+              </font>
+            </Text>
+          </top>
+        </BorderPane>
+        <BorderPane>
+          <VBox.margin>
+            <Insets bottom="15.0" top="20.0"/>
+          </VBox.margin>
+          <center>
+            <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Hardware configuration" fx:id="configSelectorText">
+              <font>
+                <Font size="16.0"/>
+              </font>
             </Text>
           </center>
+        </BorderPane>
+        <BorderPane>
+          <center>
+            <HBox BorderPane.alignment="CENTER" spacing="5.0">
+              <children>
+                <Button mnemonicParsing="false" text="+" fx:id="addHWConfigButton"/>
+                <ComboBox prefWidth="500.0" fx:id="configSelector"/>
+              </children>
+            </HBox>
+          </center>
+        </BorderPane>
+        <BorderPane>
           <VBox.margin>
-            <Insets bottom="15.0" top="20.0" />
+            <Insets bottom="15.0" top="20.0"/>
           </VBox.margin>
+          <center>
+            <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Operating systems" fx:id="osSelectorText">
+              <font>
+                <Font size="16.0"/>
+              </font>
+            </Text>
+          </center>
+        </BorderPane>
+        <BorderPane>
+          <center>
+            <HBox BorderPane.alignment="CENTER" spacing="5.0">
+              <children>
+                <Button mnemonicParsing="false" text="+" fx:id="addOSButton"/>
+                <CheckComboBox maxWidth="-Infinity" prefWidth="500.0" fx:id="osSelector"/>
+              </children>
+            </HBox>
+          </center>
+        </BorderPane>
+        <BorderPane>
+          <VBox.margin>
+            <Insets bottom="15.0" top="20.0"/>
+          </VBox.margin>
+          <center>
+            <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+              text="Metadata"
+              fx:id="metaText">
+              <BorderPane.margin>
+                <Insets/>
+              </BorderPane.margin>
+              <font>
+                <Font size="16.0"/>
+              </font>
+            </Text>
+          </center>
         </BorderPane>
         <GridPane hgap="10.0">
-          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          </columnConstraints>
-          <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          </rowConstraints>
           <children>
             <BorderPane prefHeight="200.0" prefWidth="200.0">
+              <center>
+                <HBox BorderPane.alignment="CENTER" spacing="5.0">
+                  <children>
+                    <Button mnemonicParsing="false" text="+" fx:id="addUserButton"/>
+                    <ComboBox prefWidth="150.0" fx:id="userSelector"/>
+                  </children>
+                </HBox>
+              </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User" BorderPane.alignment="CENTER" />
+                <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="User"
+                  fx:id="userText"/>
               </top>
-                     <center>
-                        <HBox spacing="5.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="addUserButton" mnemonicParsing="false" text="+" />
-                              <ComboBox fx:id="userSelector" prefWidth="150.0" />
-                           </children>
-                        </HBox>
-                     </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <BorderPane GridPane.columnIndex="1" prefHeight="200.0" prefWidth="200.0">
+              <center>
+                <HBox BorderPane.alignment="CENTER" spacing="5.0">
+                  <children>
+                    <Button mnemonicParsing="false" text="+" fx:id="addLocationButton"/>
+                    <ComboBox prefWidth="150.0" fx:id="locationSelector"/>
+                  </children>
+                </HBox>
+              </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Location" BorderPane.alignment="CENTER" />
+                <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Location"
+                  fx:id="locationText"/>
               </top>
-                     <center>
-                        <HBox spacing="5.0" BorderPane.alignment="CENTER">
-                           <children>
-                              <Button fx:id="addLocationButton" mnemonicParsing="false" text="+" />
-                              <ComboBox fx:id="locationSelector" prefWidth="150.0" />
-                           </children>
-                        </HBox>
-                     </center>
             </BorderPane>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
+            <BorderPane GridPane.columnIndex="2" prefHeight="200.0" prefWidth="200.0">
+              <center>
+                <ComboBox BorderPane.alignment="CENTER" prefWidth="150.0" fx:id="statusSelector"/>
+              </center>
               <top>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Status" BorderPane.alignment="CENTER" />
+                <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Status"
+                  fx:id="statusText"/>
               </top>
-                     <center>
-                        <ComboBox fx:id="statusSelector" prefWidth="150.0" BorderPane.alignment="CENTER" />
-                     </center>
             </BorderPane>
           </children>
+          <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+          </columnConstraints>
+          <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+          </rowConstraints>
         </GridPane>
       </children>
     </VBox>
   </center>
-  <bottom>
-    <HBox alignment="BOTTOM_RIGHT" spacing="10.0" BorderPane.alignment="CENTER">
-      <children>
-        <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" text="Cancel">
-          <padding>
-            <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
-          </padding>
-        </Button>
-        <Button fx:id="okButton" defaultButton="true" mnemonicParsing="false" text="Save">
-          <padding>
-            <Insets bottom="4.0" left="20.0" right="20.0" top="4.0" />
-          </padding>
-        </Button>
-      </children>
+  <padding>
+    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+  </padding>
+  <top>
+    <BorderPane BorderPane.alignment="CENTER">
       <BorderPane.margin>
-        <Insets top="50.0" />
+        <Insets bottom="20.0"/>
       </BorderPane.margin>
-    </HBox>
-  </bottom>
+      <center>
+        <ChoiceBox BorderPane.alignment="CENTER" prefWidth="150.0" fx:id="deviceTypeSelector">
+          <BorderPane.margin>
+            <Insets top="10.0"/>
+          </BorderPane.margin>
+        </ChoiceBox>
+      </center>
+      <top>
+        <Text BorderPane.alignment="CENTER" strokeType="OUTSIDE" strokeWidth="0.0"
+          text="Device type"
+          fx:id="deviceTypeText">
+          <font>
+            <Font size="16.0"/>
+          </font>
+        </Text>
+      </top>
+    </BorderPane>
+  </top>
 </BorderPane>

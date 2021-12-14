@@ -1,12 +1,11 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -26,11 +25,15 @@ import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
-public class HardwareConfigurationEditorController implements Initializable, ViewController {
+public class HardwareConfigurationEditorController
+    implements Initializable, ViewController, LocaleChangeListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
@@ -38,45 +41,41 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
   private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
   private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
-
   private final List<String> deviceTypes =
-      Arrays.stream(DeviceType.values()).map(DeviceType::toString).collect(Collectors.toList());
+      Arrays.stream(DeviceType.values())
+          .map(DeviceType::toString)
+          .map(type -> DeviceType.getLocalised(DeviceType.fromString(type)))
+          .toList();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
+  // Text field validation and dropdown Initializing the start of the hardware configuration view
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  /**
-   * FXML for the attributes and boxes of the hardware view
-    */
-
+  //  FXML for the attributes and boxes of the hardware view
+  @FXML private Text title, deviceTypeText, cpuText, gpuText, ramText, diskText, screenSizeText;
   @FXML private ChoiceBox<String> deviceTypeField;
-
   @FXML private TextField cpuField, diskSizeField, screenSizeField, gpuField, memoryField;
-
-  @FXML private Text screenSizeText;
-
   @FXML private Button okButton, cancelButton;
-
-  /**
-   * Text field validation and dropdown
-   * Initializing the start of the hardware configuration view
-    */
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    createTextFieldValidator(cpuField, "cpu", cpuField.textProperty());
-    createTextFieldValidator(diskSizeField, "diskSize", diskSizeField.textProperty());
-    createTextFieldValidator(gpuField, "gpu", gpuField.textProperty());
-    createTextFieldValidator(memoryField, "memory", memoryField.textProperty());
-    // createTextFieldValidator(screenSizeField, "screenSize", screenSizeField.textProperty());
+    LocaleEngine.addListener(this);
 
-    initDropdown(deviceTypeField, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
+    createTextFieldValidator(validator, cpuField, "cpu", cpuField.textProperty());
+    createTextFieldValidator(validator, diskSizeField, "diskSize", diskSizeField.textProperty());
+    createTextFieldValidator(validator, gpuField, "gpu", gpuField.textProperty());
+    createTextFieldValidator(validator, memoryField, "memory", memoryField.textProperty());
+    createTextFieldValidator(
+        validator, screenSizeField, "screenSize", screenSizeField.textProperty());
+
+    initDropdown(deviceTypeField, deviceTypes, DeviceType.getLocalised(DEFAULT_DEVICE_TYPE));
 
     deviceTypeField.setOnAction(
         event -> {
-          val type = DeviceType.valueOf(deviceTypeField.getSelectionModel().getSelectedItem());
-          if (type.toString().equals("DESKTOP")) {
+          val type = DeviceType.fromString(deviceTypeField.getSelectionModel().getSelectedItem());
+          if (type == DeviceType.DESKTOP) {
             screenSizeField.setEditable(false);
             screenSizeField.setVisible(false);
             screenSizeText.setVisible(false);
@@ -87,45 +86,42 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
           }
         });
 
-    // Saving and canceling
+    title.setText(locale.getString("hardware_configuration"));
+    deviceTypeText.setText(locale.getString("device_type"));
+    cpuText.setText(locale.getString("cpu"));
+    diskText.setText(locale.getString("disk"));
+    gpuText.setText(locale.getString("gpu"));
+    ramText.setText(locale.getString("ram"));
 
+    // Saving and canceling
     okButton.setOnAction(this::onSave);
     cancelButton.setOnAction(this::onCancel);
+
+    onLocaleChange();
   }
 
-  /**
-   * Configuring dropdown
-    */
-
+  /** Configuring dropdown */
   private void initDropdown(ChoiceBox<String> dropdown, List<String> items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
-  /**
-   * Functional saving
-    */
-
+  /** Functional saving */
   private void onSave(ActionEvent event) {
-
     if (validator.containsWarnings() || validator.containsErrors()) {
       AlertUtils.showAlert(
           AlertType.ERROR,
-          "Invalid input",
-          "One or more required field values are missing or invalid.");
+          locale.getString("invalid_input"),
+          locale.getString("invalid_input_detail"));
     } else {
-      if (deviceTypeField.getValue().equals("LAPTOP")) {
-        saveLaptop();
-      } else {
-        saveDesktop();
+      switch (DeviceType.fromString(deviceTypeField.getValue())) {
+        case LAPTOP -> saveLaptop();
+        case DESKTOP -> saveDesktop();
       }
     }
   }
 
-  /**
-   * Saving laptop data
-    */
-
+  /** Saving laptop data */
   private void saveLaptop() {
     laptopConfiguration.setCpu(cpuField.getText());
     laptopConfiguration.setDiskSize(diskSizeField.getText());
@@ -139,10 +135,7 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     stage.close();
   }
 
-  /**
-   * Saving desktop data
-    */
-
+  /** Saving desktop data */
   private void saveDesktop() {
     desktopConfiguration.setCpu(cpuField.getText());
     desktopConfiguration.setDiskSize(diskSizeField.getText());
@@ -155,43 +148,28 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
     stage.close();
   }
 
-  /**
-   * Functional cancel button
-    */
-
+  /** Functional cancel button */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
 
-  /**
-   * Text field validation
-    */
-
-  private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
-    val edited = new AtomicBoolean(false);
-
-    validator
-        .createCheck()
-        .dependsOn(key, prop)
-        .withMethod(
-            ctx -> {
-              val warn = "Required field.";
-              val error = "Please provide a value.";
-              String value = ctx.get(key);
-
-              if (value == null || value.trim().equals("")) {
-                if (!edited.get()) { // Not yet edited, show only warning
-                  ctx.warn(warn);
-                  edited.set(true);
-                } else { // Already edited, show error now
-                  ctx.error(error);
-                }
-              }
-            })
-        .decorates(field)
-        .immediate();
+  @Override
+  public void afterInitialize() {
+    // Support passing device type as scene change data
+    if (sceneChangeData != null && sceneChangeData instanceof DeviceType) {
+      JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+    }
   }
 
   @Override
-  public void afterInitialize() {}
+  public void onLocaleChange() {
+    locale = LocaleEngine.getResourceBundle();
+    title.setText(locale.getString("hardware_configuration"));
+    deviceTypeText.setText(locale.getString("device_type"));
+    cpuText.setText(locale.getString("cpu"));
+    diskText.setText(locale.getString("disk"));
+    screenSizeText.setText(locale.getString("screen_size"));
+    gpuText.setText(locale.getString("gpu"));
+    ramText.setText(locale.getString("ram"));
+  }
 }

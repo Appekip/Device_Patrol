@@ -2,6 +2,7 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createText;
 
+import java.util.ResourceBundle;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,15 +12,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
+import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils.TextProperties;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public abstract class PrettyDeviceViewerController {
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+public abstract class PrettyDeviceViewerController implements LocaleChangeListener {
   private static final int TITLE_TEXT_SIZE = 22;
   private static final int SUBTITLE_TEXT_SIZE = 16;
   private static final int BODY_TEXT_SIZE = 14;
@@ -28,16 +32,16 @@ public abstract class PrettyDeviceViewerController {
   private static final TextProperties BODY_STYLE = new TextProperties(BODY_TEXT_SIZE);
   private static final GlobalDAO dao = GlobalDAO.getInstance();
   private static final GridPane deviceInfoGrid = new GridPane();
+  private static ResourceBundle locale = LocaleEngine.getResourceBundle();
   @Getter private static boolean isOpen = false;
   @Getter @Setter private static String currentDeviceID = null;
   private static BorderPane mainViewPane = null;
   private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
 
-  /**
-   * Borders and grid
-   */
+  /** Borders and grid */
   public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
+    locale = LocaleEngine.getResourceBundle();
     mainViewPane = _mainViewPane;
     prettyDevicePane = _prettyDevicePane;
 
@@ -61,9 +65,7 @@ public abstract class PrettyDeviceViewerController {
     prettyDevicePane.setRight(anchorPane);
   }
 
-  /**
-   * Showing device
-   */
+  /** Showing device */
   public static void show(String deviceID) {
     isOpen = true;
     update(deviceID);
@@ -73,17 +75,13 @@ public abstract class PrettyDeviceViewerController {
     }
   }
 
-  /**
-   * Hiding device
-   */
+  /** Hiding device */
   public static void hide() {
     isOpen = false;
     mainViewPane.setLeft(null);
   }
 
-  /**
-   * Updating device
-   */
+  /** Updating device */
   private static void update(String deviceID) {
     val device = dao.devices.get(deviceID);
 
@@ -93,7 +91,10 @@ public abstract class PrettyDeviceViewerController {
 
     // Device title
     addRow(
-        createText("Device %s (%s)".formatted(device.getId(), device.getNickname()), TITLE_STYLE));
+        createText(
+            "%s %s (%s)"
+                .formatted(locale.getString("device"), device.getId(), device.getNickname()),
+            TITLE_STYLE));
 
     // Device description
     val configuration = device.getConfiguration();
@@ -105,7 +106,9 @@ public abstract class PrettyDeviceViewerController {
                     device.getModelYear(),
                     device.getManufacturer(),
                     device.getModelName(),
-                    configuration != null ? configuration.getDeviceType().toString().toLowerCase() : "(unknown device type)",
+                    configuration != null
+                        ? DeviceType.getLocalised(configuration.getDeviceType()).toLowerCase()
+                        : locale.getString("unknown_device_type"),
                     device.getModelID()),
             SUBTITLE_STYLE));
 
@@ -113,14 +116,19 @@ public abstract class PrettyDeviceViewerController {
     addRow(
         createText(
             "Status: %s"
-                .formatted(DeviceStatus.fromString(device.getStatus().toString()).getPrettyName()),
+                .formatted(
+                    DeviceStatus.getLocalisedPretty(
+                        DeviceStatus.fromString(device.getStatus().toString()))),
             SUBTITLE_STYLE));
 
     addSpacer();
 
     // HW config
-    addRow(createText("Hardware details:", SUBTITLE_STYLE));
-    addRow(createText("MAC address: %s".formatted(device.getMacAddress()), BODY_STYLE));
+    addRow(createText("%s:".formatted(locale.getString("hardware_details")), SUBTITLE_STYLE));
+    addRow(
+        createText(
+            "%s: %s".formatted(locale.getString("mac_address"), device.getMacAddress()),
+            BODY_STYLE));
 
     if (configuration != null) {
       switch (configuration.getDeviceType()) {
@@ -130,19 +138,19 @@ public abstract class PrettyDeviceViewerController {
         case DESKTOP -> {
           val cfg = configuration.getDesktopConfiguration();
           //noinspection DuplicatedCode
-          addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
-          addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
-          addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
-          addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("cpu"), cfg.getCpu()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("gpu"), cfg.getGpu()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("ram"), cfg.getMemory()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("disk"), cfg.getDiskSize()), BODY_STYLE));
         }
         case LAPTOP -> {
           val cfg = configuration.getLaptopConfiguration();
           //noinspection DuplicatedCode
-          addRow(createText("CPU: %s".formatted(cfg.getCpu()), BODY_STYLE));
-          addRow(createText("GPU: %s".formatted(cfg.getGpu()), BODY_STYLE));
-          addRow(createText("RAM: %s".formatted(cfg.getMemory()), BODY_STYLE));
-          addRow(createText("Disk: %s".formatted(cfg.getDiskSize()), BODY_STYLE));
-          addRow(createText("Display size: %s\"".formatted(cfg.getScreenSize()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("cpu"), cfg.getCpu()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("gpu"), cfg.getGpu()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("ram"), cfg.getMemory()), BODY_STYLE));
+          addRow(createText("%s: %s".formatted(locale.getString("disk"), cfg.getDiskSize()), BODY_STYLE));
+          addRow(createText("%s: %s\"".formatted(locale.getString("screen_size"), cfg.getScreenSize()), BODY_STYLE));
         }
         default -> throw new IllegalStateException(
             "Support for device type %s not yet implemented"
@@ -161,10 +169,11 @@ public abstract class PrettyDeviceViewerController {
 
       osString = str.toString();
     } else {
-      osString = "N/A";
+      osString = locale.getString("not_applicable");
     }
 
-    addRow(createText("Operating systems: %s".formatted(osString), BODY_STYLE));
+    addRow(
+        createText("%s: %s".formatted(locale.getString("operating_system"), osString), BODY_STYLE));
     addSpacer();
 
     // User info
@@ -173,34 +182,47 @@ public abstract class PrettyDeviceViewerController {
     if (device.getUser() != null) {
       addRow(
           createText(
-              "In use by: %s %s (%s)"
-                  .formatted(user.getFirstName(), user.getLastName(), user.getId()),
+              "%s: %s %s (%s)"
+                  .formatted(
+                      locale.getString("in_use_by"),
+                      user.getFirstName(),
+                      user.getLastName(),
+                      user.getId()),
               SUBTITLE_STYLE));
       // TODO: Click to copy on these?
-      addRow(createText("Email: %s".formatted(user.getEmail()), BODY_STYLE));
-      addRow(createText("Phone: %s".formatted(user.getPhone()), BODY_STYLE));
+      addRow(
+          createText("%s: %s".formatted(locale.getString("email"), user.getEmail()), BODY_STYLE));
+      addRow(
+          createText("%s: %s".formatted(locale.getString("phone"), user.getPhone()), BODY_STYLE));
     } else {
-      addRow(createText("In use by: N/A", BODY_STYLE));
+      addRow(
+          createText(
+              "%s: %s".formatted(locale.getString("in_use_by"), locale.getString("not_applicable")),
+              BODY_STYLE));
     }
 
     val location = device.getLocation();
-    val locString = location != null ? "%s (%s)".formatted(location.getId(), location.getNickname()) : "N/A";
+    val locString =
+        location != null
+            ? "%s (%s)".formatted(location.getId(), location.getNickname())
+            : locale.getString("not_applicable");
 
-    addRow(createText("Located at: %s".formatted(locString), BODY_STYLE));
+    addRow(createText("%s: %s".formatted(locale.getString("located_at"), locString), BODY_STYLE));
 
     if (location != null) {
       // TODO: Click to copy on this?
       addRow(
           createText(
-              "Address: %s %s".formatted(location.getAddress(), location.getZipCode()), BODY_STYLE));
+              "%s: %s %s"
+                  .formatted(
+                      locale.getString("address"), location.getAddress(), location.getZipCode()),
+              BODY_STYLE));
     }
 
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
 
-  /**
-   * Adding rows and spaces
-   */
+  /** Adding rows and spaces */
   private static void addRow(HBox row) {
     lastRowIndex++;
     deviceInfoGrid.add(row, 0, lastRowIndex);
