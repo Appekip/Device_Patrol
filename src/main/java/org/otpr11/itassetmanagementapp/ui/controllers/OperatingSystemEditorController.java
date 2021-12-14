@@ -77,7 +77,7 @@ public class OperatingSystemEditorController
       operatingSystem.setBuildNumber(buildNumberField.getText());
       operatingSystem.setVersion(versionField.getText());
 
-      dao.devices.save(operatingSystem);
+      dao.operatingSystems.save(operatingSystem);
       stage.close();
     }
   }

@@ -30,16 +30,23 @@ import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.controlsfx.control.CheckComboBox;
 import org.otpr11.itassetmanagementapp.Main;
+import org.otpr11.itassetmanagementapp.constants.DatabaseEvent;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
+import org.otpr11.itassetmanagementapp.db.core.DTO;
+import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Configuration;
+import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.db.model.Status;
 import org.otpr11.itassetmanagementapp.db.model.User;
+import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
+import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
@@ -52,7 +59,8 @@ import org.otpr11.itassetmanagementapp.utils.StringUtils;
  * whether a device is being created or edited.
  */
 @Log4j2
-public class DeviceEditorController implements Initializable, ViewController, LocaleChangeListener {
+public class DeviceEditorController
+    implements Initializable, ViewController, LocaleChangeListener, DatabaseEventListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
   private static final DeviceStatus DEFAULT_DEVICE_STATUS = DeviceStatus.VACANT;
   private static ResourceBundle locale = LocaleEngine.getResourceBundle();
@@ -71,11 +79,11 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
           .map(Status::toString)
           .map(status -> DeviceStatus.getLocalised(DeviceStatus.fromString(status)))
           .toList();
-  private final List<String> users =
-      dao.users.getAll().stream().map(User::getId).collect(Collectors.toList());
-  private final List<String> locations =
+  private List<String> locations =
       dao.locations.getAll().stream().map(Location::getId).collect(Collectors.toList());
-  private final List<String> operatingSystems =
+  private List<String> users =
+      dao.users.getAll().stream().map(User::getId).collect(Collectors.toList());
+  private List<String> operatingSystems =
       dao.operatingSystems.getAll().stream().map(OperatingSystem::toPrettyString).toList();
 
   private Device device = new Device();
@@ -121,11 +129,10 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
   @FXML private CheckComboBox<String> osSelector;
   @FXML private ChoiceBox<String> deviceTypeSelector;
 
-  public DeviceEditorController() {}
-
   /** Text field validations for text fields Initializing the start of the device editor view */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
+    DatabaseEventPropagator.addListener(this);
     LocaleEngine.addListener(this);
 
     // Init freeform text field validators
@@ -234,7 +241,8 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
 
     // Actions for adding buttons
 
-    addHWConfigButton.setOnAction(event -> main.showHWConfigEditor(null));
+    addHWConfigButton.setOnAction(
+        event -> main.showHWConfigEditor(DeviceType.fromString(deviceTypeSelector.getValue())));
     addOSButton.setOnAction(event -> main.showOSEditor(null));
     addUserButton.setOnAction(event -> main.showUserEditor(null));
     addLocationButton.setOnAction(event -> main.showLocationEditor(null));
@@ -389,14 +397,32 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
     initDropdown(configSelector, configs, configs.get(0));
   }
 
+  /**
+   * This alternate update function monkey-patches in support for adding a newly created entity to
+   * the available hardware configurations. This is because Hibernate events propagate before a
+   * database query will respond with the newly created entity it just told you it created, because
+   * that totally makes sense.
+   *
+   * @param deviceType {@link DeviceType} to list hardware configurations for.
+   * @param newEntity A newly created hardware configuration
+   */
+  private void updateAvailableHWConfigs(DeviceType deviceType, DTO newEntity) {
+    configs = formatRelevantHWConfigs(deviceType);
+    val stringTarget = (PrettyStringifiable) newEntity;
+    configs.add(stringTarget.toPrettyString());
+    initDropdown(configSelector, configs, stringTarget.toPrettyString());
+  }
+
   private List<String> formatRelevantHWConfigs(DeviceType deviceType) {
-    return getRelevantHWConfigs(deviceType).stream().map(StringUtils::getPrettyHWConfig).toList();
+    return getRelevantHWConfigs(deviceType).stream()
+        .map(StringUtils::getPrettyHWConfig)
+        .collect(Collectors.toList()); // Need mutability for this one
   }
 
   private List<Configuration> getRelevantHWConfigs(DeviceType deviceType) {
     return dao.configurations.getAll().stream()
         .filter(cfg -> cfg.getDeviceType() == deviceType)
-        .toList();
+        .collect(Collectors.toList()); // Need mutability for this one
   }
 
   @Override
@@ -474,5 +500,54 @@ public class DeviceEditorController implements Initializable, ViewController, Lo
     statusText.setText(locale.getString("status"));
     cancelButton.setText(locale.getString("cancel"));
     okButton.setText(locale.getString("save"));
+  }
+
+  @Override
+  public void onDatabaseEvent(DatabaseEvent event, DTO entity) {
+    if (event == DatabaseEvent.POST_PERSIST) {
+      if (entity instanceof DesktopConfiguration) {
+        updateAvailableHWConfigs(DeviceType.DESKTOP, entity);
+      } else if (entity instanceof LaptopConfiguration) {
+        updateAvailableHWConfigs(DeviceType.LAPTOP, entity);
+      } else if (entity instanceof OperatingSystem) {
+        val list =
+            dao.operatingSystems.getAll().stream()
+                .map(OperatingSystem::toPrettyString)
+                .collect(Collectors.toList());
+
+        val newEntity = ((PrettyStringifiable) entity).toPrettyString();
+        list.add(newEntity);
+        operatingSystems = list;
+
+        osSelector.getItems().add(newEntity);
+
+        // Restore checks
+        val checked = osSelector.getCheckModel();
+        checked.check(newEntity);
+
+        for (val item : checked.getCheckedItems()) {
+          osSelector.getCheckModel().check(item);
+        }
+      } else if (entity instanceof User) {
+        val list = dao.users.getAll().stream().map(User::getId).collect(Collectors.toList());
+        val user = ((User) entity).getId();
+
+        list.add(user);
+        users = list;
+        userSelector.getItems().add(user);
+
+        select(userSelector, user);
+      } else if (entity instanceof Location) {
+        val list =
+            dao.locations.getAll().stream().map(Location::getId).collect(Collectors.toList());
+        val location = ((Location) entity).getId();
+
+        list.add(location);
+        locations = list;
+        locationSelector.getItems().add(location);
+
+        select(locationSelector, location);
+      }
+    }
   }
 }

@@ -74,7 +74,7 @@ public class UserEditorController implements Initializable, ViewController, Loca
       user.setEmail(emailField.getText());
       user.setId(employeeIdField.getText());
 
-      dao.devices.save(user);
+      dao.users.save(user);
       stage.close();
     }
   }

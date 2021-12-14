@@ -29,6 +29,7 @@ import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
 public class HardwareConfigurationEditorController
@@ -41,8 +42,12 @@ public class HardwareConfigurationEditorController
   private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
-      Arrays.stream(DeviceType.values()).map(DeviceType::toString).toList();
+      Arrays.stream(DeviceType.values())
+          .map(DeviceType::toString)
+          .map(type -> DeviceType.getLocalised(DeviceType.fromString(type)))
+          .toList();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
+
   // Text field validation and dropdown Initializing the start of the hardware configuration view
   @Setter private Main main;
   @Setter private Stage stage;
@@ -65,7 +70,7 @@ public class HardwareConfigurationEditorController
     createTextFieldValidator(
         validator, screenSizeField, "screenSize", screenSizeField.textProperty());
 
-    initDropdown(deviceTypeField, deviceTypes, DEFAULT_DEVICE_TYPE.toString());
+    initDropdown(deviceTypeField, deviceTypes, DeviceType.getLocalised(DEFAULT_DEVICE_TYPE));
 
     deviceTypeField.setOnAction(
         event -> {
@@ -109,10 +114,9 @@ public class HardwareConfigurationEditorController
           locale.getString("invalid_input"),
           locale.getString("invalid_input_detail"));
     } else {
-      if (deviceTypeField.getValue().equals("LAPTOP")) {
-        saveLaptop();
-      } else {
-        saveDesktop();
+      switch (DeviceType.fromString(deviceTypeField.getValue())) {
+        case LAPTOP -> saveLaptop();
+        case DESKTOP -> saveDesktop();
       }
     }
   }
@@ -150,7 +154,12 @@ public class HardwareConfigurationEditorController
   }
 
   @Override
-  public void afterInitialize() {}
+  public void afterInitialize() {
+    // Support passing device type as scene change data
+    if (sceneChangeData != null && sceneChangeData instanceof DeviceType) {
+      JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+    }
+  }
 
   @Override
   public void onLocaleChange() {

@@ -69,7 +69,7 @@ public class LocationEditorController
       location.setNickname(nicknameField.getText());
       location.setZipCode(zipCodeField.getText());
 
-      dao.devices.save(location);
+      dao.locations.save(location);
       stage.close();
     }
   }

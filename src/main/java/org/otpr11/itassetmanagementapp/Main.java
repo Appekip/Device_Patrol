@@ -67,6 +67,10 @@ public class Main extends Application implements LocaleChangeListener {
     primaryStage.setHeight(height);
     primaryStage.setMaximized(isMaximized);
 
+    // Force window on top of current one (This doesn't behave correctly on Mac for some reason)
+    primaryStage.setAlwaysOnTop(true);
+    primaryStage.setAlwaysOnTop(false);
+
     // Save window position on program shutdown
     Runtime.getRuntime()
         .addShutdownHook(
