@@ -20,7 +20,7 @@ cache:
 build-and-test:
   stage: build
   script:
-    - apt install libpango -y
+    - apt-get install libpangoft2-1.0-0 -y
     - mvn $MAVEN_CLI_OPTS verify
 
 pages:
