@@ -20,6 +20,7 @@ cache:
 build-and-test:
   stage: build
   script:
+    - apt install libpango -y
     - mvn $MAVEN_CLI_OPTS verify
 
 pages:
