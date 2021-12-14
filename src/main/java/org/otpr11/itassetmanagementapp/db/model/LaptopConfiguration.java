@@ -21,6 +21,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.interfaces.PrettyStringifiable;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 
 /**
  * Represents a laptop-specific hardware configuration of a {@link
@@ -87,7 +88,14 @@ public class LaptopConfiguration extends DTO implements PrettyStringifiable {
   }
 
   public String toPrettyString() {
-    return "%s\", %s, %s, %s RAM, %s disk".formatted(screenSize, cpu, gpu, memory, diskSize);
+    return "%s\", %s, %s, %s RAM, %s %s"
+        .formatted(
+            screenSize,
+            cpu,
+            gpu,
+            memory,
+            diskSize,
+            LocaleEngine.getResourceBundle().getString("disk").toLowerCase());
   }
 
   @PreRemove
