@@ -39,28 +39,28 @@ import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
-public class ManagementViewController implements Initializable, ViewController, DatabaseEventListener {
+public class ManagementViewController
+    implements Initializable, ViewController, DatabaseEventListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
+  private final BorderPane prettyDevicePane = new BorderPane();
   private Device device = new Device();
   private User user = new User();
-  private final BorderPane prettyDevicePane = new BorderPane();
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
-  @FXML
-  private TableView<Device> managementTable;
+  @FXML private TableView<Device> managementTable;
   @FXML private TableColumn<Device, String> configColumn;
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, String> userColumn;
   @FXML private TableColumn<Device, String> locationColumn;
-  //@FXML private TableColumn<Device, Device> actionColumn;
+  // @FXML private TableColumn<Device, Device> actionColumn;
   @FXML private TableColumn<Device, Device> action1Column;
   @FXML private TableColumn<Device, Device> action2Column;
   @FXML private TableColumn<Device, Device> action3Column;
   @FXML private TableColumn<Device, Device> action4Column;
   @FXML private BorderPane managementViewPane;
-  //private String userID;
+  // private String userID;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -92,23 +92,23 @@ public class ManagementViewController implements Initializable, ViewController, 
               });
 
           // Detect row double click
-          //row.setOnMouseClicked(
-              //event -> {
-                //if (event.getClickCount() == 2 && !row.isEmpty()) {
-                  //handleViewClick(row.getItem().getId(), true);
-                //}
-              //});
+          // row.setOnMouseClicked(
+          // event -> {
+          // if (event.getClickCount() == 2 && !row.isEmpty()) {
+          // handleViewClick(row.getItem().getId(), true);
+          // }
+          // });
 
           return row;
         });
 
-    //configColumn.setCellValueFactory(new PropertyValueFactory<>("config"));
+    // configColumn.setCellValueFactory(new PropertyValueFactory<>("config"));
     configColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
-    //osColumn.setCellValueFactory(new PropertyValueFactory<>("os"));
+    // osColumn.setCellValueFactory(new PropertyValueFactory<>("os"));
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
-    //userColumn.setCellValueFactory(new PropertyValueFactory<>("user"));
+    // userColumn.setCellValueFactory(new PropertyValueFactory<>("user"));
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
-    //locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+    // locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
     action1Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
@@ -124,7 +124,16 @@ public class ManagementViewController implements Initializable, ViewController, 
                   return;
                 }
 
-                setGraphic(delete1Button(device.getId()));
+                val cfg = device.getConfiguration();
+
+                if (cfg != null) {
+                  switch (cfg.getDeviceType()) {
+                    case DESKTOP -> setGraphic(delete1Button(cfg.getDesktopConfiguration().getId()));
+                    case LAPTOP -> setGraphic(delete1Button(cfg.getLaptopConfiguration().getId()));
+                  }
+                } else {
+                  setGraphic(delete1Button(null));
+                }
               }
             });
 
@@ -141,6 +150,7 @@ public class ManagementViewController implements Initializable, ViewController, 
                   return;
                 }
 
+                // TODO: Multiple operating systems, how do we decide which to pick?
                 setGraphic(delete2Button(device.getId()));
               }
             });
@@ -158,7 +168,8 @@ public class ManagementViewController implements Initializable, ViewController, 
                   return;
                 }
 
-                setGraphic(delete3Button(device.getId()));
+                setGraphic(
+                    delete3Button(device.getUser() != null ? device.getUser().getId() : null));
               }
             });
 
@@ -175,30 +186,31 @@ public class ManagementViewController implements Initializable, ViewController, 
                   return;
                 }
 
-                setGraphic(delete4Button(device.getId()));
+                setGraphic(
+                    delete4Button(
+                        device.getLocation() != null ? device.getLocation().getId() : null));
               }
             });
 
-    //action4Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    //action4Column.setCellFactory(
-        //param ->
-            //new TableCell<>() {
-              //@Override
-              //protected void updateItem(Location location, boolean b) {
-                //super.updateItem(location, b);
+    // action4Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    // action4Column.setCellFactory(
+    // param ->
+    // new TableCell<>() {
+    // @Override
+    // protected void updateItem(Location location, boolean b) {
+    // super.updateItem(location, b);
 
-                //if (location == null) {
-                  //setGraphic(null);
-                  //return;
-                //}
+    // if (location == null) {
+    // setGraphic(null);
+    // return;
+    // }
 
-                //setGraphic(delete4Button(location.getId()));
-              //}
-            //});
-
+    // setGraphic(delete4Button(location.getId()));
+    // }
+    // });
 
     updateConfigs(dao.devices.getAll());
-    //updateUsers(dao.users.getAll());
+    // updateUsers(dao.users.getAll());
   }
 
   @FXML
@@ -253,8 +265,7 @@ public class ManagementViewController implements Initializable, ViewController, 
     main.showDeviceEditor(deviceID);
   }
 
-
-  private void handleEditHWConfig(String configID) {
+  private void handleEditHWConfig(Long configID) {
     main.showHWConfigEditor(configID);
   }
 
@@ -270,7 +281,7 @@ public class ManagementViewController implements Initializable, ViewController, 
     main.showLocationEditor(locationID);
   }
 
-  private void handleDelete1Click(String configID) {
+  private void handleDelete1Click(Long configID) {
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
@@ -322,7 +333,7 @@ public class ManagementViewController implements Initializable, ViewController, 
     }
   }
 
-  private SplitMenuButton delete1Button(String configID) {
+  private SplitMenuButton delete1Button(Long configID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditHWConfig(configID));
@@ -339,6 +350,7 @@ public class ManagementViewController implements Initializable, ViewController, 
 
     return button;
   }
+
   private SplitMenuButton delete2Button(String osID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
@@ -400,19 +412,19 @@ public class ManagementViewController implements Initializable, ViewController, 
 
   private void updateOS(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
-    //managementTable.setItems(FXCollections.observableArrayList(devices));
+    // managementTable.setItems(FXCollections.observableArrayList(devices));
   }
 
   private void updateUsers(List<User> users) {
     users.sort(Comparator.comparing(User::getId));
     managementTable.getItems().clear();
-    //managementTable.setItems(FXCollections.observableArrayList(devices));
+    // managementTable.setItems(FXCollections.observableArrayList(devices));
   }
 
   private void updateLocations(List<Location> locations) {
     locations.sort(Comparator.comparing(Location::getId));
     managementTable.getItems().clear();
-    //managementTable.setItems(FXCollections.observableArrayList(locations));
+    // managementTable.setItems(FXCollections.observableArrayList(locations));
   }
 
   @Override
@@ -462,7 +474,5 @@ public class ManagementViewController implements Initializable, ViewController, 
   }
 
   @Override
-  public void afterInitialize() {
-
-  }
+  public void afterInitialize() {}
 }
