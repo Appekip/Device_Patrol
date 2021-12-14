@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
@@ -20,13 +21,14 @@ import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+@Log4j2
 public class LocationEditorController implements Initializable, ViewController {
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
-
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final Location location = new Location();
+  private Location location = new Location();
   private final Validator validator = new Validator();
 
   /**
@@ -122,7 +124,30 @@ public class LocationEditorController implements Initializable, ViewController {
   }
 
   @Override
-  public void afterInitialize() {}
+  public void afterInitialize() {
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.locations.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing user {}.", sceneChangeData);
+      stage.setTitle("Manage user %s".formatted(sceneChangeData));
+
+      // Determine location to edit
+      location = dao.locations.get((String) sceneChangeData);
+
+      // Fill in data for this location
+
+      idField.setText(location.getId());
+      addressField.setText(location.getAddress());
+      nicknameField.setText(location.getNickname());
+      zipCodeField.setText(location.getZipCode());
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new location.");
+      stage.setTitle("Create location");
+    }
+  }
 
 
 

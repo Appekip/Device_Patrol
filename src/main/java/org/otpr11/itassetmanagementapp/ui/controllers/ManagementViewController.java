@@ -54,13 +54,11 @@ public class ManagementViewController
   @FXML private TableColumn<Device, String> osColumn;
   @FXML private TableColumn<Device, String> userColumn;
   @FXML private TableColumn<Device, String> locationColumn;
-  // @FXML private TableColumn<Device, Device> actionColumn;
-  @FXML private TableColumn<Device, Device> action1Column;
-  @FXML private TableColumn<Device, Device> action2Column;
-  @FXML private TableColumn<Device, Device> action3Column;
-  @FXML private TableColumn<Device, Device> action4Column;
+  @FXML private TableColumn<Device, Device> configActionColumn;
+  @FXML private TableColumn<Device, Device> osActionColumn;
+  @FXML private TableColumn<Device, Device> userActionColumn;
+  @FXML private TableColumn<Device, Device> locationActionColumn;
   @FXML private BorderPane managementViewPane;
-  // private String userID;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
@@ -91,28 +89,16 @@ public class ManagementViewController
                 }
               });
 
-          // Detect row double click
-          // row.setOnMouseClicked(
-          // event -> {
-          // if (event.getClickCount() == 2 && !row.isEmpty()) {
-          // handleViewClick(row.getItem().getId(), true);
-          // }
-          // });
-
           return row;
         });
 
-    // configColumn.setCellValueFactory(new PropertyValueFactory<>("config"));
     configColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
-    // osColumn.setCellValueFactory(new PropertyValueFactory<>("os"));
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
-    // userColumn.setCellValueFactory(new PropertyValueFactory<>("user"));
     userColumn.setCellValueFactory(CellDataFormatter::formatUser);
-    // locationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
     locationColumn.setCellValueFactory(CellDataFormatter::formatLocation);
 
-    action1Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    action1Column.setCellFactory(
+    configActionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    configActionColumn.setCellFactory(
         param ->
             new TableCell<>() {
               @Override
@@ -128,17 +114,18 @@ public class ManagementViewController
 
                 if (cfg != null) {
                   switch (cfg.getDeviceType()) {
-                    case DESKTOP -> setGraphic(delete1Button(cfg.getDesktopConfiguration().getId()));
-                    case LAPTOP -> setGraphic(delete1Button(cfg.getLaptopConfiguration().getId()));
+                    case DESKTOP -> setGraphic(deleteConfigButton(cfg.getDesktopConfiguration().getId()));
+                    case LAPTOP -> setGraphic(deleteConfigButton(cfg.getLaptopConfiguration().getId()));
                   }
                 } else {
-                  setGraphic(delete1Button(null));
+                  setGraphic(deleteConfigButton(null));
                 }
+
               }
             });
 
-    action2Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    action2Column.setCellFactory(
+    osActionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    osActionColumn.setCellFactory(
         param ->
             new TableCell<>() {
               @Override
@@ -151,12 +138,12 @@ public class ManagementViewController
                 }
 
                 // TODO: Multiple operating systems, how do we decide which to pick?
-                setGraphic(delete2Button(device.getId()));
+                setGraphic(deleteOSButton(device.getId()));
               }
             });
 
-    action3Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    action3Column.setCellFactory(
+    userActionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    userActionColumn.setCellFactory(
         param ->
             new TableCell<>() {
               @Override
@@ -169,12 +156,12 @@ public class ManagementViewController
                 }
 
                 setGraphic(
-                    delete3Button(device.getUser() != null ? device.getUser().getId() : null));
+                    deleteUserButton(device.getUser() != null ? device.getUser().getId() : null));
               }
             });
 
-    action4Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    action4Column.setCellFactory(
+    locationActionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    locationActionColumn.setCellFactory(
         param ->
             new TableCell<>() {
               @Override
@@ -187,30 +174,12 @@ public class ManagementViewController
                 }
 
                 setGraphic(
-                    delete4Button(
+                    deleteLocationButton(
                         device.getLocation() != null ? device.getLocation().getId() : null));
               }
             });
 
-    // action4Column.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
-    // action4Column.setCellFactory(
-    // param ->
-    // new TableCell<>() {
-    // @Override
-    // protected void updateItem(Location location, boolean b) {
-    // super.updateItem(location, b);
-
-    // if (location == null) {
-    // setGraphic(null);
-    // return;
-    // }
-
-    // setGraphic(delete4Button(location.getId()));
-    // }
-    // });
-
-    updateConfigs(dao.devices.getAll());
-    // updateUsers(dao.users.getAll());
+    updateItems(dao.devices.getAll());
   }
 
   @FXML
@@ -281,7 +250,7 @@ public class ManagementViewController
     main.showLocationEditor(locationID);
   }
 
-  private void handleDelete1Click(Long configID) {
+  private void handleDeleteConfig(Long configID) {
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
@@ -294,20 +263,20 @@ public class ManagementViewController
     }
   }
 
-  private void handleDelete2Click(String deviceID) {
+  private void handleDeleteOS(String osID) {
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
             "Are you sure?",
-            "Are you sure you want to delete device %s?".formatted(deviceID));
+            "Are you sure you want to delete device %s?".formatted(osID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
 
-      dao.operatingSystems.delete(dao.operatingSystems.get(deviceID));
+      dao.operatingSystems.delete(dao.operatingSystems.get(osID));
     }
   }
 
-  private void handleDelete3Click(String userID) {
+  private void handleDeleteUser(String userID) {
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
@@ -320,7 +289,7 @@ public class ManagementViewController
     }
   }
 
-  private void handleDelete4Click(String locationID) {
+  private void handleDeleteLocation(String locationID) {
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
@@ -333,7 +302,7 @@ public class ManagementViewController
     }
   }
 
-  private SplitMenuButton delete1Button(Long configID) {
+  private SplitMenuButton deleteConfigButton(Long configID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditHWConfig(configID));
@@ -345,13 +314,13 @@ public class ManagementViewController
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDelete1Click(configID));
+    deleteItem.setOnAction(event -> handleDeleteConfig(configID));
     items.add(deleteItem);
 
     return button;
   }
 
-  private SplitMenuButton delete2Button(String osID) {
+  private SplitMenuButton deleteOSButton(String osID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditOS(osID));
@@ -363,13 +332,13 @@ public class ManagementViewController
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDelete2Click(osID));
+    deleteItem.setOnAction(event -> handleDeleteOS(osID));
     items.add(deleteItem);
 
     return button;
   }
 
-  private SplitMenuButton delete3Button(String userID) {
+  private SplitMenuButton deleteUserButton(String userID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditUser(userID));
@@ -381,13 +350,13 @@ public class ManagementViewController
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDelete3Click(userID));
+    deleteItem.setOnAction(event -> handleDeleteUser(userID));
     items.add(deleteItem);
 
     return button;
   }
 
-  private SplitMenuButton delete4Button(String locationID) {
+  private SplitMenuButton deleteLocationButton(String locationID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
     button.setOnAction(event -> handleEditLocation(locationID));
@@ -399,13 +368,13 @@ public class ManagementViewController
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDelete4Click(locationID));
+    deleteItem.setOnAction(event -> handleDeleteLocation(locationID));
     items.add(deleteItem);
 
     return button;
   }
 
-  private void updateConfigs(List<Device> devices) {
+  private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
     managementTable.setItems(FXCollections.observableArrayList(devices));
   }
@@ -439,7 +408,7 @@ public class ManagementViewController
                   .filter(d -> !d.getId().equals(device.getId()))
                   .collect(Collectors.toList());
 
-          updateConfigs(filtered);
+          updateItems(filtered);
         }
       }
       case POST_UPDATE -> {
@@ -458,7 +427,7 @@ public class ManagementViewController
           }
 
           devices.set(updatedIndex, device);
-          updateConfigs(devices);
+          updateItems(devices);
         }
       }
       case POST_PERSIST -> {
@@ -467,7 +436,7 @@ public class ManagementViewController
         if (entity instanceof Device device) {
           val devices = dao.devices.getAll();
           devices.add(device);
-          updateConfigs(devices);
+          updateItems(devices);
         }
       }
     }
