@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Cursor;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -18,10 +19,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -32,26 +30,24 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
-import org.otpr11.itassetmanagementapp.db.model.Location;
-import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
+import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
-public class ManagementViewController implements Initializable, ViewController, DatabaseEventListener,
-    LocaleChangeListener {
-
+public class ManagementViewController
+    implements Initializable, ViewController, DatabaseEventListener, LocaleChangeListener {
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final BorderPane prettyDevicePane = new BorderPane();
-  private Device device = new Device();
-  private User user = new User();
+  private ResourceBundle locale = LocaleEngine.getResourceBundle();
+
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
+
   @FXML private TableView<Device> managementTable;
   @FXML private TableColumn<Device, String> configColumn;
   @FXML private TableColumn<Device, String> osColumn;
@@ -61,39 +57,13 @@ public class ManagementViewController implements Initializable, ViewController, 
   @FXML private TableColumn<Device, Device> osActionColumn;
   @FXML private TableColumn<Device, Device> userActionColumn;
   @FXML private TableColumn<Device, Device> locationActionColumn;
-  @FXML private BorderPane managementViewPane;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
 
-    PrettyDeviceViewerController.init(managementViewPane, prettyDevicePane);
-
     configColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
-
-    val moreInfoTooltip = new Tooltip();
-
-    managementTable.setRowFactory(
-        tableView -> {
-          TableRow<Device> row = new TableRow<>();
-
-          row.setOnMouseEntered(
-              event -> {
-                // Show pointer cursor and tooltip when hovering over rows that have items
-                // We have to it on hover because we can't set the pointer style properly at
-                // startup, and instead must do it dynamically at runtime because JavaFX
-                // HACK: If someone from the future is trying to style rows and wonders why their
-                // styles keep resetting, this is why
-                if (row.getItem() != null) {
-                  // Also thanks JavaFX for renaming all the cursors for no reason
-                  row.setStyle("-fx-cursor: hand;");
-                  row.setTooltip(moreInfoTooltip);
-                }
-              });
-
-          return row;
-        });
 
     configColumn.setCellValueFactory(CellDataFormatter::formatHWConfig);
     osColumn.setCellValueFactory(CellDataFormatter::formatOS);
@@ -184,58 +154,6 @@ public class ManagementViewController implements Initializable, ViewController, 
     updateItems(dao.devices.getAll());
   }
 
-  @FXML
-  private void handleNewDeviceClick() {
-    main.showDeviceEditor(null);
-  }
-
-  @FXML
-  private void handleNewHWConfigurationClick() {
-    main.showHWConfigEditor(null);
-  }
-
-  @FXML
-  private void handleNewOSClick() {
-    main.showOSEditor(null);
-  }
-
-  @FXML
-  private void handleNewUserClick() {
-    main.showUserEditor(null);
-  }
-
-  @FXML
-  private void handleNewLocationClick() {
-    main.showLocationEditor(null);
-  }
-
-  @FXML
-  private void handleManageClick() {
-    main.showManagementView(null);
-  }
-
-  @FXML
-  private void handleAboutClick() {
-    log.trace("Open about");
-  }
-
-  private void handleViewClick(String deviceID, boolean wasDoubleClick) {
-    // Hide on double click of same item
-    if (wasDoubleClick
-        && PrettyDeviceViewerController.isOpen()
-        && PrettyDeviceViewerController.getCurrentDeviceID().equals(deviceID)) {
-      PrettyDeviceViewerController.setCurrentDeviceID(null);
-      PrettyDeviceViewerController.hide();
-    } else {
-      PrettyDeviceViewerController.setCurrentDeviceID(deviceID);
-      PrettyDeviceViewerController.show(deviceID);
-    }
-  }
-
-  private void handleEditClick(String deviceID) {
-    main.showDeviceEditor(deviceID);
-  }
-
   private void handleEditHWConfig(Long configID) {
     main.showHWConfigEditor(configID);
   }
@@ -254,14 +172,7 @@ public class ManagementViewController implements Initializable, ViewController, 
   }
 
   private void handleDeleteConfig(Long configID) {
-    val actionResult =
-        AlertUtils.showAlert(
-            AlertType.CONFIRMATION,
-            "Are you sure?",
-            "Are you sure you want to delete configuration %s?".formatted(configID));
-
-    if (actionResult.getButtonData() == ButtonData.OK_DONE) {
-
+    if (confirmAction("hardware configuration", configID).getButtonData() == ButtonData.OK_DONE) {
       dao.configurations.delete(dao.configurations.get(configID));
     }
   }
@@ -269,113 +180,40 @@ public class ManagementViewController implements Initializable, ViewController, 
   private void handleDeleteOS(String deviceID) {
     val toDelete = determineOS(dao.devices.get(deviceID));
 
-    val actionResult =
-        AlertUtils.showAlert(
-            AlertType.CONFIRMATION,
-            "Are you sure?",
-            "Are you sure you want to delete operating system %s?".formatted(deviceID));
-
-    if (actionResult.getButtonData() == ButtonData.OK_DONE) {
+    if (confirmAction("operating system", deviceID).getButtonData() == ButtonData.OK_DONE) {
       dao.operatingSystems.delete(dao.operatingSystems.get(toDelete));
     }
   }
 
   private void handleDeleteUser(String userID) {
-    val actionResult =
-        AlertUtils.showAlert(
-            AlertType.CONFIRMATION,
-            "Are you sure?",
-            "Are you sure you want to delete user %s?".formatted(userID));
-
-    if (actionResult.getButtonData() == ButtonData.OK_DONE) {
-
+    if (confirmAction("user", userID).getButtonData() == ButtonData.OK_DONE) {
       dao.users.delete(dao.users.get(userID));
     }
   }
 
   private void handleDeleteLocation(String locationID) {
-    val actionResult =
-        AlertUtils.showAlert(
-            AlertType.CONFIRMATION,
-            "Are you sure?",
-            "Are you sure you want to delete location %s?".formatted(locationID));
-
-    if (actionResult.getButtonData() == ButtonData.OK_DONE) {
-
+    if (confirmAction("location", locationID).getButtonData() == ButtonData.OK_DONE) {
       dao.locations.delete(dao.locations.get(locationID));
     }
   }
 
-  private SplitMenuButton deleteConfigButton(Long configID) {
-    val button = new SplitMenuButton();
-    button.setText("Edit");
-    button.setOnAction(event -> handleEditHWConfig(configID));
-    // Don't show pointer cursor or tooltip for this element
-    button.setCursor(Cursor.DEFAULT);
-    button.setTooltip(null);
-
-    val items = button.getItems();
-
-    val deleteItem = new MenuItem();
-    deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDeleteConfig(configID));
-    items.add(deleteItem);
-
-    return button;
+  private SplitMenuButton deleteConfigButton(
+      @SuppressWarnings("SameParameterValue") Long configID) {
+    return createButton(
+        event -> handleEditHWConfig(configID), event -> handleDeleteConfig(configID));
   }
 
   private SplitMenuButton deleteOSButton(String deviceID) {
-    val button = new SplitMenuButton();
-    button.setText("Edit");
-    button.setOnAction(event -> handleEditOS(deviceID));
-    // Don't show pointer cursor or tooltip for this element
-    button.setCursor(Cursor.DEFAULT);
-    button.setTooltip(null);
-
-    val items = button.getItems();
-
-    val deleteItem = new MenuItem();
-    deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDeleteOS(deviceID));
-    items.add(deleteItem);
-
-    return button;
+    return createButton(event -> handleEditOS(deviceID), event -> handleDeleteOS(deviceID));
   }
 
   private SplitMenuButton deleteUserButton(String userID) {
-    val button = new SplitMenuButton();
-    button.setText("Edit");
-    button.setOnAction(event -> handleEditUser(userID));
-    // Don't show pointer cursor or tooltip for this element
-    button.setCursor(Cursor.DEFAULT);
-    button.setTooltip(null);
-
-    val items = button.getItems();
-
-    val deleteItem = new MenuItem();
-    deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDeleteUser(userID));
-    items.add(deleteItem);
-
-    return button;
+    return createButton(event -> handleEditUser(userID), event -> handleDeleteUser(userID));
   }
 
   private SplitMenuButton deleteLocationButton(String locationID) {
-    val button = new SplitMenuButton();
-    button.setText("Edit");
-    button.setOnAction(event -> handleEditLocation(locationID));
-    // Don't show pointer cursor or tooltip for this element
-    button.setCursor(Cursor.DEFAULT);
-    button.setTooltip(null);
-
-    val items = button.getItems();
-
-    val deleteItem = new MenuItem();
-    deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDeleteLocation(locationID));
-    items.add(deleteItem);
-
-    return button;
+    return createButton(
+        event -> handleEditLocation(locationID), event -> handleDeleteLocation(locationID));
   }
 
   private void updateItems(List<Device> devices) {
@@ -383,21 +221,38 @@ public class ManagementViewController implements Initializable, ViewController, 
     managementTable.setItems(FXCollections.observableArrayList(devices));
   }
 
-  private void updateOS(List<Device> devices) {
-    devices.sort(Comparator.comparing(Device::getId));
-    // managementTable.setItems(FXCollections.observableArrayList(devices));
+  private SplitMenuButton createButton(
+      EventHandler<ActionEvent> editHandler, EventHandler<ActionEvent> deleteHandler) {
+    val button = new SplitMenuButton();
+    button.setText(locale.getString("edit"));
+    button.setOnAction(editHandler);
+
+    val items = button.getItems();
+
+    val deleteItem = new MenuItem();
+    deleteItem.setText(locale.getString("delete"));
+    deleteItem.setOnAction(deleteHandler);
+    items.add(deleteItem);
+
+    return button;
   }
 
-  private void updateUsers(List<User> users) {
-    users.sort(Comparator.comparing(User::getId));
-    managementTable.getItems().clear();
-    // managementTable.setItems(FXCollections.observableArrayList(devices));
+  private ButtonType confirmAction(String entity, String id) {
+    return AlertUtils.showAlert(
+        AlertType.CONFIRMATION,
+        locale.getString("are_you_sure"),
+        locale
+            .getString("entity_action_confirmation")
+            .formatted(locale.getString("entity_target_%s".formatted(entity)), id));
   }
 
-  private void updateLocations(List<Location> locations) {
-    locations.sort(Comparator.comparing(Location::getId));
-    managementTable.getItems().clear();
-    // managementTable.setItems(FXCollections.observableArrayList(locations));
+  private ButtonType confirmAction(String entity, Long id) {
+    return AlertUtils.showAlert(
+        AlertType.CONFIRMATION,
+        locale.getString("are_you_sure"),
+        locale
+            .getString("entity_action_confirmation")
+            .formatted(locale.getString("entity_target_%s".formatted(entity)), id));
   }
 
   private Long determineOS(Device device) {
@@ -420,10 +275,12 @@ public class ManagementViewController implements Initializable, ViewController, 
       // Figure out what operating system to edit
       val alert =
           new Alert(
-              AlertType.CONFIRMATION, "Which operating system do you want to edit?", customButtons.toArray(new ButtonType[]{}));
+              AlertType.CONFIRMATION,
+              locale.getString("which_os_to_edit"),
+              customButtons.toArray(new ButtonType[] {}));
       alert.setHeaderText(null);
       alert.setContentText(
-          "There are multiple operating systems associated with this computer. Which one do you want to edit?");
+          locale.getString("which_os_to_edit_detail"));
       alert.showAndWait();
       val result = alert.getResult();
 
@@ -484,6 +341,6 @@ public class ManagementViewController implements Initializable, ViewController, 
 
   @Override
   public void onLocaleChange() {
-
+    locale = LocaleEngine.getResourceBundle();
   }
 }
