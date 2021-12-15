@@ -36,11 +36,10 @@ import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 public class HardwareConfigurationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
-  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private Device device = new Device();
-  private Configuration configuration = new Configuration();
-  private DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
+  private final Device device = new Device();
+  private final Configuration configuration = new Configuration();
+  private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
   private LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
@@ -171,6 +170,7 @@ public class HardwareConfigurationEditorController
   public void afterInitialize() {
     // Support passing device type as scene change data
     if (sceneChangeData != null) {
+      boolean IS_EDIT_MODE;
       if (sceneChangeData instanceof DeviceType) {
         JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
       } else if (sceneChangeData instanceof String

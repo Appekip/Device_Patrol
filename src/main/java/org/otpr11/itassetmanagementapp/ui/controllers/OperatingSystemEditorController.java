@@ -27,6 +27,7 @@ import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 @Log4j2
 public class OperatingSystemEditorController
     implements Initializable, ViewController, LocaleChangeListener {
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
@@ -121,5 +122,4 @@ public class OperatingSystemEditorController
       stage.setTitle("Create operating system");
     }
   }
-
 }
