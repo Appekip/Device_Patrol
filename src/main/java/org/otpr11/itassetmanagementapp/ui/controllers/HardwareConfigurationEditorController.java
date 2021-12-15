@@ -1,5 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
+
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -28,7 +30,6 @@ import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
-import org.otpr11.itassetmanagementapp.utils.StringUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
@@ -155,14 +156,6 @@ public class HardwareConfigurationEditorController
   }
 
   @Override
-  public void afterInitialize() {
-    // Support passing device type as scene change data
-    if (sceneChangeData != null && sceneChangeData instanceof DeviceType) {
-      JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
-    }
-  }
-
-  @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
     title.setText(locale.getString("hardware_configuration"));
@@ -173,7 +166,14 @@ public class HardwareConfigurationEditorController
     gpuText.setText(locale.getString("gpu"));
     ramText.setText(locale.getString("ram"));
   }
+
+  @Override
   public void afterInitialize() {
+    // Support passing device type as scene change data
+    if (sceneChangeData != null && sceneChangeData instanceof DeviceType) {
+      JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+    }
+
     if (sceneChangeData != null
         && sceneChangeData instanceof String
         && dao.laptopConfigurations.get((String) sceneChangeData) != null) {

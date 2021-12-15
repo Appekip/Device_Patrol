@@ -35,14 +35,15 @@ import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.Location;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
+import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
-public class ManagementViewController
-    implements Initializable, ViewController, DatabaseEventListener {
+public class ManagementViewController implements Initializable, ViewController, DatabaseEventListener,
+    LocaleChangeListener {
 
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final BorderPane prettyDevicePane = new BorderPane();
@@ -71,7 +72,7 @@ public class ManagementViewController
     configColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
 
-    val moreInfoTooltip = new Tooltip("Double-click show information about device");
+    val moreInfoTooltip = new Tooltip();
 
     managementTable.setRowFactory(
         tableView -> {
@@ -480,4 +481,9 @@ public class ManagementViewController
 
   @Override
   public void afterInitialize() {}
+
+  @Override
+  public void onLocaleChange() {
+
+  }
 }

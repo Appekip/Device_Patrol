@@ -53,6 +53,7 @@ public class MainViewController
   private final BorderPane prettyDevicePane = new BorderPane();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
   private List<String> statuses; // Will be populated eventually
+  private Tooltip moreInfoTooltip = new Tooltip(locale.getString("show_device_info_tooltip"));
 
   @Setter private Main main;
   @Setter private Stage stage;
@@ -93,8 +94,6 @@ public class MainViewController
 
     hwConfigurationColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
-
-    val moreInfoTooltip = new Tooltip(locale.getString("show_device_info_tooltip"));
 
     deviceTable.setRowFactory(
         tableView -> {
@@ -368,7 +367,7 @@ public class MainViewController
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
     updateStatusDropdowns();
-
+    moreInfoTooltip = new Tooltip(locale.getString("show_device_info_tooltip"));
     idColumn.setText(locale.getString("id"));
     nicknameColumn.setText(locale.getString("nickname"));
     modelNameColumn.setText(locale.getString("model_name"));

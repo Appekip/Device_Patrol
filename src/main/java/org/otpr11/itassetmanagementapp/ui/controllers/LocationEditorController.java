@@ -14,7 +14,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
-import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -25,10 +24,8 @@ import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
 @Log4j2
-public class LocationEditorController implements Initializable, ViewController {
-  @Setter private Main main;
-  @Setter private Stage stage;
-  @Setter private Object sceneChangeData;
+public class LocationEditorController
+    implements Initializable, ViewController, LocaleChangeListener {
   private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private Location location = new Location();
@@ -109,8 +106,6 @@ public class LocationEditorController implements Initializable, ViewController {
       stage.setTitle("Create location");
     }
   }
-
-
 
   @Override
   public void onLocaleChange() {
