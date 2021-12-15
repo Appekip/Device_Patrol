@@ -31,7 +31,7 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   private static final String OS_SELECTOR_DEFAULT_TILE = "Select...";
   private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final OperatingSystem operatingSystem = new OperatingSystem();
+  private OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
   @Setter private Main main;
   @Setter private Stage stage;
@@ -106,5 +106,28 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   @Override
   public void afterInitialize() {
     System.out.println(sceneChangeData);
+
+    if (sceneChangeData != null
+        && sceneChangeData instanceof Long
+        && dao.operatingSystems.get((Long) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing operating system {}.", sceneChangeData);
+      stage.setTitle("Manage operating system %s".formatted(sceneChangeData));
+
+      // Determine operating system to edit
+      operatingSystem = dao.operatingSystems.get((Long) sceneChangeData);
+
+      // Fill in data for this operating system
+
+      nameField.setText(operatingSystem.getName());
+      buildNumberField.setText(operatingSystem.getBuildNumber());
+      versionField.setText(operatingSystem.getVersion());
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new operating system.");
+      stage.setTitle("Create operating system");
+    }
   }
+
 }

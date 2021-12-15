@@ -273,7 +273,7 @@ public class ManagementViewController
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
             "Are you sure?",
-            "Are you sure you want to delete operating system %s?".formatted(osID));
+            "Are you sure you want to delete operating system %s?".formatted(deviceID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
       dao.operatingSystems.delete(dao.operatingSystems.get(toDelete));
