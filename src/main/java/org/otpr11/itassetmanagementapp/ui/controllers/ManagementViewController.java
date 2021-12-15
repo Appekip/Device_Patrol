@@ -255,7 +255,7 @@ public class ManagementViewController
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
             "Are you sure?",
-            "Are you sure you want to delete device %s?".formatted(configID));
+            "Are you sure you want to delete configuration %s?".formatted(configID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
 
@@ -268,7 +268,7 @@ public class ManagementViewController
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
             "Are you sure?",
-            "Are you sure you want to delete device %s?".formatted(osID));
+            "Are you sure you want to delete operating system %s?".formatted(osID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
 
@@ -281,7 +281,7 @@ public class ManagementViewController
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
             "Are you sure?",
-            "Are you sure you want to delete device %s?".formatted(userID));
+            "Are you sure you want to delete user %s?".formatted(userID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
 
