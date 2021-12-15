@@ -84,15 +84,7 @@ public class ManagementViewController
                 }
 
                 val cfg = device.getConfiguration();
-
-                if (cfg != null) {
-                  switch (cfg.getDeviceType()) {
-                    case DESKTOP -> setGraphic(deleteConfigButton(cfg.getDesktopConfiguration().getId()));
-                    case LAPTOP -> setGraphic(deleteConfigButton(cfg.getLaptopConfiguration().getId()));
-                  }
-                } else {
-                  setGraphic(deleteConfigButton(null));
-                }
+                setGraphic(deleteConfigButton(cfg != null ? cfg.getId() : null));
               }
             });
 

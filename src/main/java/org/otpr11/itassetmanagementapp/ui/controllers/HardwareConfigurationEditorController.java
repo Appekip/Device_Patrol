@@ -1,6 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -30,16 +31,16 @@ import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
-import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
 public class HardwareConfigurationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private final Device device = new Device();
   private final Configuration configuration = new Configuration();
-  private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
+  private DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
   private LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
@@ -168,32 +169,45 @@ public class HardwareConfigurationEditorController
 
   @Override
   public void afterInitialize() {
+    val stageTitle = locale.getString("hw_cfg_editor_stage_title");
+    stage.setTitle(IS_EDIT_MODE ? "%s %s".formatted(stageTitle, sceneChangeData) : stageTitle);
+
     // Support passing device type as scene change data
     if (sceneChangeData != null) {
-      boolean IS_EDIT_MODE;
       if (sceneChangeData instanceof DeviceType) {
-        JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
-      } else if (sceneChangeData instanceof String
-          && dao.laptopConfigurations.get((String) sceneChangeData) != null) {
+        select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+      } else if (sceneChangeData instanceof Long
+          && dao.configurations.get((Long) sceneChangeData) != null) {
         IS_EDIT_MODE = true;
-        log.trace("Editing existing laptop configuration {}.", sceneChangeData);
-        stage.setTitle("Manage laptop configuration %s".formatted(sceneChangeData));
+        log.trace("Editing existing configuration {}.", sceneChangeData);
 
-        // Determine laptop configuration to edit
-        laptopConfiguration = dao.laptopConfigurations.get((String) sceneChangeData);
+        // Determine configuration to edit
+        val cfg = dao.configurations.get((Long) sceneChangeData);
 
-        cpuField.setText(laptopConfiguration.getCpu());
-        diskSizeField.setText(laptopConfiguration.getDiskSize());
-        gpuField.setText(laptopConfiguration.getGpu());
-        memoryField.setText(laptopConfiguration.getMemory());
-        // screenSizeField.setText(laptopConfiguration.getScreenSize());
+        System.out.println(cfg);
 
-        // laptopConfiguration.setScreenSize(Integer.parseInt(screenSizeField.getText()));
-
+        switch (cfg.getDeviceType()) {
+          case DESKTOP -> {
+            desktopConfiguration = cfg.getDesktopConfiguration();
+            cpuField.setText(desktopConfiguration.getCpu());
+            diskSizeField.setText(desktopConfiguration.getDiskSize());
+            gpuField.setText(desktopConfiguration.getGpu());
+            memoryField.setText(desktopConfiguration.getMemory());
+            select(deviceTypeField, DeviceType.getLocalised(DeviceType.DESKTOP));
+          }
+          case LAPTOP -> {
+            laptopConfiguration = cfg.getLaptopConfiguration();
+            cpuField.setText(laptopConfiguration.getCpu());
+            diskSizeField.setText(laptopConfiguration.getDiskSize());
+            gpuField.setText(laptopConfiguration.getGpu());
+            memoryField.setText(laptopConfiguration.getMemory());
+            screenSizeField.setText(Integer.toString(laptopConfiguration.getScreenSize()));
+            select(deviceTypeField, DeviceType.getLocalised(DeviceType.LAPTOP));
+          }
+        }
       } else {
         IS_EDIT_MODE = false;
         log.trace("Registering new laptop configuration.");
-        stage.setTitle("Create laptop configuration");
       }
     }
   }
