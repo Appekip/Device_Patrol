@@ -199,28 +199,32 @@ public class HardwareConfigurationEditorController implements Initializable, Vie
 
   @Override
   public void afterInitialize() {
-    if (sceneChangeData != null
-        && sceneChangeData instanceof String
-        && dao.laptopConfigurations.get((String) sceneChangeData) != null) {
-      IS_EDIT_MODE = true;
-      log.trace("Editing existing laptop configuration {}.", sceneChangeData);
-      stage.setTitle("Manage laptop configuration %s".formatted(sceneChangeData));
+    // Support passing device type as scene change data
+    if (sceneChangeData != null) {
+      if (sceneChangeData instanceof DeviceType) {
+        JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+      } else if (sceneChangeData instanceof String
+          && dao.laptopConfigurations.get((String) sceneChangeData) != null) {
+        IS_EDIT_MODE = true;
+        log.trace("Editing existing laptop configuration {}.", sceneChangeData);
+        stage.setTitle("Manage laptop configuration %s".formatted(sceneChangeData));
 
-      // Determine laptop configuration to edit
-      laptopConfiguration = dao.laptopConfigurations.get((String) sceneChangeData);
+        // Determine laptop configuration to edit
+        laptopConfiguration = dao.laptopConfigurations.get((String) sceneChangeData);
 
-      cpuField.setText(laptopConfiguration.getCpu());
-      diskSizeField.setText(laptopConfiguration.getDiskSize());
-      gpuField.setText(laptopConfiguration.getGpu());
-      memoryField.setText(laptopConfiguration.getMemory());
-      //screenSizeField.setText(laptopConfiguration.getScreenSize());
+        cpuField.setText(laptopConfiguration.getCpu());
+        diskSizeField.setText(laptopConfiguration.getDiskSize());
+        gpuField.setText(laptopConfiguration.getGpu());
+        memoryField.setText(laptopConfiguration.getMemory());
+        // screenSizeField.setText(laptopConfiguration.getScreenSize());
 
-      //laptopConfiguration.setScreenSize(Integer.parseInt(screenSizeField.getText()));
+        // laptopConfiguration.setScreenSize(Integer.parseInt(screenSizeField.getText()));
 
-    } else {
-      IS_EDIT_MODE = false;
-      log.trace("Registering new laptop configuration.");
-      stage.setTitle("Create laptop configuration");
+      } else {
+        IS_EDIT_MODE = false;
+        log.trace("Registering new laptop configuration.");
+        stage.setTitle("Create laptop configuration");
+      }
     }
   }
 }
