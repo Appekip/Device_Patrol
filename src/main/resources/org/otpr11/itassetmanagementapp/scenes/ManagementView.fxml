@@ -1,78 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
 <?import javafx.geometry.Insets?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="720.0" prefWidth="1280.0"
-  xmlns="http://javafx.com/javafx/17"
-  fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.ManagementViewController">
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
+<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.otpr11.itassetmanagementapp.ui.controllers.ManagementViewController">
 
   <children>
-    <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-      AnchorPane.topAnchor="0.0" fx:id="ManagementViewPane">
+    <BorderPane fx:id="ManagementViewPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
       <center>
-        <TableView BorderPane.alignment="CENTER" fx:id="managementTable">
+        <TableView fx:id="managementTable" BorderPane.alignment="CENTER">
           <BorderPane.margin>
-            <Insets/>
+            <Insets />
           </BorderPane.margin>
           <columnResizePolicy>
-            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
           </columnResizePolicy>
           <columns>
-            <TableColumn maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="HW Configuration"
-              fx:id="configColumn"/>
-            <TableColumn maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="Operating Systems"
-              fx:id="osColumn"/>
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="User"
-              fx:id="userColumn"/>
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Location"
-              fx:id="locationColumn"/>
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Edit"
-              fx:id="editColumn" />
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Delete"
-              fx:id="deleteColumn"/>
+            <TableColumn fx:id="configColumn" maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="HW Configuration" />
+            <TableColumn fx:id="configActionColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Action" />
+            <TableColumn fx:id="osColumn" maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="Operating Systems" />
+            <TableColumn fx:id="osActionColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Action" />
+            <TableColumn fx:id="userColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="User" />
+            <TableColumn fx:id="userActionColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Action" />
+            <TableColumn fx:id="locationColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Location" />
+            <TableColumn fx:id="locationActionColumn" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" style="-fx-alignment: CENTER;" text="Action" />
           </columns>
         </TableView>
       </center>
-      <top>
-        <MenuBar BorderPane.alignment="CENTER">
-          <menus>
-            <Menu mnemonicParsing="false" text="File">
-              <items>
-                <Menu mnemonicParsing="false" text="New">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewDeviceClick"
-                      text="Device..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewHWConfigurationClick"
-                      text="Hardware configuration..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewOSClick"
-                      text="Operating system..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewUserClick"
-                      text="User..."/>
-                    <MenuItem mnemonicParsing="false" onAction="#handleNewLocationClick"
-                      text="Location..."/>
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Manage">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#handleManageClick"
-                      text="Existing..."/>
-                  </items>
-                </Menu>
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#handleAboutClick" text="About"/>
-              </items>
-            </Menu>
-          </menus>
-        </MenuBar>
-      </top>
     </BorderPane>
   </children>
 

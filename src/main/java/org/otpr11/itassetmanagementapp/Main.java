@@ -88,6 +88,7 @@ public class Main extends Application implements LocaleChangeListener {
 
   public void showDeviceEditor(Object sceneChangeData) {
     setScene(Scenes.DEVICE_EDITOR, sceneChangeData);
+    log.trace(sceneChangeData);
   }
 
   public void showHWConfigEditor(Object sceneChangeData) {
@@ -100,6 +101,7 @@ public class Main extends Application implements LocaleChangeListener {
 
   public void showUserEditor(Object sceneChangeData) {
     setScene(Scenes.USER_EDITOR, sceneChangeData);
+    log.trace(sceneChangeData);
   }
 
   public void showLocationEditor(Object sceneChangeData) {
