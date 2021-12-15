@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+/** This class provides persistent storage for user settings. */
 @Log4j2
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class UserPreferences {

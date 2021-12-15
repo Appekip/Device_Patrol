@@ -59,7 +59,6 @@ public class MainViewController
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  // FXML for the attributes of the main view.
   @FXML
   private TableColumn<Device, String> idColumn,
       nicknameColumn,
@@ -78,14 +77,14 @@ public class MainViewController
       menuItemHW,
       menuItemOS,
       menuItemUser,
-      menuItemLocation;
+      menuItemLocation,
+      menuItemManage;
   @FXML private TableView<Device> deviceTable;
   @FXML private TableColumn<Device, Device> statusColumn, actionColumn;
   @FXML private BorderPane deviceViewPane;
   @FXML private Menu menuNew, menuFile, menuHelp, menuLang;
   @FXML private MenuItem langEng, langFin, langSwe;
 
-  /** Initializing the start of the main view */
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     LocaleEngine.addListener(this);
@@ -159,7 +158,6 @@ public class MainViewController
     onLocaleChange();
   }
 
-  /** Clickhandlers to show editors */
   @FXML
   private void handleNewDeviceClick() {
     main.showDeviceEditor(null);
@@ -195,6 +193,12 @@ public class MainViewController
     log.trace("Open about");
   }
 
+  /**
+   * (Double-) click handler for device rows.
+   *
+   * @param deviceID ID of device in this row
+   * @param wasDoubleClick Whether two clicks occurred in quick succession
+   */
   private void handleViewClick(String deviceID, boolean wasDoubleClick) {
     // Hide on double click of same item
     if (wasDoubleClick
@@ -388,6 +392,7 @@ public class MainViewController
     menuItemOS.setText(locale.getString("operating_system"));
     menuItemUser.setText(locale.getString("user"));
     menuItemLocation.setText(locale.getString("location"));
+    menuItemManage.setText(locale.getString("manage"));
 
     menuHelp.setText(locale.getString("help"));
     menuItemAbout.setText(locale.getString("about"));
