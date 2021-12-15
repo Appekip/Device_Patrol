@@ -1,7 +1,5 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
-import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
-
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -24,22 +22,25 @@ import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.StringUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
 public class HardwareConfigurationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
-
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final Configuration configuration = new Configuration();
-  private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
-  private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
+  private Device device = new Device();
+  private Configuration configuration = new Configuration();
+  private DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
+  private LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values())
@@ -171,5 +172,30 @@ public class HardwareConfigurationEditorController
     screenSizeText.setText(locale.getString("screen_size"));
     gpuText.setText(locale.getString("gpu"));
     ramText.setText(locale.getString("ram"));
+  }
+  public void afterInitialize() {
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.laptopConfigurations.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing laptop configuration {}.", sceneChangeData);
+      stage.setTitle("Manage laptop configuration %s".formatted(sceneChangeData));
+
+      // Determine laptop configuration to edit
+      laptopConfiguration = dao.laptopConfigurations.get((String) sceneChangeData);
+
+      cpuField.setText(laptopConfiguration.getCpu());
+      diskSizeField.setText(laptopConfiguration.getDiskSize());
+      gpuField.setText(laptopConfiguration.getGpu());
+      memoryField.setText(laptopConfiguration.getMemory());
+      //screenSizeField.setText(laptopConfiguration.getScreenSize());
+
+      //laptopConfiguration.setScreenSize(Integer.parseInt(screenSizeField.getText()));
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new laptop configuration.");
+      stage.setTitle("Create laptop configuration");
+    }
   }
 }

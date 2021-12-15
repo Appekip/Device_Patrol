@@ -2,8 +2,14 @@ package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
 
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
+
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,19 +19,29 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
+import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.User;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
+import org.otpr11.itassetmanagementapp.utils.StringUtils;
 
-public class UserEditorController implements Initializable, ViewController, LocaleChangeListener {
-
+@Log4j2
+public class UserEditorController implements Initializable, ViewController {
+  @Setter private Main main;
+  @Setter private Stage stage;
+  @Setter private Object sceneChangeData;
+  private static boolean IS_EDIT_MODE;
+  //private Device device = new Device();
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final User user = new User();
+  private User user = new User();
   private final Validator validator = new Validator();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
@@ -95,5 +111,30 @@ public class UserEditorController implements Initializable, ViewController, Loca
     phoneNumber.setText(locale.getString("phone"));
     email.setText(locale.getString("email"));
     id.setText(locale.getString("id"));
+  }
+  public void afterInitialize() {
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.users.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing user {}.", sceneChangeData);
+      stage.setTitle("Manage user %s".formatted(sceneChangeData));
+
+      // Determine user to edit
+      user = dao.users.get((String) sceneChangeData);
+
+      // Fill in data for this user
+
+      firstNameField.setText(user.getFirstName());
+      lastNameField.setText(user.getLastName());
+      phoneNumberField.setText(user.getPhone());
+      emailField.setText(user.getEmail());
+      employeeIdField.setText(user.getId());
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new user.");
+      stage.setTitle("Create user");
+    }
   }
 }

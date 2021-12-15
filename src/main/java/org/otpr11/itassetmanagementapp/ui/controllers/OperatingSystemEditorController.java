@@ -36,6 +36,7 @@ public class OperatingSystemEditorController
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
+  /** FXML for the attributes and boxes of the operating system view */
   // FXML for the attributes and boxes of the operating system view
   @FXML private Text newOsText;
   @FXML private Label nameText;
@@ -43,8 +44,10 @@ public class OperatingSystemEditorController
   @FXML private Label buildNumberText;
 
   @FXML private TextField nameField, buildNumberField, versionField;
+
   @FXML private Button okButton, cancelButton;
 
+  /** Initializing the start of the operating system view */
   @Override
   public void afterInitialize() {}
 
@@ -87,6 +90,30 @@ public class OperatingSystemEditorController
     stage.close();
   }
 
+  /** Text field validation */
+  private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
+    val edited = new AtomicBoolean(false);
+
+    validator
+        .createCheck()
+        .dependsOn(key, prop)
+        .withMethod(
+            ctx -> {
+              val warn = "Required field.";
+              val error = "Please provide a value.";
+              String value = ctx.get(key);
+
+              if (value == null || value.trim().equals("")) {
+                if (!edited.get()) { // Not yet edited, show only warning
+                  ctx.warn(warn);
+                  edited.set(true);
+                } else { // Already edited, show error now
+                  ctx.error(error);
+                }
+              }
+            })
+        .decorates(field)
+        .immediate();
   @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
@@ -94,5 +121,10 @@ public class OperatingSystemEditorController
     nameText.setText(locale.getString("name"));
     versionText.setText(locale.getString("version"));
     buildNumberText.setText(locale.getString("build_number"));
+  }
+
+  @Override
+  public void afterInitialize() {
+    System.out.println(sceneChangeData);
   }
 }

@@ -25,16 +25,20 @@
           <columns>
             <TableColumn maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="HW Configuration"
               fx:id="configColumn"/>
+            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Action"
+              fx:id="configActionColumn" />
             <TableColumn maxWidth="1.7976931348623157E308" minWidth="105.0" prefWidth="-1.0" text="Operating Systems"
               fx:id="osColumn"/>
+            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Action"
+              fx:id="osActionColumn" />
             <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="User"
               fx:id="userColumn"/>
+            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Action"
+              fx:id="userActionColumn" />
             <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Location"
               fx:id="locationColumn"/>
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Edit"
-              fx:id="editColumn" />
-            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Delete"
-              fx:id="deleteColumn"/>
+            <TableColumn style="-fx-alignment: CENTER;" maxWidth="-1.0" minWidth="110.0" prefWidth="-1.0" text="Action"
+              fx:id="locationActionColumn" />
           </columns>
         </TableView>
       </center>
