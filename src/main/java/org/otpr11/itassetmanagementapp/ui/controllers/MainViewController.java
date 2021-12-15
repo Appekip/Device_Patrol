@@ -77,7 +77,8 @@ public class MainViewController
       menuItemHW,
       menuItemOS,
       menuItemUser,
-      menuItemLocation;
+      menuItemLocation,
+      menuItemManage;
   @FXML private TableView<Device> deviceTable;
   @FXML private TableColumn<Device, Device> statusColumn, actionColumn;
   @FXML private BorderPane deviceViewPane;
@@ -391,6 +392,7 @@ public class MainViewController
     menuItemOS.setText(locale.getString("operating_system"));
     menuItemUser.setText(locale.getString("user"));
     menuItemLocation.setText(locale.getString("location"));
+    menuItemManage.setText(locale.getString("manage"));
 
     menuHelp.setText(locale.getString("help"));
     menuItemAbout.setText(locale.getString("about"));
