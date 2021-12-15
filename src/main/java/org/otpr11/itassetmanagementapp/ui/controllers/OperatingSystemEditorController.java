@@ -28,7 +28,7 @@ import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 public class OperatingSystemEditorController
     implements Initializable, ViewController, LocaleChangeListener {
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final OperatingSystem operatingSystem = new OperatingSystem();
+  private OperatingSystem operatingSystem = new OperatingSystem();
   private final Validator validator = new Validator();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
@@ -98,5 +98,28 @@ public class OperatingSystemEditorController
   @Override
   public void afterInitialize() {
     System.out.println(sceneChangeData);
+
+    if (sceneChangeData != null
+        && sceneChangeData instanceof Long
+        && dao.operatingSystems.get((Long) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing operating system {}.", sceneChangeData);
+      stage.setTitle("Manage operating system %s".formatted(sceneChangeData));
+
+      // Determine operating system to edit
+      operatingSystem = dao.operatingSystems.get((Long) sceneChangeData);
+
+      // Fill in data for this operating system
+
+      nameField.setText(operatingSystem.getName());
+      buildNumberField.setText(operatingSystem.getBuildNumber());
+      versionField.setText(operatingSystem.getVersion());
+
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new operating system.");
+      stage.setTitle("Create operating system");
+    }
   }
+
 }
