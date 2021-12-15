@@ -98,6 +98,15 @@ public abstract class JFXUtils {
     return container;
   }
 
+  /**
+   * Assigns a new validator from a {@link Validator} class for a given {@link TextField}.
+   *
+   * @see Validator
+   * @param validator {@link Validator}
+   * @param field {@link TextField}
+   * @param key Validator key
+   * @param prop Validator property
+   */
   public static void createTextFieldValidator(
       Validator validator, TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);

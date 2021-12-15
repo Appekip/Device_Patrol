@@ -44,6 +44,11 @@ public abstract class LocaleEngine {
     setUserLocale(preferredLocale);
   }
 
+  /**
+   * Set the user's preferred locale.
+   *
+   * @param locale {@link Locale}
+   */
   public static void setUserLocale(Locale locale) {
     if (!isLocaleSupported(locale)) {
       log.warn("User selected locale {} is not supported. Falling back to English.", locale);
@@ -58,11 +63,18 @@ public abstract class LocaleEngine {
     listeners.forEach(LocaleChangeListener::onLocaleChange);
   }
 
+  /** Loads the {@link ResourceBundle} for the user's preferred locale. */
   private static void loadLocale() {
     resourceBundle =
         ResourceBundle.getBundle("org/otpr11/itassetmanagementapp/locale/locale", userLocale);
   }
 
+  /**
+   * Determines whether a {@link Locale} is supported.
+   *
+   * @param locale {@link Locale}
+   * @return Whether the locale is supported or not
+   */
   private static boolean isLocaleSupported(Locale locale) {
     val localePath =
         Main.class.getResource("locale/locale_%s.properties".formatted(locale.getLanguage()));

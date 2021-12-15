@@ -3,6 +3,7 @@ package org.otpr11.itassetmanagementapp.constants;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+/** Declares all the scenes used in the application, and metadata for them. */
 @RequiredArgsConstructor
 public enum Scenes {
   MAIN("scenes/MainView.fxml", true, false),

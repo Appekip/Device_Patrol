@@ -30,6 +30,7 @@ import org.otpr11.itassetmanagementapp.db.core.DTO;
 import org.otpr11.itassetmanagementapp.db.core.DatabaseEventPropagator;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Device;
+import org.otpr11.itassetmanagementapp.db.model.OperatingSystem;
 import org.otpr11.itassetmanagementapp.interfaces.DatabaseEventListener;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
@@ -38,6 +39,9 @@ import org.otpr11.itassetmanagementapp.ui.utils.CellDataFormatter;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
+/**
+ * Location, user etc. management view.
+ */
 @Log4j2
 public class ManagementViewController
     implements Initializable, ViewController, DatabaseEventListener, LocaleChangeListener {
@@ -79,7 +83,7 @@ public class ManagementViewController
                 }
 
                 val cfg = device.getConfiguration();
-                setGraphic(deleteConfigButton(cfg != null ? cfg.getId() : null));
+                setGraphic(createConfigActionButton(cfg != null ? cfg.getId() : null));
               }
             });
 
@@ -96,7 +100,7 @@ public class ManagementViewController
                   return;
                 }
 
-                setGraphic(deleteOSButton(device.getId()));
+                setGraphic(createOSActionButton(device.getId()));
               }
             });
 
@@ -114,7 +118,7 @@ public class ManagementViewController
                 }
 
                 setGraphic(
-                    deleteUserButton(device.getUser() != null ? device.getUser().getId() : null));
+                    createUserActionButton(device.getUser() != null ? device.getUser().getId() : null));
               }
             });
 
@@ -133,7 +137,7 @@ public class ManagementViewController
                 }
 
                 setGraphic(
-                    deleteLocationButton(
+                    createLocationActionButton(
                         device.getLocation() != null ? device.getLocation().getId() : null));
               }
             });
@@ -184,30 +188,42 @@ public class ManagementViewController
     }
   }
 
-  private SplitMenuButton deleteConfigButton(
+  private SplitMenuButton createConfigActionButton(
       @SuppressWarnings("SameParameterValue") Long configID) {
     return createButton(
         event -> handleEditHWConfig(configID), event -> handleDeleteConfig(configID));
   }
 
-  private SplitMenuButton deleteOSButton(String deviceID) {
+  private SplitMenuButton createOSActionButton(String deviceID) {
     return createButton(event -> handleEditOS(deviceID), event -> handleDeleteOS(deviceID));
   }
 
-  private SplitMenuButton deleteUserButton(String userID) {
+  private SplitMenuButton createUserActionButton(String userID) {
     return createButton(event -> handleEditUser(userID), event -> handleDeleteUser(userID));
   }
 
-  private SplitMenuButton deleteLocationButton(String locationID) {
+  private SplitMenuButton createLocationActionButton(String locationID) {
     return createButton(
         event -> handleEditLocation(locationID), event -> handleDeleteLocation(locationID));
   }
 
+  /**
+   * Updater function for the main table.
+   *
+   * @param devices {@link Device} objects from database
+   */
   private void updateItems(List<Device> devices) {
     devices.sort(Comparator.comparing(Device::getId));
     managementTable.setItems(FXCollections.observableArrayList(devices));
   }
 
+  /**
+   * Creates a {@link SplitMenuButton} with Edit and Delete buttons, with customisable handler functions.
+   *
+   * @param editHandler {@link Runnable}
+   * @param deleteHandler {@link Runnable}
+   * @return {@link SplitMenuButton}
+   */
   private SplitMenuButton createButton(
       EventHandler<ActionEvent> editHandler, EventHandler<ActionEvent> deleteHandler) {
     val button = new SplitMenuButton();
@@ -224,6 +240,13 @@ public class ManagementViewController
     return button;
   }
 
+  /**
+   * Confirms the performing of an action on an entity by showing an {@link Alert}.
+   *
+   * @param entity Type of entity to confirm (see locale)
+   * @param id ID of target entity
+   * @return Alert result
+   */
   private ButtonType confirmAction(String entity, String id) {
     return AlertUtils.showAlert(
         AlertType.CONFIRMATION,
@@ -233,6 +256,13 @@ public class ManagementViewController
             .formatted(locale.getString("entity_target_%s".formatted(entity)), id));
   }
 
+  /**
+   * Confirms the performing of an action on an entity by showing an {@link Alert}.
+   *
+   * @param entity Type of entity to confirm (see locale)
+   * @param id ID of target entity
+   * @return Alert result
+   */
   private ButtonType confirmAction(String entity, Long id) {
     return AlertUtils.showAlert(
         AlertType.CONFIRMATION,
@@ -242,6 +272,12 @@ public class ManagementViewController
             .formatted(locale.getString("entity_target_%s".formatted(entity)), id));
   }
 
+  /**
+   * Determines the {@link OperatingSystem} to edit (as there can be multiple per {@link Device}).
+   *
+   * @param device {@link Device}
+   * @return ID of OS selected for editing
+   */
   private Long determineOS(Device device) {
     val oses = device.getOperatingSystems();
     Long toEdit = null;

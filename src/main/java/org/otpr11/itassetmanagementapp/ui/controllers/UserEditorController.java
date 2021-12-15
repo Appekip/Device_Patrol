@@ -25,10 +25,10 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+/** User editor controller class. */
 @Log4j2
 public class UserEditorController implements Initializable, ViewController, LocaleChangeListener {
   private static boolean IS_EDIT_MODE;
-  // private Device device = new Device();
   private final GlobalDAO dao = GlobalDAO.getInstance();
   private User user = new User();
   private final Validator validator = new Validator();
@@ -38,14 +38,12 @@ public class UserEditorController implements Initializable, ViewController, Loca
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  // FXML for the attributes and buttons of the user view
   @FXML
   private TextField firstNameField, lastNameField, phoneNumberField, emailField, employeeIdField;
   @FXML private Text title;
   @FXML private Label firstNameText, lastNameText, phoneNumberText, emailText, idText;
   @FXML private Button okButton, cancelButton;
 
-  /** Initializing the start of the user view */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     createTextFieldValidator(
@@ -61,7 +59,11 @@ public class UserEditorController implements Initializable, ViewController, Loca
     onLocaleChange();
   }
 
-  /** Save button event */
+  /**
+   * Save button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
@@ -81,7 +83,11 @@ public class UserEditorController implements Initializable, ViewController, Loca
     }
   }
 
-  /** Cancel button event */
+  /**
+   * Cancel button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
