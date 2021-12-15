@@ -11,9 +11,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -37,6 +39,7 @@ public class LocationEditorController
   @Setter private Object sceneChangeData;
 
   // FXML for the attributes and boxes of the location view
+  @FXML private Text title;
   @FXML private Label zipText, nickText, addressText, idText;
   @FXML private Button okButton, cancelButton;
   @FXML private TextField idField, addressField, zipCodeField, nicknameField;
@@ -83,6 +86,8 @@ public class LocationEditorController
 
   @Override
   public void afterInitialize() {
+    val stageTitle = locale.getString("user_editor_stage_title");
+
     if (sceneChangeData != null
         && sceneChangeData instanceof String
         && dao.locations.get((String) sceneChangeData) != null) {
@@ -94,25 +99,29 @@ public class LocationEditorController
       location = dao.locations.get((String) sceneChangeData);
 
       // Fill in data for this location
-
       idField.setText(location.getId());
       addressField.setText(location.getAddress());
       nicknameField.setText(location.getNickname());
       zipCodeField.setText(location.getZipCode());
 
+      stage.setTitle(IS_EDIT_MODE ? "%s %s".formatted(stageTitle, location.getId()) : stageTitle);
     } else {
       IS_EDIT_MODE = false;
       log.trace("Registering new location.");
-      stage.setTitle("Create location");
+      stage.setTitle(stageTitle);
     }
   }
 
   @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
+
+    title.setText(locale.getString("location"));
     zipText.setText(locale.getString("zip_code"));
     nickText.setText(locale.getString("nickname"));
     addressText.setText(locale.getString("address"));
     idText.setText(locale.getString("id"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
   }
 }

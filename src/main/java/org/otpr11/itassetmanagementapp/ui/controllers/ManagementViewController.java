@@ -49,18 +49,13 @@ public class ManagementViewController
   @Setter private Object sceneChangeData;
 
   @FXML private TableView<Device> managementTable;
-  @FXML private TableColumn<Device, String> configColumn;
-  @FXML private TableColumn<Device, String> osColumn;
-  @FXML private TableColumn<Device, String> userColumn;
-  @FXML private TableColumn<Device, String> locationColumn;
-  @FXML private TableColumn<Device, Device> configActionColumn;
-  @FXML private TableColumn<Device, Device> osActionColumn;
-  @FXML private TableColumn<Device, Device> userActionColumn;
-  @FXML private TableColumn<Device, Device> locationActionColumn;
+  @FXML private TableColumn<Device, String> configColumn, osColumn, userColumn, locationColumn;
+  @FXML private TableColumn<Device, Device> configActionColumn, osActionColumn, userActionColumn, locationActionColumn;
 
   @Override
   public void initialize(URL location, ResourceBundle resources) {
     DatabaseEventPropagator.addListener(this);
+    onLocaleChange();
 
     configColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
     osColumn.setMaxWidth(JFXUtils.getPercentageWidth(50));
@@ -334,5 +329,13 @@ public class ManagementViewController
   @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
+    osColumn.setText(locale.getString("operating_system"));
+    userColumn.setText(locale.getString("user"));
+    locationColumn.setText(locale.getString("location"));
+    configColumn.setText(locale.getString("hardware_configuration"));
+    osActionColumn.setText(locale.getString("action"));
+    userActionColumn.setText(locale.getString("action"));
+    locationActionColumn.setText(locale.getString("action"));
+    configActionColumn.setText(locale.getString("action"));
   }
 }

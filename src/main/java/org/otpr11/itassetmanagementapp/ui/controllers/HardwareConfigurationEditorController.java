@@ -165,14 +165,14 @@ public class HardwareConfigurationEditorController
     screenSizeText.setText(locale.getString("screen_size"));
     gpuText.setText(locale.getString("gpu"));
     ramText.setText(locale.getString("ram"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
   }
 
   @Override
   public void afterInitialize() {
     val stageTitle = locale.getString("hw_cfg_editor_stage_title");
-    stage.setTitle(IS_EDIT_MODE ? "%s %s".formatted(stageTitle, sceneChangeData) : stageTitle);
 
-    // Support passing device type as scene change data
     if (sceneChangeData != null) {
       if (sceneChangeData instanceof DeviceType) {
         select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
@@ -184,8 +184,6 @@ public class HardwareConfigurationEditorController
         // Determine configuration to edit
         val cfg = dao.configurations.get((Long) sceneChangeData);
 
-        System.out.println(cfg);
-
         switch (cfg.getDeviceType()) {
           case DESKTOP -> {
             desktopConfiguration = cfg.getDesktopConfiguration();
@@ -194,6 +192,7 @@ public class HardwareConfigurationEditorController
             gpuField.setText(desktopConfiguration.getGpu());
             memoryField.setText(desktopConfiguration.getMemory());
             select(deviceTypeField, DeviceType.getLocalised(DeviceType.DESKTOP));
+            stage.setTitle("%s %s".formatted(stageTitle, desktopConfiguration.toPrettyString()));
           }
           case LAPTOP -> {
             laptopConfiguration = cfg.getLaptopConfiguration();
@@ -203,11 +202,13 @@ public class HardwareConfigurationEditorController
             memoryField.setText(laptopConfiguration.getMemory());
             screenSizeField.setText(Integer.toString(laptopConfiguration.getScreenSize()));
             select(deviceTypeField, DeviceType.getLocalised(DeviceType.LAPTOP));
+            stage.setTitle("%s %s".formatted(stageTitle, laptopConfiguration.toPrettyString()));
           }
         }
       } else {
         IS_EDIT_MODE = false;
         log.trace("Registering new laptop configuration.");
+        stage.setTitle(stageTitle);
       }
     }
   }

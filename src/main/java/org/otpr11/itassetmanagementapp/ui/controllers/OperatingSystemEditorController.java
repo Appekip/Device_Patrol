@@ -15,6 +15,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
+import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -94,15 +95,18 @@ public class OperatingSystemEditorController
     nameText.setText(locale.getString("name"));
     versionText.setText(locale.getString("version"));
     buildNumberText.setText(locale.getString("build_number"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
   }
 
   @Override
   public void afterInitialize() {
-    System.out.println(sceneChangeData);
+    val stageTitle = locale.getString("os_editor_stage_title");
 
     if (sceneChangeData != null
         && sceneChangeData instanceof Long
         && dao.operatingSystems.get((Long) sceneChangeData) != null) {
+
       IS_EDIT_MODE = true;
       log.trace("Editing existing operating system {}.", sceneChangeData);
       stage.setTitle("Manage operating system %s".formatted(sceneChangeData));
@@ -116,10 +120,14 @@ public class OperatingSystemEditorController
       buildNumberField.setText(operatingSystem.getBuildNumber());
       versionField.setText(operatingSystem.getVersion());
 
+      stage.setTitle(
+          IS_EDIT_MODE
+              ? "%s %s".formatted(stageTitle, operatingSystem.toPrettyString())
+              : stageTitle);
     } else {
       IS_EDIT_MODE = false;
       log.trace("Registering new operating system.");
-      stage.setTitle("Create operating system");
+      stage.setTitle(stageTitle);
     }
   }
 }

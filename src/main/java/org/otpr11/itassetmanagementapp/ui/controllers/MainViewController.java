@@ -370,6 +370,7 @@ public class MainViewController
     moreInfoTooltip = new Tooltip(locale.getString("show_device_info_tooltip"));
     idColumn.setText(locale.getString("id"));
     nicknameColumn.setText(locale.getString("nickname"));
+    manufacturerColumn.setText(locale.getString("manufacturer"));
     modelNameColumn.setText(locale.getString("model_name"));
     modelIDColumn.setText(locale.getString("model_id"));
     modelYearColumn.setText(locale.getString("model_year"));
