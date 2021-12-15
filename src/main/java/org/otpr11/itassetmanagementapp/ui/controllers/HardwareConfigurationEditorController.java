@@ -1,6 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import static org.otpr11.itassetmanagementapp.utils.JFXUtils.createTextFieldValidator;
+import static org.otpr11.itassetmanagementapp.utils.JFXUtils.select;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -24,22 +25,23 @@ import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 import org.otpr11.itassetmanagementapp.db.model.Configuration;
 import org.otpr11.itassetmanagementapp.db.model.DesktopConfiguration;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.db.model.LaptopConfiguration;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
-import org.otpr11.itassetmanagementapp.utils.JFXUtils;
 
 @Log4j2
 public class HardwareConfigurationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
   private static final DeviceType DEFAULT_DEVICE_TYPE = DeviceType.LAPTOP;
-
+  private static boolean IS_EDIT_MODE;
   private final GlobalDAO dao = GlobalDAO.getInstance();
+  private final Device device = new Device();
   private final Configuration configuration = new Configuration();
-  private final DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
-  private final LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
+  private DesktopConfiguration desktopConfiguration = new DesktopConfiguration();
+  private LaptopConfiguration laptopConfiguration = new LaptopConfiguration();
   private final Validator validator = new Validator();
   private final List<String> deviceTypes =
       Arrays.stream(DeviceType.values())
@@ -154,14 +156,6 @@ public class HardwareConfigurationEditorController
   }
 
   @Override
-  public void afterInitialize() {
-    // Support passing device type as scene change data
-    if (sceneChangeData != null && sceneChangeData instanceof DeviceType) {
-      JFXUtils.select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
-    }
-  }
-
-  @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
     title.setText(locale.getString("hardware_configuration"));
@@ -171,5 +165,51 @@ public class HardwareConfigurationEditorController
     screenSizeText.setText(locale.getString("screen_size"));
     gpuText.setText(locale.getString("gpu"));
     ramText.setText(locale.getString("ram"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
+  }
+
+  @Override
+  public void afterInitialize() {
+    val stageTitle = locale.getString("hw_cfg_editor_stage_title");
+
+    if (sceneChangeData != null) {
+      if (sceneChangeData instanceof DeviceType) {
+        select(deviceTypeField, DeviceType.getLocalised((DeviceType) sceneChangeData));
+      } else if (sceneChangeData instanceof Long
+          && dao.configurations.get((Long) sceneChangeData) != null) {
+        IS_EDIT_MODE = true;
+        log.trace("Editing existing configuration {}.", sceneChangeData);
+
+        // Determine configuration to edit
+        val cfg = dao.configurations.get((Long) sceneChangeData);
+
+        switch (cfg.getDeviceType()) {
+          case DESKTOP -> {
+            desktopConfiguration = cfg.getDesktopConfiguration();
+            cpuField.setText(desktopConfiguration.getCpu());
+            diskSizeField.setText(desktopConfiguration.getDiskSize());
+            gpuField.setText(desktopConfiguration.getGpu());
+            memoryField.setText(desktopConfiguration.getMemory());
+            select(deviceTypeField, DeviceType.getLocalised(DeviceType.DESKTOP));
+            stage.setTitle("%s %s".formatted(stageTitle, desktopConfiguration.toPrettyString()));
+          }
+          case LAPTOP -> {
+            laptopConfiguration = cfg.getLaptopConfiguration();
+            cpuField.setText(laptopConfiguration.getCpu());
+            diskSizeField.setText(laptopConfiguration.getDiskSize());
+            gpuField.setText(laptopConfiguration.getGpu());
+            memoryField.setText(laptopConfiguration.getMemory());
+            screenSizeField.setText(Integer.toString(laptopConfiguration.getScreenSize()));
+            select(deviceTypeField, DeviceType.getLocalised(DeviceType.LAPTOP));
+            stage.setTitle("%s %s".formatted(stageTitle, laptopConfiguration.toPrettyString()));
+          }
+        }
+      } else {
+        IS_EDIT_MODE = false;
+        log.trace("Registering new laptop configuration.");
+        stage.setTitle(stageTitle);
+      }
+    }
   }
 }

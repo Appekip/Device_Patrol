@@ -11,8 +11,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
+import lombok.val;
 import net.synedra.validatorfx.Validator;
 import org.otpr11.itassetmanagementapp.Main;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
@@ -22,10 +25,12 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+@Log4j2
 public class UserEditorController implements Initializable, ViewController, LocaleChangeListener {
-
+  private static boolean IS_EDIT_MODE;
+  // private Device device = new Device();
   private final GlobalDAO dao = GlobalDAO.getInstance();
-  private final User user = new User();
+  private User user = new User();
   private final Validator validator = new Validator();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
@@ -36,11 +41,8 @@ public class UserEditorController implements Initializable, ViewController, Loca
   // FXML for the attributes and buttons of the user view
   @FXML
   private TextField firstNameField, lastNameField, phoneNumberField, emailField, employeeIdField;
-  @FXML private Label firstName;
-  @FXML private Label lastName;
-  @FXML private Label phoneNumber;
-  @FXML private Label email;
-  @FXML private Label id;
+  @FXML private Text title;
+  @FXML private Label firstNameText, lastNameText, phoneNumberText, emailText, idText;
   @FXML private Button okButton, cancelButton;
 
   /** Initializing the start of the user view */
@@ -85,15 +87,45 @@ public class UserEditorController implements Initializable, ViewController, Loca
   }
 
   @Override
-  public void afterInitialize() {}
-
-  @Override
   public void onLocaleChange() {
     locale = LocaleEngine.getResourceBundle();
-    firstName.setText(locale.getString("first_name"));
-    lastName.setText(locale.getString("last_name"));
-    phoneNumber.setText(locale.getString("phone"));
-    email.setText(locale.getString("email"));
-    id.setText(locale.getString("id"));
+
+    title.setText(locale.getString("user"));
+    firstNameText.setText(locale.getString("first_name"));
+    lastNameText.setText(locale.getString("last_name"));
+    phoneNumberText.setText(locale.getString("phone"));
+    emailText.setText(locale.getString("email"));
+    idText.setText(locale.getString("id"));
+    cancelButton.setText(locale.getString("cancel"));
+    okButton.setText(locale.getString("save"));
+  }
+
+  @Override
+  public void afterInitialize() {
+    val stageTitle = locale.getString("user_editor_stage_title");
+
+    if (sceneChangeData != null
+        && sceneChangeData instanceof String
+        && dao.users.get((String) sceneChangeData) != null) {
+      IS_EDIT_MODE = true;
+      log.trace("Editing existing user {}.", sceneChangeData);
+      stage.setTitle("Manage user %s".formatted(sceneChangeData));
+
+      // Determine user to edit
+      user = dao.users.get((String) sceneChangeData);
+
+      // Fill in data for this user
+      firstNameField.setText(user.getFirstName());
+      lastNameField.setText(user.getLastName());
+      phoneNumberField.setText(user.getPhone());
+      emailField.setText(user.getEmail());
+      employeeIdField.setText(user.getId());
+
+      stage.setTitle(IS_EDIT_MODE ? "%s %s".formatted(stageTitle, user.getId()) : stageTitle);
+    } else {
+      IS_EDIT_MODE = false;
+      log.trace("Registering new user.");
+      stage.setTitle(stageTitle);
+    }
   }
 }
