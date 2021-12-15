@@ -1,6 +1,7 @@
 package org.otpr11.itassetmanagementapp.ui.controllers;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -10,8 +11,10 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Cursor;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TableCell;
@@ -120,7 +123,6 @@ public class ManagementViewController
                 } else {
                   setGraphic(deleteConfigButton(null));
                 }
-
               }
             });
 
@@ -137,7 +139,6 @@ public class ManagementViewController
                   return;
                 }
 
-                // TODO: Multiple operating systems, how do we decide which to pick?
                 setGraphic(deleteOSButton(device.getId()));
               }
             });
@@ -160,7 +161,8 @@ public class ManagementViewController
               }
             });
 
-    locationActionColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+    locationActionColumn.setCellValueFactory(
+        param -> new ReadOnlyObjectWrapper<>(param.getValue()));
     locationActionColumn.setCellFactory(
         param ->
             new TableCell<>() {
@@ -238,8 +240,9 @@ public class ManagementViewController
     main.showHWConfigEditor(configID);
   }
 
-  private void handleEditOS(String osID) {
-    main.showOSEditor(osID);
+  private void handleEditOS(String deviceID) {
+    val toEdit = determineOS(dao.devices.get(deviceID));
+    main.showOSEditor(toEdit);
   }
 
   private void handleEditUser(String userID) {
@@ -263,7 +266,9 @@ public class ManagementViewController
     }
   }
 
-  private void handleDeleteOS(String osID) {
+  private void handleDeleteOS(String deviceID) {
+    val toDelete = determineOS(dao.devices.get(deviceID));
+
     val actionResult =
         AlertUtils.showAlert(
             AlertType.CONFIRMATION,
@@ -271,8 +276,7 @@ public class ManagementViewController
             "Are you sure you want to delete operating system %s?".formatted(osID));
 
     if (actionResult.getButtonData() == ButtonData.OK_DONE) {
-
-      dao.operatingSystems.delete(dao.operatingSystems.get(osID));
+      dao.operatingSystems.delete(dao.operatingSystems.get(toDelete));
     }
   }
 
@@ -320,10 +324,10 @@ public class ManagementViewController
     return button;
   }
 
-  private SplitMenuButton deleteOSButton(String osID) {
+  private SplitMenuButton deleteOSButton(String deviceID) {
     val button = new SplitMenuButton();
     button.setText("Edit");
-    button.setOnAction(event -> handleEditOS(osID));
+    button.setOnAction(event -> handleEditOS(deviceID));
     // Don't show pointer cursor or tooltip for this element
     button.setCursor(Cursor.DEFAULT);
     button.setTooltip(null);
@@ -332,7 +336,7 @@ public class ManagementViewController
 
     val deleteItem = new MenuItem();
     deleteItem.setText("Delete");
-    deleteItem.setOnAction(event -> handleDeleteOS(osID));
+    deleteItem.setOnAction(event -> handleDeleteOS(deviceID));
     items.add(deleteItem);
 
     return button;
@@ -394,6 +398,39 @@ public class ManagementViewController
     locations.sort(Comparator.comparing(Location::getId));
     managementTable.getItems().clear();
     // managementTable.setItems(FXCollections.observableArrayList(locations));
+  }
+
+  private Long determineOS(Device device) {
+    val oses = device.getOperatingSystems();
+    Long toEdit = null;
+
+    if (oses.size() == 1) {
+      toEdit = oses.get(0).getId();
+    } else if (oses.size() > 1) {
+      // HACK: This is such a megahack, but desperate times call for desperate measures
+      // This means we can only have 9 operating systems per device, but that should be
+      // enough given the time we have available
+      val buttonDataTypes = ButtonData.values();
+      val customButtons = new ArrayList<ButtonType>();
+
+      for (int i = 0; i < oses.size(); i++) {
+        customButtons.add(new ButtonType(oses.get(i).toPrettyString(), buttonDataTypes[i]));
+      }
+
+      // Figure out what operating system to edit
+      val alert =
+          new Alert(
+              AlertType.CONFIRMATION, "Which operating system do you want to edit?", customButtons.toArray(new ButtonType[]{}));
+      alert.setHeaderText(null);
+      alert.setContentText(
+          "There are multiple operating systems associated with this computer. Which one do you want to edit?");
+      alert.showAndWait();
+      val result = alert.getResult();
+
+      toEdit = oses.get(customButtons.indexOf(result)).getId();
+    }
+
+    return toEdit;
   }
 
   @Override

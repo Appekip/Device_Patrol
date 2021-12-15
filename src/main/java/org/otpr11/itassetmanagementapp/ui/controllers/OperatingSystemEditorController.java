@@ -37,21 +37,13 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  /**
-   * FXML for the attributes and boxes of the operating system view
-   */
-
+  /** FXML for the attributes and boxes of the operating system view */
   @FXML private TextField nameField, buildNumberField, versionField;
+
   @FXML private Button okButton, cancelButton;
   @FXML private CheckComboBox<String> osSelector;
 
-  @Override
-  public void afterInitialize() {}
-
-
-  /**
-   * Initializing the start of the operating system view
-   */
+  /** Initializing the start of the operating system view */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     createTextFieldValidator(nameField, "name", nameField.textProperty());
@@ -62,9 +54,7 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
     cancelButton.setOnAction(this::onCancel);
   }
 
-  /**
-   * Save button event
-   */
+  /** Save button event */
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
@@ -82,16 +72,12 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
     }
   }
 
-  /**
-   * Cancel button event
-   */
+  /** Cancel button event */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
 
-  /**
-   * Text field validation
-   */
+  /** Text field validation */
   private void createTextFieldValidator(TextField field, String key, StringProperty prop) {
     val edited = new AtomicBoolean(false);
 
@@ -115,5 +101,10 @@ public class OperatingSystemEditorController implements Initializable, ViewContr
             })
         .decorates(field)
         .immediate();
+  }
+
+  @Override
+  public void afterInitialize() {
+    System.out.println(sceneChangeData);
   }
 }
