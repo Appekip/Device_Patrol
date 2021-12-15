@@ -32,6 +32,9 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+/**
+ * Hardware configuration editor controller class.
+ */
 @Log4j2
 public class HardwareConfigurationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
@@ -50,12 +53,10 @@ public class HardwareConfigurationEditorController
           .toList();
   private ResourceBundle locale = LocaleEngine.getResourceBundle();
 
-  // Text field validation and dropdown Initializing the start of the hardware configuration view
   @Setter private Main main;
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  //  FXML for the attributes and boxes of the hardware view
   @FXML private Text title, deviceTypeText, cpuText, gpuText, ramText, diskText, screenSizeText;
   @FXML private ChoiceBox<String> deviceTypeField;
   @FXML private TextField cpuField, diskSizeField, screenSizeField, gpuField, memoryField;
@@ -102,13 +103,23 @@ public class HardwareConfigurationEditorController
     onLocaleChange();
   }
 
-  /** Configuring dropdown */
+  /**
+   * Initialises a {@link ChoiceBox} with a list of items and an initial value.
+   *
+   * @param dropdown {@link ChoiceBox}
+   * @param items {@link List}
+   * @param initialValue Initial value for dropdown
+   */
   private void initDropdown(ChoiceBox<String> dropdown, List<String> items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
-  /** Functional saving */
+  /**
+   * Save button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onSave(ActionEvent event) {
     if (validator.containsWarnings() || validator.containsErrors()) {
       AlertUtils.showAlert(
@@ -123,7 +134,7 @@ public class HardwareConfigurationEditorController
     }
   }
 
-  /** Saving laptop data */
+  /** Saves the current configuration as a {@link LaptopConfiguration}. */
   private void saveLaptop() {
     laptopConfiguration.setCpu(cpuField.getText());
     laptopConfiguration.setDiskSize(diskSizeField.getText());
@@ -137,7 +148,7 @@ public class HardwareConfigurationEditorController
     stage.close();
   }
 
-  /** Saving desktop data */
+  /** Saves the current configuration as a {@link DesktopConfiguration}. */
   private void saveDesktop() {
     desktopConfiguration.setCpu(cpuField.getText());
     desktopConfiguration.setDiskSize(diskSizeField.getText());
@@ -150,7 +161,11 @@ public class HardwareConfigurationEditorController
     stage.close();
   }
 
-  /** Functional cancel button */
+  /**
+   * Cancel button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }

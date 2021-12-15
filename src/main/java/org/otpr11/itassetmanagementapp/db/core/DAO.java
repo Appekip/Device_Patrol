@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
 
+/** Generic DAO object. */
 @RequiredArgsConstructor
 public abstract class DAO {
   protected final GlobalDAO dao;

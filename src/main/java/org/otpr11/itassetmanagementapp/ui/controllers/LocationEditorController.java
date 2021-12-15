@@ -25,6 +25,7 @@ import org.otpr11.itassetmanagementapp.interfaces.ViewController;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.AlertUtils;
 
+/** Location editor controller class. */
 @Log4j2
 public class LocationEditorController
     implements Initializable, ViewController, LocaleChangeListener {
@@ -38,13 +39,11 @@ public class LocationEditorController
   @Setter private Stage stage;
   @Setter private Object sceneChangeData;
 
-  // FXML for the attributes and boxes of the location view
   @FXML private Text title;
   @FXML private Label zipText, nickText, addressText, idText;
   @FXML private Button okButton, cancelButton;
   @FXML private TextField idField, addressField, zipCodeField, nicknameField;
 
-  /** Text field validation */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     LocaleEngine.addListener(this);
@@ -60,7 +59,11 @@ public class LocationEditorController
     onLocaleChange();
   }
 
-  /** Save button event */
+  /**
+   * Save button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onSave(ActionEvent event) {
     if (validator.containsErrors() || validator.containsWarnings()) {
       AlertUtils.showAlert(
@@ -79,7 +82,11 @@ public class LocationEditorController
     }
   }
 
-  /** Cancel button event */
+  /**
+   * Cancel button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }

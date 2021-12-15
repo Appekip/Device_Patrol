@@ -129,7 +129,6 @@ public class DeviceEditorController
   @FXML private CheckComboBox<String> osSelector;
   @FXML private ChoiceBox<String> deviceTypeSelector;
 
-  /** Text field validations for text fields Initializing the start of the device editor view */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     DatabaseEventPropagator.addListener(this);
@@ -163,8 +162,8 @@ public class DeviceEditorController
         });
 
     // Init OS selector
-    // Needed for reassignment in lambda
 
+    // Needed for reassignment in lambda
     var ref =
         new Object() {
           String lastChange = "";
@@ -197,12 +196,12 @@ public class DeviceEditorController
                   }
                 });
 
-    // Listen for status being set to VACANT, and remove user if selected
     // FIXME: These could be moved to onLocaleChange() eventually, but that's not necessary for now
     configSelector.setValue(SELECTOR_DEFAULT_TITLE);
     userSelector.setValue(SELECTOR_DEFAULT_TITLE);
     locationSelector.setValue(SELECTOR_DEFAULT_TITLE);
 
+    // Listen for status being set to VACANT, and remove user if selected
     statusSelector
         .getSelectionModel()
         .selectedItemProperty()
@@ -225,22 +224,19 @@ public class DeviceEditorController
               }
             });
 
-    // Making the list of selectable manufacturer years into the dropdown view starting from current
+    // Input the list of selectable manufacturer years into the dropdown view starting from current
     // year.
-
     for (int year = Year.now().getValue(); year >= 1970; year--) {
       modelYearSelector.getItems().add(year);
     }
 
-    // Setting default values for fields
-
+    // Set default values for fields
     select(modelYearSelector, Year.now().getValue());
     configSelector.setValue(SELECTOR_DEFAULT_TITLE);
     userSelector.setValue(SELECTOR_DEFAULT_TITLE);
     locationSelector.setValue(SELECTOR_DEFAULT_TITLE);
 
-    // Actions for adding buttons
-
+    // Button event listeners
     addHWConfigButton.setOnAction(
         event -> main.showHWConfigEditor(DeviceType.fromString(deviceTypeSelector.getValue())));
     addOSButton.setOnAction(event -> main.showOSEditor(null));
@@ -252,12 +248,27 @@ public class DeviceEditorController
     onLocaleChange();
   }
 
+  /**
+   * Initialises a {@link ChoiceBox} with a list of items and an initial value.
+   *
+   * @param dropdown {@link ChoiceBox}
+   * @param items {@link List}
+   * @param initialValue Initial value for dropdown
+   */
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void initDropdown(ChoiceBox dropdown, List items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
+  /**
+   * Initialises a {@link ComboBox} without a default value, optionally making it possible to select
+   * empty.
+   *
+   * @param dropdown {@link ComboBox}
+   * @param items {@link List}
+   * @param isNullable Whether to declare this dropdown as empty-selectable
+   */
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void initDropdown(ComboBox dropdown, List items, boolean isNullable) {
     if (isNullable) {
@@ -267,12 +278,24 @@ public class DeviceEditorController
     dropdown.getItems().setAll(items);
   }
 
+  /**
+   * Initialises a {@link ComboBox} with a list of items and an initial value.
+   *
+   * @param dropdown {@link ChoiceBox}
+   * @param items {@link List}
+   * @param initialValue Initial value for dropdown
+   */
   @SuppressWarnings({"unchecked", "rawtypes"})
   private void initDropdown(ComboBox dropdown, List items, String initialValue) {
     dropdown.getItems().setAll(items);
     dropdown.setValue(initialValue);
   }
 
+  /**
+   * Save button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onSave(ActionEvent event) {
     // Reset old colorings
     configSelectorText.setFill(null);
@@ -387,11 +410,20 @@ public class DeviceEditorController
     }
   }
 
-  /** Functional cancel button */
+  /**
+   * Cancel button click handler.
+   *
+   * @param event {@link ActionEvent}
+   */
   private void onCancel(ActionEvent event) {
     stage.close();
   }
 
+  /**
+   * Update available hardware configurations for a specific {@link DeviceType}.
+   *
+   * @param deviceType {@link DeviceType}
+   */
   private void updateAvailableHWConfigs(DeviceType deviceType) {
     configs = formatRelevantHWConfigs(deviceType);
     initDropdown(configSelector, configs, configs.get(0));
@@ -413,12 +445,24 @@ public class DeviceEditorController
     initDropdown(configSelector, configs, stringTarget.toPrettyString());
   }
 
+  /**
+   * Formats all available hardware configurations for the selected {@link DeviceType}.
+   *
+   * @param deviceType {@link DeviceType}
+   * @return {@link List} of formatted hardware configuration strings
+   */
   private List<String> formatRelevantHWConfigs(DeviceType deviceType) {
     return getRelevantHWConfigs(deviceType).stream()
         .map(StringUtils::getPrettyHWConfig)
         .collect(Collectors.toList()); // Need mutability for this one
   }
 
+  /**
+   * Fetches all available hardware configurations for the selected {@link DeviceType}.
+   *
+   * @param deviceType {@link DeviceType}
+   * @return {@link List} of hardware configurations
+   */
   private List<Configuration> getRelevantHWConfigs(DeviceType deviceType) {
     return dao.configurations.getAll().stream()
         .filter(cfg -> cfg.getDeviceType() == deviceType)

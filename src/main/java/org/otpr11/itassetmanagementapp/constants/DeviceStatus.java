@@ -2,8 +2,10 @@ package org.otpr11.itassetmanagementapp.constants;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 
+/** Describes a {@link Device}'s status. */
 @RequiredArgsConstructor
 public enum DeviceStatus {
   VACANT,
@@ -11,6 +13,13 @@ public enum DeviceStatus {
   BROKEN,
   IN_REPAIR;
 
+  /**
+   * Reverse lookups a (possibly localised) string rendition of a status and returns the relevant
+   * enum constant.
+   *
+   * @param value String representation to lookup
+   * @return {@link DeviceStatus}
+   */
   public static DeviceStatus fromString(String value) {
     val locale = LocaleEngine.getResourceBundle();
 
@@ -29,11 +38,23 @@ public enum DeviceStatus {
     }
   }
 
+  /**
+   * Returns a localised string rendition of a status.
+   *
+   * @param status {@link DeviceStatus}
+   * @return Localised version of status constant
+   */
   public static String getLocalised(DeviceStatus status) {
     val locale = LocaleEngine.getResourceBundle();
     return locale.getString("device_status_%s".formatted(status.toString().toLowerCase()));
   }
 
+  /**
+   * Returns a full (=> properly capitalised) string rendition of a status.
+   *
+   * @param status {@link DeviceStatus}
+   * @return Localised full version of status constant
+   */
   public static String getLocalisedPretty(DeviceStatus status) {
     val locale = LocaleEngine.getResourceBundle();
     return locale.getString("device_status_%s_pretty".formatted(status.toString().toLowerCase()));

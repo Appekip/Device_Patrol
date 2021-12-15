@@ -18,10 +18,15 @@ import lombok.val;
 import org.otpr11.itassetmanagementapp.constants.DeviceStatus;
 import org.otpr11.itassetmanagementapp.constants.DeviceType;
 import org.otpr11.itassetmanagementapp.db.dao.GlobalDAO;
+import org.otpr11.itassetmanagementapp.db.model.Device;
 import org.otpr11.itassetmanagementapp.interfaces.LocaleChangeListener;
 import org.otpr11.itassetmanagementapp.locale.LocaleEngine;
 import org.otpr11.itassetmanagementapp.utils.JFXUtils.TextProperties;
 
+/**
+ * Controller for the pretty device viewer side bar, viewable in the main view of the application
+ * through double-clicking a row or clicking the View action button.
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class PrettyDeviceViewerController implements LocaleChangeListener {
   private static final int TITLE_TEXT_SIZE = 22;
@@ -39,7 +44,6 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
   private static BorderPane prettyDevicePane = null;
   private static int lastRowIndex;
 
-  /** Borders and grid */
   public static void init(BorderPane _mainViewPane, BorderPane _prettyDevicePane) {
     locale = LocaleEngine.getResourceBundle();
     mainViewPane = _mainViewPane;
@@ -65,7 +69,11 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     prettyDevicePane.setRight(anchorPane);
   }
 
-  /** Showing device */
+  /**
+   * Shows the viewer.
+   *
+   * @param deviceID ID of {@link Device} to show.
+   */
   public static void show(String deviceID) {
     isOpen = true;
     update(deviceID);
@@ -75,13 +83,19 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     }
   }
 
-  /** Hiding device */
+  /**
+   * Hides the viewer.
+   */
   public static void hide() {
     isOpen = false;
     mainViewPane.setLeft(null);
   }
 
-  /** Updating device */
+  /**
+   * Updates the information in the viewer.
+   *
+   * @param deviceID ID of {@link Device} to parse information out of.
+   */
   private static void update(String deviceID) {
     val device = dao.devices.get(deviceID);
 
@@ -222,12 +236,19 @@ public abstract class PrettyDeviceViewerController implements LocaleChangeListen
     prettyDevicePane.setCenter(deviceInfoGrid);
   }
 
-  /** Adding rows and spaces */
+  /**
+   * Adds a new row to the viewer.
+   *
+   * @param row {@link HBox}
+   */
   private static void addRow(HBox row) {
     lastRowIndex++;
     deviceInfoGrid.add(row, 0, lastRowIndex);
   }
 
+  /**
+   * Adds a spacer row to the viewer.
+   */
   private static void addSpacer() {
     addRow(createText("", BODY_STYLE));
   }

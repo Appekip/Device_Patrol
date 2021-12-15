@@ -48,7 +48,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <configuration>
               <mainClass>
-                org.otpr11.itassetmanagementapp/org.otpr11.itassetmanagementapp.Main
+                ${mainclass}
               </mainClass>
             </configuration>
             <id>default-cli</id>
@@ -83,6 +83,39 @@
         </configuration>
         <groupId>org.apache.maven.plugins</groupId>
         <version>3.3.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.2.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>${launcherclass.name}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <transformers>
+                <transformer implementation=
+                  "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>${launcherclass.name}</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -197,6 +230,7 @@
       <groupId>org.jacoco</groupId>
       <type>maven-plugin</type>
       <version>${jacoco.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <artifactId>mockito-core</artifactId>
@@ -223,11 +257,6 @@
       <version>2.2</version>
     </dependency>
     <dependency>
-      <artifactId>mvvmfx-testing-utils</artifactId>
-      <groupId>de.saxsys</groupId>
-      <version>1.8.0</version>
-    </dependency>
-    <dependency>
       <artifactId>openjfx-monocle</artifactId>
       <groupId>org.testfx</groupId>
       <scope>test</scope>
@@ -237,6 +266,21 @@
       <artifactId>h2</artifactId>
       <groupId>com.h2database</groupId>
       <version>2.0.202</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.2.0</version>
+      <type>maven-plugin</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-shade-plugin</artifactId>
+      <version>3.2.4</version>
+      <type>maven-plugin</type>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <groupId>org.otp-r11</groupId>
@@ -253,7 +297,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <surefire.version>3.0.0-M5</surefire.version>
     <testfx.version>4.0.16-alpha</testfx.version>
+    <launcherclass>${mainclass.package}/${launcherclass.name}</launcherclass>
+    <launcherclass.name>org.otpr11.itassetmanagementapp.Launcher</launcherclass.name>
+    <mainclass>${mainclass.package}/${mainclass.name}</mainclass>
+    <mainclass.package>org.otpr11.itassetmanagementapp</mainclass.package>
+    <mainclass.name>org.otpr11.itassetmanagementapp.Main</mainclass.name>
+    <classpath>${project.build.directory}/${classpath.prefix}</classpath>
+    <classpath.prefix>libs</classpath.prefix>
   </properties>
 
+  <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
 </project>
