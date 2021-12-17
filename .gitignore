@@ -16,6 +16,7 @@
 *.nar
 *.ear
 *.zip
+!javadoc.zip
 *.tar.gz
 *.rar
 
